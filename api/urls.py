@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^users/$', views.user_list),
     url(r'^users/(?P<pk>[0-9]+)/$', views.user_detail),
+    url(r'^levels/(?P<pk>[0-9]+)/$', views.LevelDetail.as_view()),
+    url(r'^levels/$', views.LevelList.as_view())
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

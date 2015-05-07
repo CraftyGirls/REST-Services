@@ -9,3 +9,14 @@ class User(models.Model):
    
     class Meta:
         ordering = ('created',)
+        
+        
+class Level(models.Model):
+    
+    created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100, blank=False, default='')
+    description = models.TextField(blank=False, default='')
+    script = models.TextField(blank=False, default='')
+    
+    class Meta:
+        ordering = ('created',)
