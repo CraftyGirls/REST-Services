@@ -1,12 +1,14 @@
 from django.forms import widgets
 from rest_framework import serializers
-from api.models import User, Level
+from api.models import PDUser, Level
 
 class UserSerializer(serializers.ModelSerializer):
     
+    levels = serializers.PrimaryKeyRelatedField(many=True, queryset=Level.objects.all())
+    
     class Meta:
-        model = User
-        fields = ('id', 'firstName', 'lastName', 'email')
+        model = PDUser
+        fields = ('id', 'username', 'email', 'levels')
         
 
 class LevelSerializer(serializers.ModelSerializer):

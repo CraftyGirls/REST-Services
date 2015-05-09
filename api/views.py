@@ -8,14 +8,14 @@ from rest_framework.response import Response
 
 from django.http import Http404
 
-from models import User, Level
+from models import PDUser, Level
 from serializers import UserSerializer, LevelSerializer
         
 @api_view(['GET', 'POST'])
 def user_list(request, format=None):
     # List all code snippets, or create a new snippet.
     if request.method == 'GET':
-        users = User.objects.all()
+        users = PDUser.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -30,8 +30,8 @@ def user_list(request, format=None):
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_detail(request, pk, format=None):
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
+        user = PDUser.objects.get(pk=pk)
+    except PDUser.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'GET':
@@ -66,7 +66,6 @@ class LevelList(APIView):
         
         
 class LevelDetail(APIView):
-    
     def get_object(self, pk):
         try:
             return Level.objects.get(pk=pk)
