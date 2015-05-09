@@ -9,49 +9,40 @@ from rest_framework.response import Response
 from django.http import Http404
 
 from models import PDUser, Level
-from serializers import UserSerializer, LevelSerializer
-        
-@api_view(['GET', 'POST'])
-def user_list(request, format=None):
-    # List all code snippets, or create a new snippet.
-    if request.method == 'GET':
-        users = PDUser.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+from serializers import UserSerializer, LevelSerializer, PDUserSerializer
+from django.contrib.auth.models import User
 
-    elif request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_detail(request, pk, format=None):
-    try:
-        user = PDUser.objects.get(pk=pk)
-    except PDUser.DoesNotExist:
-        return HttpResponse(status=404)
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
+from rest_framework import permissions
 
-    if request.method == 'GET':
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserList(ListCreateAPIView):
+    queryset = PDUser.objects.all()
+    serializer_class = PDUserSerializer
 
-    elif request.method == 'DELETE':
-        user.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)        
-        
-        
-class LevelList(APIView):
-    
+
+class UserDetail(RetrieveAPIView):
+    queryset = PDUser.objects.all()
+    serializer_class = PDUserSerializer
+
+
+class LevelList(ListCreateAPIView):
+    queryset = Level.objects.all()
+    serializer_class = LevelSerializer
+
+    def perform_create(self, serializer):
+        owner = PDUser.objects.get(user_id=self.request.user.id)
+        serializer.save(owner=owner)
+
+
+class LevelDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Level.objects.all()
+    serializer_class = LevelSerializer
+
+
+'''class LevelList(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     def get(self, request, format=None):
         levels = Level.objects.all()
         serializer = LevelSerializer(levels, many=True)
@@ -63,20 +54,25 @@ class LevelList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
 class LevelDetail(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     def get_object(self, pk):
         try:
             return Level.objects.get(pk=pk)
         except Level.DoesNotExist:
             raise Http404
-            
+
     def get(self, request, pk, format=None):
         level = self.get_object(pk)
         serializer = LevelSerializer(level)
         return Response(serializer.data)
-        
+
     def put(self, request, pk, format=None):
         snippet = self.get_object(pk)
         level = LevelSerializer(snippet, data=request.data)
@@ -89,3 +85,4 @@ class LevelDetail(APIView):
         level = self.get_object(pk)
         level.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+'''
