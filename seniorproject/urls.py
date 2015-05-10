@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 import api.urls
-import site
+import partydarling
 
 urlpatterns = patterns('',
                        # Examples:
@@ -10,5 +10,5 @@ urlpatterns = patterns('',
                        # url(r'^blog/', include('blog.urls')),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^api/', include('api.urls')),
-                       url(r'^site/', include('site.urls'))
+                       url(r'^$', include('partydarling.urls'))
                        )
