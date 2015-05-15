@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework import permissions
+from api.permissions import IsOwnerOrReadOnly
 
 
 class UserList(ListCreateAPIView):
@@ -30,6 +31,8 @@ class LevelList(ListCreateAPIView):
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
 
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     def perform_create(self, serializer):
         owner = PDUser.objects.get(user_id=self.request.user.id)
         serializer.save(owner=owner)
@@ -38,6 +41,8 @@ class LevelList(ListCreateAPIView):
 class LevelDetail(RetrieveUpdateDestroyAPIView):
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 
 '''class LevelList(APIView):
