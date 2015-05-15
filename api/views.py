@@ -8,8 +8,8 @@ from rest_framework.response import Response
 
 from django.http import Http404
 
-from models import PDUser, Level
-from serializers import UserSerializer, LevelSerializer, PDUserSerializer
+from api.models import PDUser, Level
+from api.serializers import UserSerializer, LevelSerializer, PDUserSerializer
 from django.contrib.auth.models import User
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
