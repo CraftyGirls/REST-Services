@@ -57,7 +57,7 @@ ROOT_URLCONF = 'seniorproject.urls'
 
 WSGI_APPLICATION = 'wsgi.application'
 
-STATIC_ROOT = "/var/www/static/"
+STATIC_ROOT = "/static/"
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
