@@ -1,7 +1,10 @@
 {% extends "partydarling/base.html" %}
 
-{% block content %}
-<h1>hello</h1>
+{% block resources %}
     {% load staticfiles %}
-    <img src="{% static "images/pd.png" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <img class="center splash_image" src="{% static "images/pd.png" %}"/>
 {%  endblock %}

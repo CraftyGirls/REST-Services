@@ -55,7 +55,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'seniorproject.urls'
 
-WSGI_APPLICATION = 'seniorproject.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database

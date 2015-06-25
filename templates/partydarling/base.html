@@ -8,13 +8,12 @@
      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
      <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}" />
 
+    {% block resources %}{% endblock %}
+
     <title>{% block title %}Party Darling{% endblock %}</title>
 
 </head>
 <body>
-   <div class="pd_navbar">
-
-   </div>
    <div id="content">
         {% block content %}{% endblock %}
     </div>
