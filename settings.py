@@ -68,18 +68,18 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
     },
-    'primary': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
-    },
-    'wag_db': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
-    }
+    #primary': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': os.path.join(BASE_DIR, 'REST-Services/primary_db.sqlite3'),
+    #},
+    #'wag_db': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': os.path.join(BASE_DIR, 'REST-Services/wag_db.sqlite3'),
+    #}
 }
 
 # !! Order matters here
-DATABASE_ROUTERS = ['wag.routers.WagDatabaseRouter', 'routers.PrimaryReplicaRouter']
+#DATABASE_ROUTERS = ['wag.routers.WagDatabaseRouter', 'routers.PrimaryReplicaRouter']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
