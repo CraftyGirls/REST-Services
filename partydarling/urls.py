@@ -5,5 +5,3 @@ import partydarling.views
 urlpatterns = patterns('',
                        (r'^$', partydarling.views.index)
                        )
-
-urlpatterns = format_suffix_patterns(urlpatterns)

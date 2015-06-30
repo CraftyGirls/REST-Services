@@ -3,12 +3,16 @@ from django.contrib import admin
 
 import api.urls
 import partydarling
+import wag.urls
 
 urlpatterns = patterns('',
-                       # Examples:
-                       # url(r'^$', 'seniorproject.views.home', name='home'),
-                       # url(r'^blog/', include('blog.urls')),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^api/', include('api.urls')),
-                       url(r'^$', include('partydarling.urls'))
+                       url(r'^$', include('partydarling.urls')),
+                       url(r'^wag/', include('wag.urls'))
                        )
+
+urlpatterns += [
+    url(r'^auth/', include('rest_framework.urls',
+                           namespace='rest_framework')),
+]

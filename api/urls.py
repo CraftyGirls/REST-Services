@@ -13,10 +13,3 @@ urlpatterns = patterns('',
                        url(r'^levels/(?P<pk>[0-9]+)/$', views.LevelDetail.as_view()),
                        url(r'^levels/$', views.LevelList.as_view())
                        )
-
-urlpatterns += [
-    url(r'^auth/', include('rest_framework.urls',
-                           namespace='rest_framework')),
-]
-
-urlpatterns = format_suffix_patterns(urlpatterns)

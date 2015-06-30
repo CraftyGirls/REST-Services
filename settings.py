@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
-    'site'
+    'partydarling',
+    'wag'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -53,7 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'seniorproject.urls'
+ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'wsgi.application'
 
@@ -65,9 +66,20 @@ STATIC_ROOT = "/static/"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
+    },
+    'primary': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
+    },
+    'wag_db': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
     }
 }
+
+# !! Order matters here
+DATABASE_ROUTERS = ['wag.routers.WagDatabaseRouter', 'routers.PrimaryReplicaRouter']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -88,8 +100,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TEMPLATE_DIRS = [str(os.path.join(BASE_DIR, 'templates'))]
+TEMPLATE_DIRS = [str(os.path.join(BASE_DIR, 'REST-Services/templates'))]
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "REST-Services/static"),
 )
