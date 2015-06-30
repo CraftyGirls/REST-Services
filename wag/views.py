@@ -21,7 +21,7 @@ class ChoiceList(APIView):
         if serializer.is_valid():
             exists = Choice.objects.filter(name=serializer.validated_data.get("name")).exists()
             if not exists:
-                serializer.create(serializer.validated_data).save()
+                serializer.create(serializer.validated_data)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 choice = Choice.objects.get(name=serializer.validated_data.get("name"))
