@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+SETTINGS_PATH = os.path.dirname(__file__)
+PROJECT_PATH = os.path.join(SETTINGS_PATH, os.pardir)
+PROJECT_PATH = os.path.abspath(PROJECT_PATH)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -54,9 +56,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'project.urls'
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 STATIC_ROOT = "/static/"
 
@@ -66,7 +68,7 @@ STATIC_ROOT = "/static/"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'REST-Services/db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
     #primary': {
     #    'ENGINE': 'django.db.backends.sqlite3',
@@ -100,8 +102,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TEMPLATE_DIRS = [str(os.path.join(BASE_DIR, 'REST-Services/templates'))]
+TEMPLATES_PATH = os.path.join(PROJECT_PATH, "project/templates")
+
+TEMPLATE_DIRS = (
+    TEMPLATES_PATH,
+)
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "REST-Services/static"),
+    os.path.join(BASE_DIR, "static"),
 )
