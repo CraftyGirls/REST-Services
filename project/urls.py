@@ -17,3 +17,12 @@ urlpatterns += [
     url(r'^auth/', include('rest_framework.urls',
                            namespace='rest_framework')),
 ]
+
+urlpatterns += patterns('', (r'^media\/(?P<path>.*)$',
+                             'django.views.static.serve',
+                             {'document_root': settings.STATIC_ROOT}),
+                        )
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+urlpatterns += staticfiles_urlpatterns()
