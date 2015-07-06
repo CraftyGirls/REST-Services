@@ -58,9 +58,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'project.urls'
 
-WSGI_APPLICATION = 'project.wsgi.application'
-
-STATIC_ROOT = "/static/"
+WSGI_APPLICATION = 'wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -101,6 +99,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
 
 TEMPLATES_PATH = os.path.join(PROJECT_PATH, "project/templates")
 
