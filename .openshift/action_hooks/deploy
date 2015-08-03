@@ -1,2 +1,0 @@
-cp $DB_CONF $OPENSHIFT_REPO_DIR
-python manage.py syncdb --noinput
