@@ -1,1 +1,1 @@
-python manage.py collectstatic
+python "$OPENSHIFT_REPO_DIR"manage.py collectstatic --noinput
