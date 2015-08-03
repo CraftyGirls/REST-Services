@@ -1,5 +1,4 @@
-echo "$DB_CONF CONF LOCATION"
-echo "Copying $DB_CONF to $OPENSHIFT_REPO_DIR"
-cp $DB_CONF $OPENSHIFT_REPO_DIR
+echo "Copying $OPENSHIFT_DATA_DIR db.cnf to $OPENSHIFT_REPO_DIR"
+cp "$OPENSHIFT_DATA_DIR"db.cnf $OPENSHIFT_REPO_DIR
 echo "Syncing DB"
 python "$OPENSHIFT_REPO_DIR"manage.py syncdb --noinput
