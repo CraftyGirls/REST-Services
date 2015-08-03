@@ -1,3 +1,1 @@
 python "$OPENSHIFT_REPO_DIR"manage.py collectstatic --noinput
-cp $DB_CONF $OPENSHIFT_REPO_DIR
-python manage.py syncdb --noinput
