@@ -1,1 +1,2 @@
-cp "$OPENSHIFT_REPO_DIR"../build_dependencies/db.cnf
+cp $DB_CONF $OPENSHIFT_REPO_DIR
+python manage.py syncdb --noinput
