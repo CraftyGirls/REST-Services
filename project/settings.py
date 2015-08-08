@@ -105,7 +105,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static_')
 
-TEMPLATES_PATH = os.path.join(PROJECT_PATH, "project/templates")
+TEMPLATES_PATH = os.path.join(PROJECT_PATH, "templates")
 
 TEMPLATE_DIRS = (
     TEMPLATES_PATH,
