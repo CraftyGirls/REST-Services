@@ -24,7 +24,7 @@ after_success:
           # and if that generates changes, it will commit them to the
           # `master` branch:
           #
-          #   * ensuring that the content from the `dist/` directory
+          #   * ensuring that the content from the `distro/` directory
           #     is always in sync with the rest of the content
           #
           #   * removing the need to execute the build step locally
@@ -37,7 +37,7 @@ after_success:
           curl -sSL "https://raw.githubusercontent.com/h5bp-bot/scripts/0.6.1/commit_build_changes.sh" |
               bash -s -- --branch "master" \
                          --commands "npm install && npm run build" \
-                         --commit-message "Update content from the \`dist\` directory [skip ci]";
+                         --commit-message "Update content from the \`distro\` directory [skip ci]";
 
         fi
       fi
