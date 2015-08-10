@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
-    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'vendor/bower_components/html5-boilerplate/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bower_components/html5-boilerplate/css/main.css' %}">
     <style>
         [ng-cloak] {
             display: none;
         }
     </style>
-    <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
+    <script src="{% static 'vendor/bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js' %}"></script>
     <script>
         // include angular loader, which allows the files to load in any order
         //@@NG_LOADER_START@@
@@ -87,15 +88,15 @@
 
         // load all of the dependencies asynchronously.
         $script([
-            'bower_components/angular/angular.js',
-            'bower_components/angular-route/angular-route.js',
-            'app.js',
-            'charView/charView.js',
-            'lineView/lineView.js',
-            'convoView/convoView.js',
-            'components/version/version.js',
-            'components/version/version-directive.js',
-            'components/version/interpolate-filter.js'
+            "{% static 'vendor/bower_components/angular/angular.js' %}",
+            "{% static 'vendor/bower_components/angular-route/angular-route.js' %}",
+            "{% static 'js/app.js' %}",
+            "{% static 'js/charView/charView.js' %}",
+            "{% static 'js/lineView/lineView.js' %}",
+            "{% static 'js/convoView/convoView.js' %}",
+            "{% static 'js/components/version/version.js' %}",
+            "{% static 'js/components/version/version-directive.js' %}",
+            "{% static 'js/components/version/interpolate-filter.js' %}"
         ], function () {
             // when all is done, execute bootstrap angular application
             angular.bootstrap(document, ['scenarioEditor']);
