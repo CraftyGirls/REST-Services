@@ -1,0 +1,15 @@
+<h3>Dialogue</h3>
+
+<form>
+	<span ng-repeat="line in getLines()">
+		ID: {{ line.id }}<br/>
+		Character:
+		<select ng-model="line.character" ng-options="character.id as character.name for character in getChars()">
+            <option value="">Select Character</option>
+        </select><br/>
+		Text: <textarea type="text" ng-model="line.text" cols="25" rows="3"></textarea><br/>
+		<button ng-click="deleteLine(line)">Delete</button>
+		<hr/>
+	</span>
+    <button ng-click="addLine()">Add new line</button>
+</form>

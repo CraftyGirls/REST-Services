@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'api',
     'partydarling',
-    'wag'
+    'wag',
+    'scenarioEditor'
 )
 
 MIDDLEWARE_CLASSES = (
