@@ -4,13 +4,11 @@ from django.conf import settings
 
 import api.urls
 import partydarling
-import wag.urls
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^api/', include('api.urls')),
                        url(r'^$', include('partydarling.urls')),
-                       url(r'^wag/', include('wag.urls')),
                        url(r'^scenario/', include('scenarioEditor.urls'))
                        )
 
