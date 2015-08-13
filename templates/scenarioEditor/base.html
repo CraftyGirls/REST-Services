@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="scenarioEditor" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="scenarioEditor" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="scenarioEditor" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="scenarioEditor" class="no-js"> <!--<![endif]-->
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Scenario Editor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load staticfiles %}
+    {% load djangular_tags %}
+    <link rel="stylesheet" href="{% static 'vendor/bower_components/html5-boilerplate/dist/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bower_components/html5-boilerplate/dist/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/scenarioEditor/app.css' %}">
+    <script src="{% static 'vendor/bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+
+    {% block resources %}{% endblock %}
+
+    <title>{% block title %}Party Darling{% endblock %}</title>
+</head>
+<body>
+<!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+<div class="base-header">
+    <span class="header-title">Scenario Editor</span>
+
+    <div class="header-items">
+        <div class="header-inner">
+            <a class="header-item">Login</a>
+        </div>
+    </div>
+
+</div>
+<div id="base-content">
+    {% block content %}{% endblock %}
+</div>
+</body>
+
+<script src="{% static 'vendor/bower_components/angular/angular.js' %}"></script>
+<script src="{% static 'vendor/bower_components/angular-route/angular-route.js' %}"></script>
+<script src="{% static 'js/scenarioEditor/app.js' %}"></script>
+<script src="{% static 'js/scenarioEditor/components/version/version.js' %}"></script>
+<script src="{% static 'js/scenarioEditor/components/version/version-directive.js' %}"></script>
+<script src="{% static 'js/scenarioEditor/components/version/interpolate-filter.js' %}"></script>
+
+{% block js_resources %}{% endblock %}
+
+</html>
