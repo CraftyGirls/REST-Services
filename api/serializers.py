@@ -1,6 +1,6 @@
 from django.forms import widgets
 from rest_framework import serializers
-from api.models import PDUser, Level
+from api.models import PDUser, Scenario
 from django.contrib.auth.models import User
 
 
@@ -21,7 +21,7 @@ class PDUserSerializer(serializers.ModelSerializer):
     # last_name = serializers.CharField(source='user.last_name')
 
     user = UserSerializer()
-    levels = serializers.PrimaryKeyRelatedField(many=True, queryset=Level.objects.all())
+    levels = serializers.PrimaryKeyRelatedField(many=True, queryset=Scenario.objects.all())
 
     class Meta:
         model = PDUser
@@ -52,7 +52,7 @@ class LevelSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.user.username')
 
     class Meta:
-        model = Level
+        model = Scenario
         fields = ('id', 'name', 'description', 'script', 'owner')
 
     '''def create(self, validated_data):

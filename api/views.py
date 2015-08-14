@@ -1,7 +1,7 @@
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework import permissions
 
-from api.models import PDUser, Level
+from api.models import PDUser, Scenario
 from api.serializers import LevelSerializer, PDUserSerializer
 from api.permissions import IsOwnerOrReadOnly
 
@@ -17,7 +17,7 @@ class UserDetail(RetrieveAPIView):
 
 
 class LevelList(ListCreateAPIView):
-    queryset = Level.objects.all()
+    queryset = Scenario.objects.all()
     serializer_class = LevelSerializer
 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -28,7 +28,7 @@ class LevelList(ListCreateAPIView):
 
 
 class LevelDetail(RetrieveUpdateDestroyAPIView):
-    queryset = Level.objects.all()
+    queryset = Scenario.objects.all()
     serializer_class = LevelSerializer
 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)

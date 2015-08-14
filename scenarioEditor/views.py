@@ -44,9 +44,10 @@ def register_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = User.objects.create_user(username=username, password=password)
-        user.save()
-        user = authenticate(username=username, password=password)
-        login(request, user)
+        pd_user = PDUser(user=user)
+        pd_user.save()
+        user_auth = authenticate(username=username, password=password)
+        login(request, user_auth)
         return redirect('index')
     else:
         return render(request, 'scenarioEditor/register.html/', {})
