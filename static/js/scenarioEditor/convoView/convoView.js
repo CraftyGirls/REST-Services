@@ -11,7 +11,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute'])
 
 .service('convoService', function () {
     var convoData = [
-        {'id':'Conversation 0'}
+        {'id':0,'name':'Conversation 0'}
     ];
 
     var currConversation = 0;
@@ -22,7 +22,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute'])
         },
         addConversation:function () {
             currConversation++;
-            convoData.push({'id':'Conversation '+currConversation});
+            convoData.push({'id':currConversation,'name':'Conversation '+currConversation});
         },
         editConversation:function (convo) {
             //TODO: Make this work
@@ -42,12 +42,12 @@ angular.module('scenarioEditor.convoView', ['ngRoute'])
     convoService.addConversation();
   };
 
-  $scope.editConvo = function (id) {
-    convoService.editConversation(id);
+  $scope.editConvo = function (convo) {
+    convoService.editConversation(convo);
   };
 
-  $scope.deleteConvo = function (id) {
-    convoService.deleteConversation(id);
+  $scope.deleteConvo = function (convo) {
+    convoService.deleteConversation(convo);
   };
 
 }]);

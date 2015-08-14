@@ -14,9 +14,7 @@ angular.module('scenarioEditor', [
 }])
 
 .service('charService', function () {
-  var charData = [
-    {'id':0,'name':'','other':''}
-  ];
+  var charData = [];
 
   var charId = 0;
 
@@ -28,7 +26,7 @@ angular.module('scenarioEditor', [
     },
     addChar:function () {
       charId++;
-      charData.push({'id':charId,'name':'',other:''});
+      charData.push({'id':charId,'name':'','states':[] });
     },
     deleteChar:function (character) {
       charData.splice(charData.indexOf(character),1);
@@ -38,13 +36,19 @@ angular.module('scenarioEditor', [
     },
     getCurrChar:function () {
       return currChar;
+    },
+    addStateToChar:function (character,id) {
+      charData[charData.indexOf(character)].states.push({'id':id,'name':'','convoId':0});
+    },
+    getStatesLength:function (character) {
+      return charData[charData.indexOf(character)].states.length;
     }
   };
 })
 
 .service('convoService', function () {
     var convoData = [
-        {'id':'Conversation 0'}
+        {'id':0,'name':'Conversation 0'}
     ];
 
     var currConversation = 0;
@@ -55,7 +59,7 @@ angular.module('scenarioEditor', [
         },
         addConversation:function () {
             currConversation++;
-            convoData.push({'id':'Conversation '+currConversation});
+            convoData.push({'id':currConversation,'name':'Conversation '+currConversation});
         },
         editConversation:function (convo) {
             //TODO: Make this work
