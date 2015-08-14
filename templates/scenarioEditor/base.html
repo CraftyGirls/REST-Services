@@ -30,9 +30,16 @@
 
     <div class="header-items">
         <div class="header-inner">
-            <a class="header-item">Login</a>
+            <a href="{% url 'login_view' %}" class="header-item">Login</a>
+        </div>
+        <div class="header-inner">
+            <a href="{% url 'register_view' %}" class="header-item">Register</a>
+        </div>
+        <div class="header-inner">
+            <span>{{ user.get_username}}</span>
         </div>
     </div>
+
 
 </div>
 <div id="base-content">

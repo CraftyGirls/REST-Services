@@ -1,0 +1,25 @@
+{% extends "scenarioEditor/base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+    {% if login_error == 1 %}
+        <span>Bad Credentials</span>
+    {% elif login_error == 2 %}
+        <span>Account Deactivated</span>
+    {% endif %}
+    <div class="login-form-container">
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            <label>
+                Username
+                <input type="text" name="username">
+            </label>
+            <label>
+                Password
+                <input type="password" name="password">
+            </label>
+            <input type="submit" value="Login" >
+        </form>
+    </div>
+{% endblock %}

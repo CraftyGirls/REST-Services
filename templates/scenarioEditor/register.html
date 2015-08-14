@@ -1,0 +1,20 @@
+{% extends "scenarioEditor/base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+    <div class="login-form-container">
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            <label>
+                Username
+                <input type="text" name="username">
+            </label>
+            <label>
+                Password
+                <input type="password" name="password">
+            </label>
+            <input type="submit" value="Register" >
+        </form>
+    </div>
+{% endblock %}
