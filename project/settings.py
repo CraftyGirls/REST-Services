@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'api',
     'partydarling',
-    'scenarioEditor'
+    'scenarioEditor',
+    'sweetheartsquad'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        {% load staticfiles %}
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="{% static 'css/sweetheartsquad/site.css' %}">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<title>Sweetheart Squad</title>
+	</head>
+	<body>
+		<div class="container header">
+			<a href="https://github.com/SweetheartSquad">
+				<img class="block right hub-img" src="{% static 'images/sweetheartsquad/hub.png' %}">
+			</a>
+			<div class="container logo-container">
+				<img src="{% static 'images/sweetheartsquad/logo.png' %}" class="logo">
+			</div>
+			<div class="container-fluid">
+				<div class="row row-centered">
+					<div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="{% url 'partydarling.views.index' %}">Party Darling</a></div>
+					<div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="http://sweetheartsquad.github.io/S-Tengine2/">S-Tengine 2</a></div>
+					<div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="http://sweetheartsquad.itch.io/">Games</a></div>
+				</div>
+			</div>
+		</div>
+		<div class="container content">
+			<h1 class="center block">Sweetheart Squad</h1>
+			<div class="row row-centered">
+					<div class="col-lg-4 col-centered">
+						<h3>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae consectetur ante. Aliquam varius, augue quis tempus semper, justo nunc pulvinar turpis, a fringilla justo ipsum vitae nisi. Aliquam erat volutpat. Integer iaculis nibh quis sem porttitor, quis consectetur arcu facilisis. Quisque dapibus sed turpis a laoreet. Maecenas lorem lorem, mollis ac ligula quis, mattis varius arcu. Quisque nec pellentesque velit. Donec condimentum eu lacus sed dapibus.
+						</h3>
+					</div>
+					<div class="col-lg-2 col-centered">
+						<img src="{% static 'images/sweetheartsquad/logo.png' %}" class="logo">
+					</div>
+				</div>
+		</div>
+	</body>
+</html>
