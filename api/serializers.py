@@ -21,11 +21,11 @@ class PDUserSerializer(serializers.ModelSerializer):
     # last_name = serializers.CharField(source='user.last_name')
 
     user = UserSerializer()
-    levels = serializers.PrimaryKeyRelatedField(many=True, queryset=Scenario.objects.all())
+    scenarios = serializers.PrimaryKeyRelatedField(many=True, queryset=Scenario.objects.all())
 
     class Meta:
         model = PDUser
-        fields = ('user', 'ex', 'levels')
+        fields = ('user', 'scenarios')
 
     def update(self, instance, validated_data):
         # First, update the User
@@ -43,7 +43,7 @@ class PDUserSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user')
         user = User.objects.create_user(**user_data)
         # Don't want levels as part of the keywords since its a reverse relationship
-        validated_data.pop('levels')
+        validated_data.pop('scenarios')
         profile = PDUser.objects.create(user=user, **validated_data)
         return profile
 
