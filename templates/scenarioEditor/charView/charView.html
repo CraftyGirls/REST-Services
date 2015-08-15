@@ -17,7 +17,7 @@
 <!-- AREA FOR EDITING CHARACTERS -->
 <div id="main" ng-show="editVisible">
 	<span ng-repeat="character in getChars() | filter : {id: getCurrChar()}">
-		<h3>{{character.name}}</h3>
+		<h3>{$character.name$}</h3>
 		<table style="text-align:center;float:right;padding:10px;">
 			<tr>
 				<td></td>
@@ -55,7 +55,7 @@
 <!-- MODAL WINDOW FOR PICKING/UPLOADING ASSETS -->
 <div class="modal" ng-show="editBodyPartVisible">
 	<span>
-		Pick asset for: {{currBodyPart}}
+		Pick asset for: {$currBodyPart$}
 	</span>
 	<hr/>
 	<button ng-click="closeBodyPart()">Close</button>

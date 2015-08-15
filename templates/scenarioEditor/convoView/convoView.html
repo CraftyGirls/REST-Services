@@ -3,7 +3,7 @@
 <form ng-controller="ConvoCtrl">
 	<span ng-repeat="conversation in getConvos()">
 		Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
-		<button ng-click="editConvo(conversation)">Edit {{conversation.name}}</button> <button ng-click="deleteConvo(conversation)">Delete {{conversation.name}}</button>
+		<button ng-click="editConvo(conversation)">Edit {{conversation.name}}</button> <button ng-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
 		<hr/>
 	</span>
 	<button ng-click="addConvo()">Add new conversation</button>

@@ -2,7 +2,7 @@
 
 <form>
 	<span ng-repeat="line in getLines()">
-		ID: {{line.id}}<br/>
+		ID: {$line.id$}<br/>
 		Character:
 		<select ng-model="line.character" ng-options="character.id as character.name for character in getChars()" >
     	<option value="">Select Character</option>
