@@ -9,5 +9,6 @@ urlpatterns = patterns('',
                        url(r'^charView/', scenarioEditor.views.charView, name='charView'),
                        url(r'^convoView/', scenarioEditor.views.convoView, name='convoView'),
                        url(r'^login/', scenarioEditor.views.login_view, name='login_view'),
-                       url(r'^register/', scenarioEditor.views.register_view, name='register_view')
+                       url(r'^register/', scenarioEditor.views.register_view, name='register_view'),
+                       url(r'^save/', scenarioEditor.views.save, name='save'),
                        )

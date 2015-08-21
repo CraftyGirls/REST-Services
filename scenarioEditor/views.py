@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login
 from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
-from api.models import PDUser
+from django.views.decorators.csrf import csrf_exempt
+from api.models import PDUser, Scenario
 
 
 def index(request):
@@ -51,3 +52,11 @@ def register_view(request):
         return redirect('index')
     else:
         return render(request, 'scenarioEditor/register.html/', {})
+
+
+@csrf_exempt
+def save(request):
+    pd_user = PDUser.objects.get(user=request.user)
+    scenario = Scenario(script=request.body, owner=pd_user, rating=0.0)
+    scenario.save()
+    return HttpResponse(request.body)

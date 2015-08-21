@@ -10,6 +10,6 @@ urlpatterns = patterns('',
                        # url(r'^blog/', include('blog.urls')),
                        url(r'^users/$', views.UserList.as_view()),
                        url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
-                       url(r'^levels/(?P<pk>[0-9]+)/$', views.LevelDetail.as_view()),
-                       url(r'^levels/$', views.LevelList.as_view())
+                       url(r'^scenarios/(?P<pk>[0-9]+)/$', views.LevelDetail.as_view()),
+                       url(r'^scenarios/$', views.LevelList.as_view())
                        )
