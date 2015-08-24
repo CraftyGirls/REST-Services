@@ -4,7 +4,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/convoView', {
-    templateUrl: 'convoView/convoView.html',
+    templateUrl: '/scenario/convoView/',
     controller: 'ConvoCtrl'
   });
 }])

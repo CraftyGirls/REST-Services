@@ -1,0 +1,15 @@
+{% extends "scenarioEditor/base.html" %}
+
+{% load staticfiles %}
+
+{% block resources %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <h1>Your Scenarios</h1>
+    {% for scenario in scenarios %}
+        <a href="{% url 'edit_scenario' scenario.id %}">{{ scenario.name }} (ID){{ scenario.id }}</a>
+        <br/>
+    {% endfor %}
+{% endblock %}

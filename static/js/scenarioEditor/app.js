@@ -133,18 +133,22 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         // SAVE JSON FILE
         $scope.dlVisible = false;
 
-        $scope.save = function () {
+        $scope.save = function(scenario_id) {
             $scope.dataObj = {
                 characters: $scope.getChars(),
                 conversations: $scope.getConvos()
             };
 
-            $http.post('save/', angular.toJson($scope.dataObj)).then(function (data) {
+            $http.post('/scenario/save/<' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
                 $scope.msg = 'Data saved.';
                 $scope.dlVisible = true;
             });
 
             $scope.msg2 = 'Data sent: ' + $scope.jsonData;
+        };
+
+        $scope.loadScript = function(script){
+            $scope.dataObj = angular.fromJson(script);
         };
     }
 ]);

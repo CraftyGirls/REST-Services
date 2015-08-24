@@ -4,7 +4,7 @@ angular.module('scenarioEditor.charView', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/charView', {
-    templateUrl: 'charView/charView.html',
+    templateUrl: '/scenario/charView/',
     controller: 'CharCtrl'
   });
 }])

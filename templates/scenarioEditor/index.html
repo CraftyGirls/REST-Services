@@ -1,17 +1,22 @@
 {% extends "scenarioEditor/base.html" %}
 
 {% load staticfiles %}
+{% load abs_url %}
 
 {% block content %}
 <div ng-controller="EditorCtrl">
 <ul class="menu">
-    <li><a href="#/charView">Characters</a></li>
-    <li><a href="#/convoView">Conversations</a></li>
+    <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
+    <li><a ng-href="#/{% url 'convoView' %}">Conversations</a></li>
 </ul>
+
+ <h2>Editing: {{ scenario.name }}</h2>
 
 <div ng-view></div>
 
-<button ng-click="save()">Save</button>
+<button ng-click="save('{{ scenario.id }}')">Save</button>
+<button ng-click="loadScript('{{ scenario.script }}')">Load</button>
+
 {$ msg $}
 <div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
 <hr/>
@@ -28,6 +33,7 @@
 <script src="{% static 'js/scenarioEditor/charView/charView.js' %}"></script>
 <script src="{% static 'js/scenarioEditor/lineView/lineView.js' %}"></script>
 <script src="{% static 'js/scenarioEditor/convoView/convoView.js' %}"></script>
+
 
 {% endblock %}
 
