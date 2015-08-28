@@ -5,10 +5,16 @@ from django.conf.urls import url
 import scenarioEditor.views
 
 urlpatterns = patterns('',
-                       url(r'^$', scenarioEditor.views.index, name='index'),
+                       url(r'^$', scenarioEditor.views.user_home_view, name='index'),
                        url(r'^charView/', scenarioEditor.views.charView, name='charView'),
                        url(r'^convoView/', scenarioEditor.views.convoView, name='convoView'),
                        url(r'^login/', scenarioEditor.views.login_view, name='login_view'),
+                       url(r'^logout/', scenarioEditor.views.logout_user_view, name='logout_user_view'),
                        url(r'^register/', scenarioEditor.views.register_view, name='register_view'),
-                       url(r'^save/', scenarioEditor.views.save, name='save'),
+                       url(r'^save/<(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.save, name='save'),
+                       url(r'^profile/scenarios', scenarioEditor.views.user_scenarios_view, name='profile_scenarios'),
+                       url(r'^profile/', scenarioEditor.views.user_home_view, name='profile_home'),
+                       url(r'^browse/scenarios', scenarioEditor.views.browse_scenarios_view, name='browse_scenarios'),
+                       url(r'^create/', scenarioEditor.views.create_scenario_view, name='create_scenario'),
+                       url(r'^edit/<(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.edit_scenario_view, name='edit_scenario'),
                        )

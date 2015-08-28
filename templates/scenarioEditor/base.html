@@ -35,6 +35,9 @@
         <div class="header-inner">
             <a href="{% url 'register_view' %}" class="header-item">Register</a>
         </div>
+                <div class="header-inner">
+            <a href="{% url 'logout_user_view' %}" class="header-item">Logout</a>
+        </div>
         <div class="header-inner">
             <span>{{ user.get_username}}</span>
         </div>

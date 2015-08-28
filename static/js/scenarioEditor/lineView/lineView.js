@@ -4,7 +4,7 @@ angular.module('scenarioEditor.lineView', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/lineView', {
-    templateUrl: 'lineView/lineView.html',
+    templateUrl: '/scenario/lineView/',
     controller: 'LineCtrl'
   });
 }])

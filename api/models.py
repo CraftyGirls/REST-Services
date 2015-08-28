@@ -13,7 +13,8 @@ class Scenario(models.Model):
     description = models.TextField(blank=False, default='')
     script = models.TextField(blank=False, default='')
     owner = models.ForeignKey(PDUser, related_name='scenarios')
-    rating = models.FloatField()
+    rating = models.FloatField(default=0.0)
+    rating_count = models.IntegerField(default=0)
 
     class Meta:
         ordering = ('created',)
@@ -25,7 +26,7 @@ class Component(models.Model):
     image = models.ImageField(upload_to='component_images', blank=True)
     description = models.TextField(blank=False, default='')
     owner = models.ForeignKey(PDUser, related_name='components')
-    rating = models.FloatField()
+    rating = models.FloatField(default=0.0)
 
     class Meta:
         ordering = ('name',)

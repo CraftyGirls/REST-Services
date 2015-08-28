@@ -1,0 +1,19 @@
+{% extends "scenarioEditor/base.html" %}
+
+{% load staticfiles %}
+
+{% block resources %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <h1>Create Scenario</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label>
+            Scenario Name
+            <input type="text" name="scenario_name">
+        </label>
+        <input type="submit" value="Create">
+    </form>
+{% endblock %}
