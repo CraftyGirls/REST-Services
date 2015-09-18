@@ -4,6 +4,7 @@
 {% load abs_url %}
 
 {% block content %}
+<div hidden id="scenario-script">{{ scenario.script }}</div>
 <div ng-controller="EditorCtrl">
 <ul class="menu">
     <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
@@ -15,7 +16,6 @@
 <div ng-view></div>
 
 <button ng-click="save('{{ scenario.id }}')">Save</button>
-<button ng-click="loadScript('{{ scenario.script }}')">Load</button>
 
 {$ msg $}
 <div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
@@ -33,7 +33,5 @@
 <script src="{% static 'js/scenarioEditor/charView/charView.js' %}"></script>
 <script src="{% static 'js/scenarioEditor/lineView/lineView.js' %}"></script>
 <script src="{% static 'js/scenarioEditor/convoView/convoView.js' %}"></script>
-
-
 {% endblock %}
 

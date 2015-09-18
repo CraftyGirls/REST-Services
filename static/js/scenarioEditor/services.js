@@ -15,6 +15,9 @@ scenarioServices.service('convoService', function () {
         conversations: function () {
             return convoData;
         },
+       setData: function(convos){
+          convoData = convos;
+        },
         addConversation: function () {
             currConversation++;
             convoData.push({'id': currConversation, 'name': 'Conversation ' + currConversation});
@@ -38,6 +41,9 @@ scenarioServices.service('charService', function () {
     return {
         chars: function () {
             return charData;
+        },
+        setData: function(chars){
+          charData = chars;
         },
         addChar: function () {
             charId++;

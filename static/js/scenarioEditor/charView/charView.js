@@ -59,11 +59,10 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
 	$scope.editBodyPart = function (name) {
 		$scope.editBodyPartVisible = true;
 		$scope.currBodyPart = name;
-	}
+	};
 
 	$scope.closeBodyPart = function () {
 		$scope.editBodyPartVisible = false;
 	}
-
 
 }]);

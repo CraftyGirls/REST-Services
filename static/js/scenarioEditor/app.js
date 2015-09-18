@@ -24,6 +24,7 @@ var scenarioEditor = angular.module('scenarioEditor');
 
 scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService',
     function ($scope, $http, convoService, charService, lineService) {
+
         // ABSTRACTION LAYER
         $scope.getChars = function () {
             return charService.chars();
@@ -36,7 +37,6 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.getLines = function () {
             return lineService.lines();
         };
-
 
         // CHECK FOR CHANGES
         $scope.$watch('getChars()', function () {
@@ -71,8 +71,12 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.loadScript = function(script){
             $scope.dataObj = angular.fromJson(script);
-            convoService.convoData = $scope.dataObj.conversations;
-            charService.charDara = $scope.dataObj.charData;
+            convoService.setData($scope.dataObj.conversations);
+            charService.setData($scope.dataObj.characters);
         };
+
+        angular.element(document).ready(function () {
+            $scope.loadScript($("#scenario-script").text());
+        });
     }
 ]);
