@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('scenarioEditor.convoView', ['ngRoute'])
+angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/convoView', {
@@ -8,30 +8,6 @@ angular.module('scenarioEditor.convoView', ['ngRoute'])
     controller: 'ConvoCtrl'
   });
 }])
-
-.service('convoService', function () {
-    var convoData = [
-        {'id':0,'name':'Conversation 0'}
-    ];
-
-    var currConversation = 0;
-
-    return {
-        conversations:function () {
-            return convoData;
-        },
-        addConversation:function () {
-            currConversation++;
-            convoData.push({'id':currConversation,'name':'Conversation '+currConversation});
-        },
-        editConversation:function (convo) {
-            //TODO: Make this work
-        },
-        deleteConversation:function (convo) {
-          convoData.splice(convoData.indexOf(convo),1);
-        }
-    };
-})
 
 .controller('ConvoCtrl', ['$scope', 'convoService', function($scope, convoService) {
 	$scope.getConvos = function () {
