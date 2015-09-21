@@ -1,16 +1,17 @@
+{% load staticfiles %}
 <div id="sidebar">
-<h3>Characters</h3>
+    <h3>Characters</h3>
 
-<!-- SIDEBAR FOR LIST OF CHARACTERS -->
-<form>
+    <!-- SIDEBAR FOR LIST OF CHARACTERS -->
+    <form>
 	<span ng-repeat="character in getChars()">
 		Name: <input type="text" ng-model="character.name"><br/>
 		<button ng-click="editChar(character)">Edit</button>
 		<button ng-click="deleteChar(character)">Delete</button>
 		<hr/>
 	</span>
-	<button ng-click="addChar()">Add new character</button>
-</form>
+        <button ng-click="addChar()">Add new character</button>
+    </form>
 </div>
 
 <h1>asdasd</h1>
@@ -19,36 +20,36 @@
 	<span ng-repeat="character in getChars() | filter : {id: getCurrChar()}">
 		<h3>{$character.name$}</h3>
 		<table style="text-align:center;float:right;padding:10px;">
-			<tr>
-				<td></td>
-				<td colspan="2"><button ng-click="editBodyPart('Head')">HEAD</button></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td><button ng-click="editBodyPart('Left Arm')">LEFT ARM</button></td>
-				<td colspan="2"><button ng-click="editBodyPart('Torso')">TORSO</button></td>
-				<td><button ng-click="editBodyPart('Right Arm')">RIGHT ARM</button></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><button ng-click="editBodyPart('Left Leg')">LEFT LEG</button></td>
-				<td><button ng-click="editBodyPart('Right Leg')">RIGHT LEG</button></td>
-				<td></td>
-			</tr>
-		</table>
+            <tr>
+                <td></td>
+                <td colspan="2"><button ng-click="editBodyPart('Head')">HEAD</button></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><button ng-click="editBodyPart('Left Arm')">LEFT ARM</button></td>
+                <td colspan="2"><button ng-click="editBodyPart('Torso')">TORSO</button></td>
+                <td><button ng-click="editBodyPart('Right Arm')">RIGHT ARM</button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button ng-click="editBodyPart('Left Leg')">LEFT LEG</button></td>
+                <td><button ng-click="editBodyPart('Right Leg')">RIGHT LEG</button></td>
+                <td></td>
+            </tr>
+        </table>
 		<strong>States</strong>
 		<form>
 			<span ng-repeat="state in getStates(character)">
 				Name: <input type="text" ng-model="state.name"><br/>
 				Active Conversation: <select ng-model="state.convo" ng-options="convo.id as convo.name for convo in getConvos()" >
-    	<option value="">Select Convo</option>
-		</select><br/>
+                <option value="">Select Convo</option>
+            </select><br/>
 				<button ng-click="deleteState(character,state)">Delete</button>
 				<br/><br/>
 			</span>
-			<hr/>
-			<button ng-click="addState(character)">Add new state</button>
-		</form>
+            <hr/>
+            <button ng-click="addState(character)">Add new state</button>
+        </form>
 	</span>
 </div>
 
@@ -57,6 +58,11 @@
 	<span>
 		Pick asset for: {$currBodyPart$}
 	</span>
-	<hr/>
-	<button ng-click="closeBodyPart()">Close</button>
+    <hr/>
+    <div id='drop_zone' file-uploader></div>
+    <button ng-click="closeBodyPart()">Close</button>
 </div>
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+-->

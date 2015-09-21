@@ -9,16 +9,15 @@ var application = angular.module('scenarioEditor', [
     'scenarioEditor.version',
     'scenarioServices'
 ])
-.config(['$routeProvider',
-    function ($routeProvider) {
-        $routeProvider.otherwise({redirectTo: '/charView'});
-    }])
-.config(
-    function ($interpolateProvider) {
-        $interpolateProvider.startSymbol('{$');
-        $interpolateProvider.endSymbol('$}');
-    }
-);
+    .config(['$routeProvider',
+        function ($routeProvider) {
+            $routeProvider.otherwise({redirectTo: '/charView'});
+        }])
+    .config(['$interpolateProvider',
+        function ($interpolateProvider) {
+            $interpolateProvider.startSymbol('{$');
+            $interpolateProvider.endSymbol('$}');
+        }]);
 
 var scenarioEditor = angular.module('scenarioEditor');
 

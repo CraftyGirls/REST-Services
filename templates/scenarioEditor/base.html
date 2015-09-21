@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static 'vendor/bower_components/html5-boilerplate/dist/css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bower_components/html5-boilerplate/dist/css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/scenarioEditor/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dropzone.css' %}">
     <script src="{% static 'vendor/bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js' %}"></script>
 
     {% block resources %}{% endblock %}
@@ -49,10 +50,8 @@
     {% block content %}{% endblock %}
 </div>
 </body>
-
-
-<script src="{% static 'vendor/bower_components/angular/angular.js' %}"></script>
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="{% static 'vendor/bower_components/angular/angular.js' %}"></script>
 <script src="{% static 'vendor/bower_components/angular-route/angular-route.js' %}"></script>
 <script src="{% static 'js/scenarioEditor/services.js' %}"></script>
 <script src="{% static 'js/scenarioEditor/app.js' %}"></script>
