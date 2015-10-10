@@ -17,4 +17,5 @@ urlpatterns = patterns('',
                        url(r'^browse/scenarios', scenarioEditor.views.browse_scenarios_view, name='browse_scenarios'),
                        url(r'^create/', scenarioEditor.views.create_scenario_view, name='create_scenario'),
                        url(r'^edit/<(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.edit_scenario_view, name='edit_scenario'),
+                       url(r'^upload_asset/', scenarioEditor.views.upload_asset, name='upload_asset'),
                        )

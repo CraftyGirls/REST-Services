@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
 from api.models import PDUser, Scenario
+from scenarioEditor.forms import UploadFileForm
 
 
 @login_required(login_url='/scenario/login/')
@@ -141,6 +142,18 @@ def create_scenario_view(request):
             return redirect(edit_scenario_view, scenario.id)
     else:
         # Return invalid method response
+        return HttpResponse("Invalid Method", status=405)
+        
+
+@csrf_exempt
+@login_required(login_url='/scenario/login/')
+def upload_asset(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            print(request.FILES['file'])
+            return HttpResponse(status=200)
+    else:
         return HttpResponse("Invalid Method", status=405)
 
 

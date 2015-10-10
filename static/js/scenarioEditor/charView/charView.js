@@ -65,6 +65,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
             $scope.editBodyPartVisible = false;
         };
     }])
+    // Directive for dropzone file uploader
     .directive('fileUploader', function () {
         return {
             restrict: 'AE',
@@ -80,7 +81,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                 catch (error) {
                     throw new Error('Dropzone.js not loaded.');
                 }
-                var dropzone = new Dropzone(element[0], { url: "/file/post"});
+                var dropzone = new Dropzone(element[0], { url: "/scenario/upload_asset/"});
 
                 if (scope.eventHandlers) {
                     Object.keys(scope.eventHandlers).forEach(function (eventName) {
