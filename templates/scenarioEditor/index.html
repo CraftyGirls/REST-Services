@@ -6,23 +6,31 @@
 {% block content %}
     <div hidden id="scenario-script">{{ scenario.script }}</div>
     <div ng-controller="EditorCtrl">
-        <ul class="menu">
-            <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
-            <li><a ng-href="#/{% url 'convoView' %}">Conversations</a></li>
-        </ul>
+        <div class="navbar navbar-default pd-navbar pd-secondary-navbar" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-collapse navbar-menubuilder">
+                    <ul class="nav navbar-nav navbar-left">
+                         <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
+                        <li><a ng-href="#/{% url 'convoView' %}">Conversations</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+            <h2>Editing: {{ scenario.name }}</h2>
 
-        <h2>Editing: {{ scenario.name }}</h2>
+            <div ng-view></div>
 
-        <div ng-view></div>
+            <button ng-click="save('{{ scenario.id }}')">Save</button>
 
-        <button ng-click="save('{{ scenario.id }}')">Save</button>
+            {$ msg $}
+            <div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
+            <hr/>
 
-        {$ msg $}
-        <div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
-        <hr/>
+            <div>Scenario Editor v<span app-version></span></div>
+        </div>
 
-        <div>Scenario Editor v<span app-version></span></div>
-    </div>
+
+
 {% endblock %}
 
 {% block js_resources %}
