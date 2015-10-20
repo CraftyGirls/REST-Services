@@ -35,6 +35,12 @@ def assetView(request):
 @login_required(login_url='/scenario/login/')
 def roomView(request):
     return render(request, 'scenarioEditor/roomView/roomView.html/', {})
+    
+    
+@login_required(login_url='/scenario/login/')
+def itemView(request):
+    return render(request, 'scenarioEditor/itemView/itemView.html/', {})
+
 
 
 @login_required(login_url='/scenario/login/')
