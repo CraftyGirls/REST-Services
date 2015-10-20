@@ -25,6 +25,16 @@ def charView(request):
 @login_required(login_url='/scenario/login/')
 def convoView(request):
     return render(request, 'scenarioEditor/convoView/convoView.html/', {})
+    
+
+@login_required(login_url='/scenario/login/')
+def assetView(request):
+    return render(request, 'scenarioEditor/assetView/assetView.html/', {})
+    
+    
+@login_required(login_url='/scenario/login/')
+def roomView(request):
+    return render(request, 'scenarioEditor/roomView/roomView.html/', {})
 
 
 @login_required(login_url='/scenario/login/')

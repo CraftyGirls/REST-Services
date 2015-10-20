@@ -6,6 +6,8 @@ var application = angular.module('scenarioEditor', [
     'scenarioEditor.charView',
     'scenarioEditor.lineView',
     'scenarioEditor.convoView',
+    'scenarioEditor.assetView',
+    'scenarioEditor.roomView',
     'scenarioEditor.version',
     'scenarioServices'
 ])

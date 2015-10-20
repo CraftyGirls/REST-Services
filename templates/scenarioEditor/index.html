@@ -10,8 +10,10 @@
             <div class="container-fluid">
                 <div class="navbar-collapse navbar-menubuilder">
                     <ul class="nav navbar-nav navbar-left">
-                         <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
+                        <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
                         <li><a ng-href="#/{% url 'convoView' %}">Conversations</a></li>
+                        <li><a ng-href="#/{% url 'roomView' %}">Rooms</a></li>
+                        <li><a ng-href="#/{% url 'assetView' %}">Assets</a></li>
                     </ul>
                 </div>
             </div>
@@ -41,5 +43,7 @@
     <script src="{% static 'js/scenarioEditor/charView/charView.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/lineView/lineView.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/convoView/convoView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/assetView/assetView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/roomView/roomView.js' %}"></script>
 {% endblock %}
 
