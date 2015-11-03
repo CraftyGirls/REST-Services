@@ -15,11 +15,6 @@ class Scenario(models.Model):
     owner = models.ForeignKey(PDUser, related_name='scenarios')
     rating = models.FloatField(default=0.0)
     rating_count = models.IntegerField(default=0)
-    
-    # rooms[]
-    # characters[]
-    # converstation[]
-    # items[]
 
     class Meta:
         ordering = ('created',)
@@ -38,11 +33,15 @@ class Component(models.Model):
         
 
 class Item(models.Model):
-    pass
+    # item 
+    scenario = models.ForeignKey(Scenario, null=True)
 
 
 class Room(models.Model):
     size = models.IntegerField(default=0)
+    
+    scenario = models.ForeignKey(Scenario, null=True)
+    
     # furnitureTypes[]
     # items[]
     # tags[]
@@ -55,12 +54,18 @@ class Behaviour(models.Model):
 class Character(models.Model):
     name = models.CharField(max_length=100, blank=False, default='')
     description = models.TextField(blank=False, default='')
+    
+    scenario = models.ForeignKey(Scenario, null=True)
+    
     # states[]
     # items[]
     
     
 class Conversation(models.Model):
     name = models.CharField(max_length=100, blank=False, default='')
+    
+    scenario = models.ForeignKey(Scenario, null=True)
+    
     # dialogues []
     # options
     
