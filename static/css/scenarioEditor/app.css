@@ -163,4 +163,11 @@
 .list-view{
     background-color: #eeeeee;
     width: auto;
+    padding-left:10px;
+}
+
+.pd-info-bar{
+  background-color:#eeeeee;
+  padding:7px;
+  margin-top:-20px;
 }
