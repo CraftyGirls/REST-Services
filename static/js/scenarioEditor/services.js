@@ -62,11 +62,12 @@ scenarioServices.service('convoService', function () {
         return cond;
     };
     
-    function Dialogue(){
+    function Dialogue(name){
         this.lines      = [];
         this.triggers   = [];
         this.conditions = [];
         this.speaker    = "";
+        this.name       = name;
         
         this.addLine = function(){
             this.lines.push(new Line());
@@ -97,6 +98,7 @@ scenarioServices.service('convoService', function () {
         }
         
         diag.speaker = data.speaker;
+        diag.name    = data.name;
         
         return diag;
     };
@@ -107,7 +109,7 @@ scenarioServices.service('convoService', function () {
         this.dialogues = [];
         
         this.addDialogue = function(){
-            this.dialogues.push(new Dialogue());
+            this.dialogues.push(new Dialogue("Dialogue " + this.dialogues.length));
         };
         
     }
