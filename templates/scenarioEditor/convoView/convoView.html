@@ -1,8 +1,8 @@
 {% load staticfiles %}
-<h3>Conversations</h3>
 <div ng-controller="ConvoCtrl">
     <div class="row fill-height">
-        <div class="col-md-3 list-view">
+        <div class="col-md-2 list-view">
+            <h3>Conversations</h3>
             <form>
                 <span ng-repeat="conversation in getConvos()">
                     Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
@@ -14,11 +14,11 @@
             </form>
         </div>
     
-        <div class="col-md-9 conversation-edit fill-height"  ng-show="editVisible">
+        <div class="col-md-10 conversation-edit fill-height"  ng-show="editVisible">
             <span ng-repeat="dialogue in getCurrentCovnversation().dialogues ">
-        	   <div dialogue></div>
+        	   <div dialogue class="dialogue-container"></div>
         	</span>
-            <button ng-click="addDialogue()">Add Dialogue</button>
+            <button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
         </div>
     </div>
 </div>

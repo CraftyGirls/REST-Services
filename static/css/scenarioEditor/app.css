@@ -162,7 +162,8 @@
 
 .list-view{
     background-color: #eeeeee;
-    padding-left:10px;
+    padding-left:20px;
+    padding-bottom:10px;
 }
 
 .pd-info-bar{
@@ -175,9 +176,40 @@
   height:100%;
 }
 
-row {
+.row {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display:         flex;
+}
+
+/* Convo View */
+.conditions-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.triggers-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.speaker-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.lines-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.dialogue-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
 }
