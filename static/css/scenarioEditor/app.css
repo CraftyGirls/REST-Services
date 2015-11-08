@@ -170,3 +170,7 @@
   padding:7px;
   margin-top:-20px;
 }
+
+.fill-height{
+  height:100%;
+}

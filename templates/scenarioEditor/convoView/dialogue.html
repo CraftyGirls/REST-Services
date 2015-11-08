@@ -1,13 +1,31 @@
+
 <div class="dialogue-speaker-container">
-    Speaker : <input type="text" name="dialogue-speaker" ng-model="dialogue.speaker">
+    <h4>Speaker</h4>
+    <input type="text" name="dialogue-speaker" ng-model="dialogue.speaker"/>
     !!!! = {$dialogue.speaker$}
 </div>
 <div class="lines-container">
+     <h4>Lines</h4>
      <span ng-repeat="line in dialogue.lines">
  	    <div class="line">
-            Text : <input type="text" name="line-input" value={$line.text$} ng-model="line.text">
+            Text : <input type="text" name="line-input" value={$line.text$} ng-model="line.text"/>
             @@@@ = {$line.text$}
         </div>
 	</span>
 </div>
+<div class="triggers-container">
+    <h4>Triggers</h4>
+    <span ng-repeat="trigger in dialogue.triggers">
+        <div class="trigger">
+            Function = 
+            <input type="text" ng-model="trigger.func"/>
+            Arguments = 
+            <span ng-repeat="arg in trigger.args">
+                <input type="text" ng-model="arg.value"/>
+            </span>
+        </div>
+        <button ng-click="addArg(trigger)">Add Arg</button>
+    </span>
+</div>
 <button ng-click="addLine(dialogue)">Add Line</button>
+<button ng-click="addTrigger(dialogue)">Add Trigger</button>

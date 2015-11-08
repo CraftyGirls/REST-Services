@@ -10,13 +10,30 @@ scenarioServices.service('convoService', function () {
         this.text = "";
     }
     
+     function Arg(){
+        this.value = "";
+    }
+    
+    function Trigger(){
+        this.func = "";
+        this.args = [];
+        
+        this.addArg = function(){
+            this.args.push(new Arg());
+        }
+    }
+    
     function Dialogue(){
         this.lines    = [];
         this.triggers = [];
         
         this.addLine = function(){
-            this.lines.push(new Line())
+            this.lines.push(new Line());
         };
+        
+        this.addTrigger = function(){
+            this.triggers.push(new Trigger());
+        }
     }
     
     function Conversation(id, name){
@@ -27,6 +44,7 @@ scenarioServices.service('convoService', function () {
         this.addDialogue = function(){
             this.dialogues.push(new Dialogue());
         };
+    
     }
     
     var convoData = [];
@@ -45,7 +63,7 @@ scenarioServices.service('convoService', function () {
             if(convoData.length > 0){
                 id = convoData[convoData.length - 1].id;
             }
-            convoData.push(new Conversation(id, 'Conversation ' + id));
+            convoData.push(new Conversation(id, 'Conversation ' + convoData.length));
         },
         editConversation: function (convo) {
             currConversation = convo;
@@ -61,6 +79,12 @@ scenarioServices.service('convoService', function () {
         },
         getCurrentCovnversation : function(){
             return currConversation;
+        },
+        addTrigger : function(dialogue){
+            dialogue.addTrigger();
+        },
+        addArg : function(trigger){
+            trigger.addArg();
         }
     };
 });

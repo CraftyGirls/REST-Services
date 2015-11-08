@@ -1,20 +1,24 @@
 {% load staticfiles %}
 <h3>Conversations</h3>
-<div class="list-view col-md-3">
-    <form ng-controller="ConvoCtrl">
-        <span ng-repeat="conversation in getConvos()">
-            Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
-            <button class="btn btn-default" ng-click="editConvo(conversation)">Edit {{conversation.name}}</button>
-            <button class="btn btn-danger" ng-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
-            <hr/>
-        </span>
-        <button class="btn btn-default" ng-click="addConvo()">Add new conversation</button>
-    </form>
-</div>
-
-<div id="container col-md-9 conversation-edit">
-    <span ng-repeat="dialogue in getCurrentCovnversation().dialogues ">
-	   <div dialogue></div>
-	</span>
-    <button ng-click="addDialogue()">Add Dialogue</button>
+<div ng-controller="ConvoCtrl">
+    <div class="row fill-height">
+        <div class="list-view col-md-3 fill-height">
+            <form>
+                <span ng-repeat="conversation in getConvos()">
+                    Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
+                    <button class="btn btn-default" ng-click="editConvo(conversation)">Edit {{conversation.name}}</button>
+                    <button class="btn btn-danger" ng-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
+                    <hr/>
+                </span>
+                <button class="btn btn-default" ng-click="addConvo()">Add new conversation</button>
+            </form>
+        </div>
+    
+        <div id="container col-md-9 conversation-edit fill-height"  ng-show="editVisible">
+            <span ng-repeat="dialogue in getCurrentCovnversation().dialogues ">
+        	   <div dialogue></div>
+        	</span>
+            <button ng-click="addDialogue()">Add Dialogue</button>
+        </div>
+    </div>
 </div>
