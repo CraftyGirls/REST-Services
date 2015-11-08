@@ -10,8 +10,20 @@ scenarioServices.service('convoService', function () {
         this.text = "";
     }
     
+    Line.BuildFromData = function(data){
+        var line = new Line();
+        line.text = data.text;
+        return line;
+    }
+    
      function Arg(){
         this.value = "";
+    }
+    
+    Arg.BuildFromData = function(data){
+        var arg = new Arg();
+        arg.value = data.value;
+        return arg;
     }
     
     function Trigger(){
@@ -20,6 +32,14 @@ scenarioServices.service('convoService', function () {
         
         this.addArg = function(){
             this.args.push(new Arg());
+        };
+    }
+    
+    Trigger.BuildFromData = function(data){
+        var trig = new Trigger();
+        trig.func = data.func;
+        for(var i =0; i < data.args.length; i++){
+            trig.args.push(Arg.BuildFromData(data.args[i]));
         }
     }
     
@@ -33,7 +53,21 @@ scenarioServices.service('convoService', function () {
         
         this.addTrigger = function(){
             this.triggers.push(new Trigger());
+        };
+    }
+    
+    Dialogue.BuildFromData = function(data){
+        var diag = new Dialogue();
+       
+        for(var i = 0; i < data.lines.length; i++){
+            diag.lines.push(Line.BuildFromData(data.lines[i]));
         }
+        
+        for(var i = 0; i < data.triggers.length; i++){
+             diag.triggers.push(Trigger.BuildFromData(data.triggers[i]));
+        }
+        
+        return diag;
     }
     
     function Conversation(id, name){
@@ -44,7 +78,15 @@ scenarioServices.service('convoService', function () {
         this.addDialogue = function(){
             this.dialogues.push(new Dialogue());
         };
+        
+    }
     
+    Conversation.BuildFromData = function(data){
+        var convo = new Conversation(data.id, data.name);
+        for(var i = 0; i < data.dialogues.length; i++){
+            convo.dialogues.push(Dialogue.BuildFromData(data.dialogues[i]))
+        }
+        return convo;
     }
     
     var convoData = [];
@@ -56,7 +98,9 @@ scenarioServices.service('convoService', function () {
             return convoData;
         },
        setData: function(convos){
-          convoData = convos;
+          for(var i = 0; i < convos.length; i++){
+              convoData.push(new Conversation.BuildFromData(convos[i]));
+          }
         },
         addConversation: function () {
             var id = 0; 
@@ -75,7 +119,7 @@ scenarioServices.service('convoService', function () {
             currConversation.addDialogue();
         },
         addLine : function(dialogue){
-            dialogue.addLine()
+            dialogue.addLine();
         },
         getCurrentCovnversation : function(){
             return currConversation;
