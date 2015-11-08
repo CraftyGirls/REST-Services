@@ -14,9 +14,9 @@ scenarioServices.service('convoService', function () {
         var line = new Line();
         line.text = data.text;
         return line;
-    }
+    };
     
-     function Arg(){
+    function Arg(){
         this.value = "";
     }
     
@@ -24,7 +24,7 @@ scenarioServices.service('convoService', function () {
         var arg = new Arg();
         arg.value = data.value;
         return arg;
-    }
+    };
     
     function Trigger(){
         this.func = "";
@@ -41,11 +41,32 @@ scenarioServices.service('convoService', function () {
         for(var i =0; i < data.args.length; i++){
             trig.args.push(Arg.BuildFromData(data.args[i]));
         }
+        return trig;
+    };
+    
+    function Condition(){
+        this.func = "";
+        this.args = [];
+        
+        this.addArg = function(){
+            this.args.push(new Arg());
+        };
     }
     
+    Condition.BuildFromData = function(data){
+        var cond = new Condition();
+        cond.func = data.func;
+        for(var i =0; i < data.args.length; i++){
+            cond.args.push(Arg.BuildFromData(data.args[i]));
+        }
+        return cond;
+    };
+    
     function Dialogue(){
-        this.lines    = [];
-        this.triggers = [];
+        this.lines      = [];
+        this.triggers   = [];
+        this.conditions = [];
+        this.speaker    = "";
         
         this.addLine = function(){
             this.lines.push(new Line());
@@ -53,6 +74,10 @@ scenarioServices.service('convoService', function () {
         
         this.addTrigger = function(){
             this.triggers.push(new Trigger());
+        };
+        
+        this.addCondition = function(){
+            this.conditions.push(new Condition());
         };
     }
     
@@ -67,8 +92,14 @@ scenarioServices.service('convoService', function () {
              diag.triggers.push(Trigger.BuildFromData(data.triggers[i]));
         }
         
+        for(var i = 0; i < data.conditions.length; i++){
+             diag.conditions.push(Condition.BuildFromData(data.conditions[i]));
+        }
+        
+        diag.speaker = data.speaker;
+        
         return diag;
-    }
+    };
     
     function Conversation(id, name){
         this.id = id;
@@ -84,7 +115,7 @@ scenarioServices.service('convoService', function () {
     Conversation.BuildFromData = function(data){
         var convo = new Conversation(data.id, data.name);
         for(var i = 0; i < data.dialogues.length; i++){
-            convo.dialogues.push(Dialogue.BuildFromData(data.dialogues[i]))
+            convo.dialogues.push(Dialogue.BuildFromData(data.dialogues[i]));
         }
         return convo;
     }
@@ -99,7 +130,7 @@ scenarioServices.service('convoService', function () {
         },
        setData: function(convos){
           for(var i = 0; i < convos.length; i++){
-              convoData.push(new Conversation.BuildFromData(convos[i]));
+              convoData.push(Conversation.BuildFromData(convos[i]));
           }
         },
         addConversation: function () {
@@ -127,8 +158,14 @@ scenarioServices.service('convoService', function () {
         addTrigger : function(dialogue){
             dialogue.addTrigger();
         },
-        addArg : function(trigger){
+        addTriggerArg : function(trigger){
             trigger.addArg();
+        },
+        addConditionArg : function(condition){
+            condition.addArg();
+        },
+        addCondition : function(dialogue){
+            dialogue.addCondition();
         }
     };
 });

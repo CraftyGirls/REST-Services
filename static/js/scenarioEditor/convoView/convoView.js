@@ -49,8 +49,17 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
     convoService.addTrigger(dialogue);
   }
   
-  $scope.addArg = function(trigger) {
-    convoService.addArg(trigger);
+  $scope.addTriggerArg = function(trigger) {
+    convoService.addTriggerArg(trigger);
+  }
+  
+  $scope.addConditionArg = function(trigger) {
+    convoService.addTriggerArg(trigger);
+  }
+  
+  
+  $scope.addCondition = function(dialogue){
+    convoService.addCondition(dialogue);
   }
 
 }])

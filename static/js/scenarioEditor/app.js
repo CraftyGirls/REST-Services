@@ -61,6 +61,8 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 characters: $scope.getChars(),
                 conversations: $scope.getConvos()
             };
+            
+            console.log( angular.toJson($scope.dataObj));
 
             $http.post('/scenario/save/<' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
                 $scope.msg = 'Data saved.';
