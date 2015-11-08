@@ -39,7 +39,6 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.getLines = function () {
             return lineService.lines();
         };
-
         // CHECK FOR CHANGES
         $scope.$watch('getChars()', function () {
             $scope.msg = '*';

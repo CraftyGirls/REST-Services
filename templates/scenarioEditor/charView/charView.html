@@ -13,6 +13,7 @@
         <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
     </form>
 </div>
+
 <!-- AREA FOR EDITING CHARACTERS -->
 <div id="main" ng-show="editVisible">
 	<span ng-repeat="character in getChars() | filter : {id: getCurrChar()}">

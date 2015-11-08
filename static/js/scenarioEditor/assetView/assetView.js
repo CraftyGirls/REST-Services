@@ -39,4 +39,4 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 scope.dropzone = dropzone;
             }
         };
-    });
+    })

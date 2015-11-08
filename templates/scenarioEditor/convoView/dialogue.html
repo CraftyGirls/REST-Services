@@ -1,0 +1,13 @@
+<div class="dialogue-speaker-container">
+    Speaker : <input type="text" name="dialogue-speaker" ng-model="dialogue.speaker">
+    !!!! = {$dialogue.speaker$}
+</div>
+<div class="lines-container">
+     <span ng-repeat="line in dialogue.lines">
+ 	    <div class="line">
+            Text : <input type="text" name="line-input" value={$line.text$} ng-model="line.text">
+            @@@@ = {$line.text$}
+        </div>
+	</span>
+</div>
+<button ng-click="addLine(dialogue)">Add Line</button>

@@ -5,11 +5,33 @@
 var scenarioServices = angular.module('scenarioServices', []);
 
 scenarioServices.service('convoService', function () {
-    var convoData = [
-        {'id': 0, 'name': 'Conversation 0'}
-    ];
+    
+    function Line(){
+        this.text = "";
+    }
+    
+    function Dialogue(){
+        this.lines    = [];
+        this.triggers = [];
+        
+        this.addLine = function(){
+            this.lines.push(new Line())
+        };
+    }
+    
+    function Conversation(id, name){
+        this.id = id;
+        this.name = name;
+        this.dialogues = [];
+        
+        this.addDialogue = function(){
+            this.dialogues.push(new Dialogue());
+        };
+    }
+    
+    var convoData = [];
 
-    var currConversation = 0;
+    var currConversation = null;
 
     return {
         conversations: function () {
@@ -19,14 +41,26 @@ scenarioServices.service('convoService', function () {
           convoData = convos;
         },
         addConversation: function () {
-            currConversation++;
-            convoData.push({'id': currConversation, 'name': 'Conversation ' + currConversation});
+            var id = 0; 
+            if(convoData.length > 0){
+                id = convoData[convoData.length - 1].id;
+            }
+            convoData.push(new Conversation(id, 'Conversation ' + id));
         },
         editConversation: function (convo) {
-            //TODO: Make this work
+            currConversation = convo;
         },
         deleteConversation: function (convo) {
             convoData.splice(convoData.indexOf(convo), 1);
+        },
+        addDialogue : function(){
+            currConversation.addDialogue();
+        },
+        addLine : function(dialogue){
+            dialogue.addLine()
+        },
+        getCurrentCovnversation : function(){
+            return currConversation;
         }
     };
 });

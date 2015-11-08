@@ -11,5 +11,4 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
     
     .controller('itemCtrl', ['$scope', function($scope) {
       
-      
     }])
