@@ -8,9 +8,9 @@ from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from api.models import PDUser, Scenario
+from api.models import PDUser, Scenario, UploadFile
 from scenarioEditor.forms import UploadFileForm
-
+from forms import UploadFileForm
 
 @login_required(login_url='/scenario/login/')
 def index(request):
@@ -172,6 +172,8 @@ def upload_asset(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             print(request.FILES['file'])
+            new_file = UploadFile(file = request.FILES['file'])
+            #new_file.save()
             return HttpResponse(status=200)
     else:
         return HttpResponse("Invalid Method", status=405)

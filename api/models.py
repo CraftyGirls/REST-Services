@@ -184,3 +184,7 @@ class ConditionalArguments(models.Model):
 class Connection(models.Model):
     pass
     # val ? Not sure what this is for yet
+    
+    
+class UploadFile(models.Model):
+    file = models.FileField(upload_to='files/%Y/%m/%d')

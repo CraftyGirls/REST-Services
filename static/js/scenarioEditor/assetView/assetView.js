@@ -30,6 +30,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     throw new Error('Dropzone.js not loaded.');
                 }
                 var dropzone = new Dropzone(element[0], { url: "/scenario/upload_asset/"});
+                
+                dropzone.on("success", function(file, response){
+                    console.log(file);
+                    console.log(response);
+                });
 
                 if (scope.eventHandlers) {
                     Object.keys(scope.eventHandlers).forEach(function (eventName) {

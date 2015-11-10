@@ -198,8 +198,6 @@ var application = angular.module('scenarioEditor', [
         }
     ]);
 
-
-
 var scenarioEditor = angular.module('scenarioEditor');
 
 scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService',
