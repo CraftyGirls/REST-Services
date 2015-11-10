@@ -14,8 +14,11 @@
     </form>
 </div>
 
+
+
 <!-- AREA FOR EDITING CHARACTERS -->
 <div id="main" ng-show="editVisible">
+    <div component-builder></div>
 	<span ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
 		<h3>{$character.name$}</h3>
 		<table style="text-align:center;float:right;padding:10px;">

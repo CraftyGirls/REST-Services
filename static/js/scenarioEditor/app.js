@@ -34,7 +34,28 @@ var application = angular.module('scenarioEditor', [
                         });
                     }
                 };
+        }])
+        .directive('componentBuilder', [
+            function(){
+                return {
+                    template: '<canvas id="c"></canvas>',
+                    link : function(scope, element, attr){
+                        var canvas = new fabric.Canvas('c');
+                        var rect = new fabric.Rect({
+                          left: 100,
+                          top: 100,
+                          fill: 'red',
+                          width: 20,
+                          height: 20
+                        });
+                        
+                        // "add" rectangle onto canvas
+                        canvas.add(rect);
+                }
+            };
         }]);
+
+
 
 var scenarioEditor = angular.module('scenarioEditor');
 
