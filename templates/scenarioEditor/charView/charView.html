@@ -16,7 +16,7 @@
 
 <!-- AREA FOR EDITING CHARACTERS -->
 <div id="main" ng-show="editVisible">
-	<span ng-repeat="character in getChars() | filter : {id: getCurrChar()}">
+	<span ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
 		<h3>{$character.name$}</h3>
 		<table style="text-align:center;float:right;padding:10px;">
             <tr>
@@ -43,7 +43,7 @@
 				Active Conversation: <select ng-model="state.convo" ng-options="convo.id as convo.name for convo in getConvos()" >
                 <option value="">Select Convo</option>
             </select><br/>
-				<button class="btn btn-default" ng-click="deleteState(character,state)">Delete</button>
+				<button class="btn btn-default" ng-click="deleteState(character, state)">Delete</button>
 				<br/><br/>
 			</span>
             <hr/>

@@ -177,34 +177,77 @@ scenarioServices.service('convoService', function () {
 });
 
 scenarioServices.service('charService', function () {
+    // The characters
     var charData = [];
 
-    var charId = 0;
+    // The id to use for the next character that is created
+    // The value is used then incremented
+    var currId = 0;
 
-    var currChar = 0;
+    // The character currently being edited
+    var currChar = null;
+    
+    function State(id, name){
+        this.id = id;
+        this.name = name; 
+    }
+    
+    State.BuildFromData = function(data){
+        var state = new State(data.id, data.name);
+        return state;
+    }
+    
+    function Character(id, name){
+        this.id     = id;
+        this.name   = name;
+        this.states = [];
+        
+        this.addState = function(state){
+            var stateId = 0;
+            for(var i = 0; i < this.states.length; i++){
+                stateId = Math.max(stateId, this.states[i].id);
+            }
+            stateId++;
+            this.states.push(new State(stateId, ""));
+        }
+    }
+    
+    Character.BuildFromData = function(data){
+        var char = new Character(data.id, data.name);
+        for(var i = 0; i < data.states.length; i++){
+            char.states.push(data.states[i]);
+        }
+        return char;
+    }
 
     return {
         chars: function () {
             return charData;
         },
         setData: function(chars){
-          charData = chars;
+          for(var i = 0; i < chars.length; i++){
+                charData.push(Character.BuildFromData(chars[i]));
+                // Find the highest saved ID
+                currId = Math.max(currId, chars[i].id);
+          }
+          // Increment it at the end for use when adding a new character
+          currId++;
         },
         addChar: function () {
-            charId++;
-            charData.push({'id': charId, 'name': '', 'states': []});
+            charData.push(new Character(currId, ""));
+            currId++;
         },
         deleteChar: function (character) {
             charData.splice(charData.indexOf(character), 1);
         },
         editChar: function (character) {
-            currChar = character.id;
+            currChar = character;
         },
         getCurrChar: function () {
             return currChar;
         },
-        addStateToChar: function (character, id) {
-            charData[charData.indexOf(character)].states.push({'id': id, 'name': '', 'convoId': 0});
+        addStateToChar: function (character) {
+            character.addState();
         },
         getStatesLength: function (character) {
             return charData[charData.indexOf(character)].states.length;

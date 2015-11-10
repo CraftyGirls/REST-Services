@@ -12,8 +12,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
     .controller('CharCtrl', ['$scope', 'charService', 'convoService', function($scope, charService, convoService) {
         $scope.editVisible = false;
 
-        $scope.stateId = 0;
-
         $scope.currBodyPart = "";
         $scope.editBodyPartVisible = false;
 
@@ -48,7 +46,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.addState = function (character) {
-            $scope.stateId++;
             return charService.addStateToChar(character,$scope.stateId);
         };
 
