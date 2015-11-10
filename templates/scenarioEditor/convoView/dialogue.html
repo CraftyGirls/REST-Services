@@ -1,7 +1,12 @@
 <h3>{$dialogue.name$}</h3>
 <div class="speaker-container">
     <h4>Speaker</h4>
-    <input type="text" name="dialogue-speaker" ng-model="dialogue.speaker"/>
+    <select name="dialogue-speaker" ng-model="dialogue.speaker"
+        ng-options="char.id as char.name for char in getChars()">
+        <option value="">
+            Select Character
+        </option>
+    </select>
 </div>
 <div class="lines-container">
      <h4>Lines</h4>
@@ -20,7 +25,7 @@
             <input type="text" ng-model="trigger.func"/>
             <div class="arg-container">
                 Arguments = 
-                <span ng-repeat="arg in trigger.args">
+                <span class="arg-container" ng-repeat="arg in trigger.args">
                     <input type="text" ng-model="arg.value"/>
                 </span>
                 <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
