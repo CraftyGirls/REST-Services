@@ -43,18 +43,41 @@ var application = angular.module('scenarioEditor', [
     .directive('componentBuilder', [
         function() {
             return {
-                template: '<canvas id="c" class="component-builder"></canvas>',
+                template: '<div id="c-wrapper"><canvas id="c" class="component-builder"></canvas></div>',
                 link: function(scope, element, attr) {
-                    function createInJoint(){
-                        var circ = new fabric.Circle({
-                            radius: 10,
-                            fill: '#f55',
-                            top: 100,
-                            left: 50
-                        });
-                        circ.hasControls = false;
-                        circ.hasBorders = false;
-                        return circ;
+                  
+                    var canvas = new fabric.Canvas('c');
+                    canvas.selection = false; 
+                  
+                    var inJoint  = null;
+                    var outJoints = [];
+                    var jointId   = 0;
+                  
+                    var shiftDown = false;
+                    
+                    var canvasWrapper = document.getElementById("c-wrapper");
+                  
+                    canvasWrapper.tabIndex = 1000;
+                    
+                    canvasWrapper.addEventListener("keydown", function(e){
+                        if(e.shiftKey){
+                            shiftDown = true;
+                        }
+                        
+                    }, false);
+                    
+                    canvasWrapper.addEventListener("keyup", function(e){
+                        if(e.shiftKey == false){
+                            shiftDown = false;
+                        }
+                        
+                    }, false);
+                    
+                    function canvasKeyDown(e){
+                        console.log("shift");                       
+                        if(e.shiftKey == true){
+                            shiftDown = true;
+                        }
                     }
                     
                     function createOutJoint(){
@@ -62,49 +85,95 @@ var application = angular.module('scenarioEditor', [
                             radius: 10,
                             fill: '#55f',
                             top: 100,
-                            left: 150
+                            left: 150,
+                            id : jointId
                         });
                         circ.hasControls = false;
                         circ.hasBorders = false;
+                        jointId++;
+                        return circ;
+                    }
+                    
+                    function createInJoint(){
+                        var circ = new fabric.Circle({
+                            radius: 10,
+                            fill: '#f55',
+                            top: 100,
+                            left: 50,
+                            id : jointId
+                        });
+                        circ.hasControls = false;
+                        circ.hasBorders = false;
+                        jointId++;
                         return circ;
                     }
                     
                     function addOutJoint(){
-                         canvas.add(createOutJoint());
+                         var joint = createOutJoint();
+                         canvas.add(joint);
+                         outJoints.push(joint);
                     }
                     
-                    var canvas = new fabric.Canvas('c');
+                    function addInJoint(){
+                        var joint = createInJoint();
+                        canvas.add(joint);
+                        inJoint = joint;
+                    }
                     
-                    canvas.add(createInJoint());
-                    canvas.add(createOutJoint());
+                    function deleteInJoint(joint){
+                        canvas.remove(joint);
+                        inJoints.splice(indexOfJoint(inJoints, joint), 1);
+                    }
                     
-                    var rect = new fabric.Rect({
+                    function deleteOutJoint(joint){
+                        canvas.remove(joint);
+                        outJoints.splice(indexOfJoint(outJoints, joint), 1);
+                    }
+                    
+                    addInJoint();
+                    addOutJoint();
+                    
+                    var outJointrect = new fabric.Rect({
                       left: 2,
-                      top: 6,
-                      fill: '#eeeeee',
-                      width: 30,
-                      height: 30,
+                      top: 8,
+                      fill: '#55f',
+                      width: 20,
+                      height: 20,
                       rx : 5,
                       ry : 5
                     });
                     
-                    rect.hasControls = false;
-                    rect.hasBorders = false;
-                    rect.selectable = false;
-                    canvas.add(rect);
-                    
-                  
-                    var addOutJointButton = new fabric.Text('+', { left: 5, top: 0 });    
+                    outJointrect.hasControls = false;
+                    outJointrect.hasBorders = false;
+                    outJointrect.selectable = false;
+                    canvas.add(outJointrect);
+                   
+                    var addOutJointButton = new fabric.Text('+', { left: 3, top: 1, stroke:"#f9f9f9", fill:"#f9f9f", fontSize:30 });    
                     addOutJointButton.hasControls = false;
                     addOutJointButton.hasBorders = false;
                     addOutJointButton.selectable = false;
                     canvas.add(addOutJointButton);
-                  
+                    
+                    function indexOfJoint(array, value){
+                        for(var i = 0; i < array.length; i++){
+                            if(array[i].id == value.id){
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }
+
                     canvas.on({
                         'mouse:down': function(e) {
                             if (e.target) {
-                                e.target.opacity = 0.5;
-                                canvas.renderAll();
+                                 if(shiftDown == true){
+                                    if(indexOfJoint(outJoints, e.target) >= 0){
+                                        deleteOutJoint(e.target);
+                                    }
+                                }else{
+                                    e.target.opacity = 0.5;
+                                    canvas.renderAll();
+                                }
                             }
                         },
                         'mouse:up': function(e) {
@@ -112,7 +181,7 @@ var application = angular.module('scenarioEditor', [
                                 e.target.opacity = 1;
                                 canvas.renderAll();
                         
-                                if(e.target == addOutJointButton){
+                                if(e.target === addOutJointButton || e.target == outJointrect){
                                     addOutJoint();
                                 }
                             }
