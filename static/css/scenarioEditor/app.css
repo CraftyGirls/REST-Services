@@ -219,3 +219,7 @@
    padding:5px;
    margin: 5px;
 }
+
+.component-builder{
+     border: 2px solid #ffd7f3;
+}
