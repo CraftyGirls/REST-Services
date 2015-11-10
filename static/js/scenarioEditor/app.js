@@ -20,6 +20,20 @@ var application = angular.module('scenarioEditor', [
         function ($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
+        }])
+        .directive('ngConfirmClick', [
+            function(){
+                return {
+                    link: function (scope, element, attr) {
+                        var msg = "Are you sure?";
+                        var clickAction = attr.confirmedClick;
+                        element.bind('click', function (event) {
+                            if ( window.confirm(msg) ) {
+                                scope.$eval(clickAction)
+                            }
+                        });
+                    }
+                };
         }]);
 
 var scenarioEditor = angular.module('scenarioEditor');
@@ -82,4 +96,6 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             $scope.loadScript($("#scenario-script").text());
         });
     }
-]);
+])
+
+

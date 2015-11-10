@@ -7,7 +7,7 @@
 	<span ng-repeat="character in getChars()">
 		Name: <input type="text" ng-model="character.name"><br/>
 		<button class="btn btn-default" ng-click="editChar(character)">Edit</button>
-		<button class="btn btn-danger" ng-click="deleteChar(character)">Delete</button>
+		<button class="btn btn-danger" ng-confirm-click="deleteChar(character)">Delete</button>
 		<hr/>
 	</span>
         <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
