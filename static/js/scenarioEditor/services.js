@@ -6,6 +6,11 @@ var scenarioServices = angular.module('scenarioServices', []);
 
 scenarioServices.service('convoService', function () {
     
+    var convoData = [];
+
+    var currConversation = null;
+    var currId = 0;
+    
     function Line(){
         this.text = "";
     }
@@ -56,7 +61,7 @@ scenarioServices.service('convoService', function () {
     Condition.BuildFromData = function(data){
         var cond = new Condition();
         cond.func = data.func;
-        for(var i =0; i < data.args.length; i++){
+        for(var i = 0; i < data.args.length; i++){
             cond.args.push(Arg.BuildFromData(data.args[i]));
         }
         return cond;
@@ -121,10 +126,6 @@ scenarioServices.service('convoService', function () {
         }
         return convo;
     }
-    
-    var convoData = [];
-
-    var currConversation = null;
 
     return {
         conversations: function () {
@@ -133,14 +134,17 @@ scenarioServices.service('convoService', function () {
        setData: function(convos){
           for(var i = 0; i < convos.length; i++){
               convoData.push(Conversation.BuildFromData(convos[i]));
+              currId = Math.max(currId, convos[i].id);
           }
+          currId++;
         },
         addConversation: function () {
-            var id = 0; 
+            var id = currId; 
             if(convoData.length > 0){
-                id = convoData[convoData.length - 1].id;
+                id = convoData.length;
             }
             convoData.push(new Conversation(id, 'Conversation ' + convoData.length));
+            currId++;
         },
         editConversation: function (convo) {
             currConversation = convo;
