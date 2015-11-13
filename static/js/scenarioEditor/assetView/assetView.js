@@ -52,8 +52,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     }];
 
     $scope.componentPartsByType = {
-        "Arm": ["Uppper Arm", "Lower Arm", "Hand"],
-        "Leg": ["Upper Leg", "Lower Leg", "Foot"]
+        "Arm"    : ["Uppper Arm", "Lower Arm", "Hand"],
+        "Leg"    : ["Upper Leg", "Lower Leg", "Foot"],
+        "Torso"  : ["Torso"],
+        "Head"   : ["Lower Jaw", "Upper Jaw", "Nose", "Pupils"],
+        "Pelvis" : ["Pelvis"]
     }
 
     $scope.onAssetTypeChange = function() {
@@ -125,7 +128,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                 var dropzone = new Dropzone(element[0], {
                     url: "/scenario/upload_asset/",
-
+                    thumbnailWidth : null,
+                    thumbnailHeight : null,
                     autoProcessQueue: false,
 
                     init: function() {
@@ -163,6 +167,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     var canvas = new fabric.Canvas('c');
                     canvas.selection = false;
+                    canvas.setHeight(720);
+                    canvas.setWidth(1280);
 
                     var inJoint = null;
                     var outJoints = [];
