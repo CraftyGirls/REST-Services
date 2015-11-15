@@ -4,36 +4,50 @@
 {% load abs_url %}
 
 {% block content %}
-<div ng-controller="EditorCtrl">
-<ul class="menu">
-    <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
-    <li><a ng-href="#/{% url 'convoView' %}">Conversations</a></li>
-</ul>
+    <div hidden id="scenario-script">{{ scenario.script }}</div>
+    <div ng-controller="EditorCtrl">
+        <div class="navbar navbar-default pd-navbar pd-secondary-navbar" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-collapse navbar-menubuilder">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li><a ng-href="#/{% url 'charView' %}">Characters</a></li>
+                        <li><a ng-href="#/{% url 'convoView' %}">Conversations</a></li>
+                        <li><a ng-href="#/{% url 'roomView' %}">Rooms</a></li>
+                        <li><a ng-href="#/{% url 'itemView' %}">Items</a></li>
+                        <li><a ng-href="#/{% url 'assetView' %}">Assets</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+            <div class="pd-info-bar">
+                <h2 class="pd-info-title">Editing: {{ scenario.name }}</h2>   
+            </div>
 
- <h2>Editing: {{ scenario.name }}</h2>
+            <div ng-view></div>
 
-<div ng-view></div>
+            <button ng-click="save('{{ scenario.id }}')">Save</button>
 
-<button ng-click="save('{{ scenario.id }}')">Save</button>
-<button ng-click="loadScript('{{ scenario.script }}')">Load</button>
+            {$ msg $}
+            <div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
+            <hr/>
 
-{$ msg $}
-<div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
-<hr/>
+            <div>Scenario Editor v<span app-version></span></div>
+        </div>
 
-<div>Scenario Editor v<span app-version></span></div>
-</div>
+
 
 {% endblock %}
 
 {% block js_resources %}
-<!-- In production use:
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
--->
-<script src="{% static 'js/scenarioEditor/charView/charView.js' %}"></script>
-<script src="{% static 'js/scenarioEditor/lineView/lineView.js' %}"></script>
-<script src="{% static 'js/scenarioEditor/convoView/convoView.js' %}"></script>
-
-
+    <!-- In production use:
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+    -->
+    <script src="{% static 'vendor/dropzone.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/charView/charView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/lineView/lineView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/convoView/convoView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/assetView/assetView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/roomView/roomView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/itemView/itemView.js' %}"></script>
 {% endblock %}
 

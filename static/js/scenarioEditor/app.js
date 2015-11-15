@@ -2,130 +2,73 @@
 
 // Declare app level module which depends on views, and components
 var application = angular.module('scenarioEditor', [
-    'ngRoute',
-    'scenarioEditor.charView',
-    'scenarioEditor.lineView',
-    'scenarioEditor.convoView',
-    'scenarioEditor.version'
-])
+        'ngRoute',
+        'scenarioEditor.charView',
+        'scenarioEditor.lineView',
+        'scenarioEditor.convoView',
+        'scenarioEditor.assetView',
+        'scenarioEditor.roomView',
+        'scenarioEditor.itemView',
+        'scenarioEditor.version',
+        'scenarioServices'
+    ])
     .config(['$routeProvider',
-        function ($routeProvider) {
-            $routeProvider.otherwise({redirectTo: '/charView'});
-        }])
-    .config(
-        function ($interpolateProvider) {
+        function($routeProvider) {
+            $routeProvider.otherwise({
+                redirectTo: '/charView'
+            });
+        }
+    ])
+    .config(['$interpolateProvider',
+        function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
         }
-    )
-
-    .service('charService', function () {
-        var charData = [];
-
-        var charId = 0;
-
-        var currChar = 0;
-
-        return {
-            chars: function () {
-                return charData;
-            },
-            addChar: function () {
-                charId++;
-                charData.push({'id': charId, 'name': '', 'states': []});
-            },
-            deleteChar: function (character) {
-                charData.splice(charData.indexOf(character), 1);
-            },
-            editChar: function (character) {
-                currChar = character.id;
-            },
-            getCurrChar: function () {
-                return currChar;
-            },
-            addStateToChar: function (character, id) {
-                charData[charData.indexOf(character)].states.push({'id': id, 'name': '', 'convoId': 0});
-            },
-            getStatesLength: function (character) {
-                return charData[charData.indexOf(character)].states.length;
-            }
-        };
-    })
-
-    .service('convoService', function () {
-        var convoData = [
-            {'id': 0, 'name': 'Conversation 0'}
-        ];
-
-        var currConversation = 0;
-
-        return {
-            conversations: function () {
-                return convoData;
-            },
-            addConversation: function () {
-                currConversation++;
-                convoData.push({'id': currConversation, 'name': 'Conversation ' + currConversation});
-            },
-            editConversation: function (convo) {
-                //TODO: Make this work
-            },
-            deleteConversation: function (convo) {
-                convoData.splice(convoData.indexOf(convo), 1);
-            }
-        };
-    })
-
-    .service('lineService', function () {
-        var lineData = [
-            {'id': 0, 'character': '', 'text': ''}
-        ];
-
-        var currLine = 0;
-
-        return {
-            lines: function () {
-                return lineData;
-            },
-            addLine: function () {
-                currLine++;
-                lineData.push({'id': currLine, 'character': '', text: ''});
-            },
-            deleteLine: function (character) {
-                lineData.splice(lineData.indexOf(character), 1);
-            }
-        };
-    });
-
+    ])
+    .directive('ngConfirmClick', [
+        function() {
+            return {
+                link: function(scope, element, attr) {
+                    var msg = "Are you sure?";
+                    var clickAction = attr.confirmedClick;
+                    element.bind('click', function(event) {
+                        if (window.confirm(msg)) {
+                            scope.$eval(clickAction)
+                        }
+                    });
+                }
+            };
+        }
+    ])
+   
 
 var scenarioEditor = angular.module('scenarioEditor');
 
 scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService',
-    function ($scope, $http, convoService, charService, lineService) {
+    function($scope, $http, convoService, charService, lineService) {
+
         // ABSTRACTION LAYER
-        $scope.getChars = function () {
+        $scope.getChars = function() {
             return charService.chars();
         };
 
-        $scope.getConvos = function () {
+        $scope.getConvos = function() {
             return convoService.conversations();
         };
 
-        $scope.getLines = function () {
+        $scope.getLines = function() {
             return lineService.lines();
         };
-
-
         // CHECK FOR CHANGES
-        $scope.$watch('getChars()', function () {
+        $scope.$watch('getChars()', function() {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);
-        $scope.$watch('getConvos()', function () {
+        $scope.$watch('getConvos()', function() {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);
-        $scope.$watch('getLines()', function () {
+        $scope.$watch('getLines()', function() {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);
@@ -139,7 +82,9 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 conversations: $scope.getConvos()
             };
 
-            $http.post('/scenario/save/<' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
+            console.log(angular.toJson($scope.dataObj));
+
+            $http.post('/scenario/save/<' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function(data) {
                 $scope.msg = 'Data saved.';
                 $scope.dlVisible = true;
             });
@@ -147,8 +92,14 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             $scope.msg2 = 'Data sent: ' + $scope.jsonData;
         };
 
-        $scope.loadScript = function(script){
+        $scope.loadScript = function(script) {
             $scope.dataObj = angular.fromJson(script);
+            convoService.setData($scope.dataObj.conversations);
+            charService.setData($scope.dataObj.characters);
         };
+
+        angular.element(document).ready(function() {
+            $scope.loadScript($("#scenario-script").text());
+        });
     }
-]);
+])

@@ -8,8 +8,9 @@ from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from api.models import PDUser, Scenario
-
+from api.models import PDUser, Scenario, UploadFile
+from scenarioEditor.forms import UploadFileForm
+from forms import UploadFileForm
 
 @login_required(login_url='/scenario/login/')
 def index(request):
@@ -24,7 +25,27 @@ def charView(request):
 @login_required(login_url='/scenario/login/')
 def convoView(request):
     return render(request, 'scenarioEditor/convoView/convoView.html/', {})
+    
 
+@login_required(login_url='/scenario/login/')
+def assetView(request):
+    return render(request, 'scenarioEditor/assetView/assetView.html/', {})
+    
+    
+@login_required(login_url='/scenario/login/')
+def roomView(request):
+    return render(request, 'scenarioEditor/roomView/roomView.html/', {})
+    
+    
+@login_required(login_url='/scenario/login/')
+def itemView(request):
+    return render(request, 'scenarioEditor/itemView/itemView.html/', {})
+
+    
+@login_required(login_url='/scenario/dialogue/')
+def dialogueView(request):
+    return render(request, 'scenarioEditor/convoView/dialogue.html/', {})
+    
 
 @login_required(login_url='/scenario/login/')
 def user_scenarios_view(request):
@@ -141,6 +162,20 @@ def create_scenario_view(request):
             return redirect(edit_scenario_view, scenario.id)
     else:
         # Return invalid method response
+        return HttpResponse("Invalid Method", status=405)
+        
+
+@csrf_exempt
+@login_required(login_url='/scenario/login/')
+def upload_asset(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            print(request.FILES['file'])
+            new_file = UploadFile(file = request.FILES['file'])
+            #new_file.save()
+            return HttpResponse(status=200)
+    else:
         return HttpResponse("Invalid Method", status=405)
 
 

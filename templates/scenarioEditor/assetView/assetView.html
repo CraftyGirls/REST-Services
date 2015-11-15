@@ -1,0 +1,19 @@
+<div ngController="assetCtrl">
+   
+   <h1>Assets</h1> 
+   
+   <span>Asset Type: </span>
+   
+   <select ng-model="selectedAssetType" ng-options="item as item.label for item in assetTypes track by item.id" 
+      ng-init="selectedAssetType = assetTypes[0]" ng-change="onAssetTypeChange()"></select>
+   
+   <select ng-show="showCharacterComponentTypes" ng-model="selectedComponentType" ng-options="item as item.label for item in componentTypes track by item.id" 
+      ng-init="selectedComponentType = componentTypes[0]" ng-change="onComponentTypeChange()"></select>
+   
+   <div id="file-upload-container"></div>
+   
+   <button id="upload-files" ng-click="uploadFiles()">Confirm Files</button>
+   
+   <component-builder components="componentImages"></component-builder>
+
+</div>

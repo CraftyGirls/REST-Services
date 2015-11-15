@@ -1,62 +1,70 @@
-<div id="sidebar">
-<h3>Characters</h3>
+{% load staticfiles %}
+<div id="sidebar" class="list-view">
+    <h3>Characters</h3>
 
-<!-- SIDEBAR FOR LIST OF CHARACTERS -->
-<form>
+    <!-- SIDEBAR FOR LIST OF CHARACTERS -->
+    <form>
 	<span ng-repeat="character in getChars()">
 		Name: <input type="text" ng-model="character.name"><br/>
-		<button ng-click="editChar(character)">Edit</button>
-		<button ng-click="deleteChar(character)">Delete</button>
+		<button class="btn btn-default" ng-click="editChar(character)">Edit</button>
+		<button class="btn btn-danger" ng-confirm-click="deleteChar(character)">Delete</button>
 		<hr/>
 	</span>
-	<button ng-click="addChar()">Add new character</button>
-</form>
+        <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
+    </form>
 </div>
 
-<h1>asdasd</h1>
+
+
 <!-- AREA FOR EDITING CHARACTERS -->
 <div id="main" ng-show="editVisible">
-	<span ng-repeat="character in getChars() | filter : {id: getCurrChar()}">
+	<span ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
 		<h3>{$character.name$}</h3>
 		<table style="text-align:center;float:right;padding:10px;">
-			<tr>
-				<td></td>
-				<td colspan="2"><button ng-click="editBodyPart('Head')">HEAD</button></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td><button ng-click="editBodyPart('Left Arm')">LEFT ARM</button></td>
-				<td colspan="2"><button ng-click="editBodyPart('Torso')">TORSO</button></td>
-				<td><button ng-click="editBodyPart('Right Arm')">RIGHT ARM</button></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><button ng-click="editBodyPart('Left Leg')">LEFT LEG</button></td>
-				<td><button ng-click="editBodyPart('Right Leg')">RIGHT LEG</button></td>
-				<td></td>
-			</tr>
-		</table>
+            <tr>
+                <td></td>
+                <td colspan="2"><button class="btn btn-default" data-toggle="modal" data-target="#component-modal" ng-click="editBodyPart('Head')">HEAD</button></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal"  ng-click="editBodyPart('Left Arm')">LEFT ARM</button></td>
+                <td colspan="2"><button data-toggle="modal" data-target="#component-modal" class="btn btn-default" ng-click="editBodyPart('Torso')">TORSO</button></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal" ng-click="editBodyPart('Right Arm')">RIGHT ARM</button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal" ng-click="editBodyPart('Left Leg')">LEFT LEG</button></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal"  ng-click="editBodyPart('Right Leg')">RIGHT LEG</button></td>
+                <td></td>
+            </tr>
+        </table>
 		<strong>States</strong>
 		<form>
 			<span ng-repeat="state in getStates(character)">
 				Name: <input type="text" ng-model="state.name"><br/>
 				Active Conversation: <select ng-model="state.convo" ng-options="convo.id as convo.name for convo in getConvos()" >
-    	<option value="">Select Convo</option>
-		</select><br/>
-				<button ng-click="deleteState(character,state)">Delete</button>
+                <option value="">Select Convo</option>
+            </select><br/>
+				<button class="btn btn-default" ng-click="deleteState(character, state)">Delete</button>
 				<br/><br/>
 			</span>
-			<hr/>
-			<button ng-click="addState(character)">Add new state</button>
-		</form>
+            <hr/>
+            <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
+        </form>
 	</span>
 </div>
 
 <!-- MODAL WINDOW FOR PICKING/UPLOADING ASSETS -->
-<div class="modal" ng-show="editBodyPartVisible">
-	<span>
-		Pick asset for: {$currBodyPart$}
-	</span>
-	<hr/>
-	<button ng-click="closeBodyPart()">Close</button>
+<div class="modal fade" id="component-modal" ng-show="editBodyPartVisible">
+    <div class="modal-content">
+        <span>
+            Pick asset for: {$currBodyPart$}
+        </span>
+        <hr/>
+        <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
+    </div>
 </div>
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+-->

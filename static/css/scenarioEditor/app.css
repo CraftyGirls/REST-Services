@@ -29,7 +29,7 @@
   padding: 0;
 }
 
-.modal
+.pd-modal
 {
   position:absolute;
   width:950px;
@@ -108,4 +108,118 @@
 
 .header-inner{
     overflow: hidden;
+}
+
+#drop_zone {
+	width: 50%;
+	border: 2px dashed #BBB;
+	border-radius: 5px;
+	padding: 25px;
+	text-align: center;
+	color: #BBB;
+}
+
+.removeAllImages {
+    cursor:pointer;
+}
+
+/* NAVBAR*/
+.pd-navbar {
+    background-color: #ffd7f3;
+    border-radius: 0;
+    padding: 7px;
+    border:none;
+}
+
+.pd-secondary-navbar{
+    background-color: #ffeefa;
+    margin-top: -20px;
+    padding-left: 0;
+}
+
+.pd-secondary-navbar .container-fluid{
+    padding-left: 0;
+}
+
+
+.pd-navbar a{
+      color: #222222;
+}
+
+.pd-navbar .navbar-brand{
+    padding: 0;
+    padding-left: 10px;
+}
+
+.pd-nav-logo{
+    width: 50px;
+}
+
+.content-editor{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.list-view{
+    background-color: #eeeeee;
+    padding-left:20px;
+    padding-bottom:10px;
+}
+
+.pd-info-bar{
+  background-color:#eeeeee;
+  padding:7px;
+  margin-top:-20px;
+}
+
+.fill-height{
+  height:100%;
+}
+
+.row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+}
+
+/* Convo View */
+.conditions-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.triggers-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.speaker-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.lines-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.dialogue-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.arg-container{
+   border: 2px solid #ffd7f3;
+   padding:5px;
+   margin: 5px;
+}
+
+.component-builder{
+     border: 2px solid #ffd7f3;
 }
