@@ -21,7 +21,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     $scope.selectedComponentType = -1;
 
     $scope.selectedAssetType = -1;
-    
+
     $scope.componentScale = 1;
 
     // Make this a serverside resource later on
@@ -180,7 +180,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 scope: {
                     components: "=",
                     componentType: "=",
-                    componentScale : "="
+                    componentScale: "="
                 },
 
                 template: '<div id="c-wrapper"><canvas id="c" class="component-builder"></canvas></div>',
@@ -223,10 +223,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 left: 10 + lx,
                                 top: 200,
                             });
-                            
+
                             imgInstance.hasControls = false;
-                            imgInstance.hasBorders = false;
-                            
+                            //imgInstance.hasBorders = false;
+
                             canvas.add(imgInstance);
                             componentImages.push(imgInstance);
 
@@ -249,13 +249,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         }
                         inJointGroup.moveTo(1000);
                     });
-                    
+
                     scope.$watch('componentScale', function(value) {
-                       for(var i = 0; i < componentImages.length; i++){
-                           componentImages[i].scaleX = value;
-                           componentImages[i].scaleY = value;
-                       } 
-                       canvas.renderAll();
+                        for (var i = 0; i < componentImages.length; i++) {
+                            componentImages[i].scaleX = value;
+                            componentImages[i].scaleY = value;
+                        }
+                        canvas.renderAll();
+                        
                     });
 
                     canvasWrapper.addEventListener("keydowns", function(e) {
@@ -272,6 +273,79 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     }, false);
 
+
+                    // Calculates the joint/image percentages for all components
+                    function calculateJointPercentages() {
+                        var rels = [];
+                        
+                        if (componentImages.length > 0) {
+                            var rootComponentImg = componentImages[0];
+                            rels[0] = {
+                                joint  :{
+                                    parent : "IN",
+                                    child  : scope.components[0]  
+                                },
+                                component : scope.components[0],
+                                percentages : calculateJointImgRelationship(inJointGroup, rootComponentImg)
+                            }
+                            
+                            var s = 0;
+                            var comps = scope.components;
+                            for(var i = 0; i < comps.length - 1;){
+                                var componentImg = componentImages[i + s];
+                                rels.push({
+                                    joint : {
+                                        parent : comps[i],
+                                        child  : comps[i + 1]
+                                    },
+                                    component : comps[i + s],
+                                    percentages : calculateJointImgRelationship(outJoints[i], componentImg)
+                                });  
+                                s++;
+                                if(s == 2){
+                                    i++;
+                                    s = 0;
+                                }
+                            }
+                            
+                            rels.push({
+                                joint: {
+                                    parent: comps[comps.length - 1],
+                                    child: "OUT"
+                                },
+                                component : comps[comps.length - 1],
+                                percentages : calculateJointImgRelationship(outJoints[outJoints.length - 1], componentImg)
+                            });  
+                            
+                        }
+                        console.log(JSON.stringify(rels));
+                    }
+
+                    // Calculates the relationship between a specific joint and image
+                    function calculateJointImgRelationship(joint, img) {
+                        var imgXPerc = 0.0;
+                        var imgYPerc = 0.0;
+
+                        var ix = img.left;
+                        var iy = img.top;
+                        var iw = img.width * img.scaleX;
+                        var ih = img.height * img.scaleY;
+
+                        var jx = joint.left - ix + Math.abs(joint.item(0).left);
+                        var jy = joint.top - iy - ih + Math.abs(joint.item(0).top);
+
+                        imgXPerc = jx / iw;
+                        imgYPerc = -1 * (jy / ih);
+                        
+                        console.log({x:imgXPerc, y:imgYPerc});
+                        
+                        return {x:imgXPerc, y:imgYPerc};
+                    }
+
+                    /**
+                     * Clears out the existing images and out joint objects from
+                     * the canvas, as well as empties out the corresponding arrays
+                     */
                     function clearExisting() {
                         for (var i = 0; i < outJoints.length; i++) {
                             canvas.remove(outJoints[i]);
@@ -292,9 +366,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         }
                     }
 
+                    // Creates the circle for an out joint
                     function createOutJoint() {
                         var circ = new fabric.Circle({
-                            radius: 10,
+                            radius: 5,
                             fill: '#55f',
                             top: 0,
                             left: 0,
@@ -306,9 +381,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         return circ;
                     }
 
+                    // Creates the circle for an in joint
                     function createInJoint() {
                         var circ = new fabric.Circle({
-                            radius: 10,
+                            radius: 5,
                             fill: '#f55',
                             top: 0,
                             left: 0,
@@ -319,6 +395,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         jointId++;
                         return circ;
                     }
+
 
                     function addOutJoint(label) {
                         var joint = createOutJoint();
@@ -332,13 +409,21 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             backgroundColor: "#ffffff"
                         });
 
-                        label.left = -(label.width / 2) + joint.width / 2;
-                        label.top = -label.height;
+                        // This puts the center of the joint at the group's 0,0
+                        joint.left = -joint.width / 2;
+                        joint.top = -joint.height / 2;
 
-                        var group = new fabric.Group([label, joint]);
+                        label.left = -label.width / 2;
+                        label.top = -label.height - joint.height;
+
+                        var group = new fabric.Group([label, joint], {
+                            top: 50,
+                            left: 120 + (120 * outJoints.length)
+                        });
                         group.hasControls = false;
                         group.hasBorders = false;
                         canvas.add(group);
+
                         outJoints.push(group);
                     }
 
@@ -354,10 +439,16 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             backgroundColor: "#ffffff"
                         });
 
-                        label.left = -(label.width / 2) + joint.width / 2;
-                        label.top = -label.height;
+                        joint.left = -joint.width / 2;
+                        joint.top = -joint.height / 2;
 
-                        var group = new fabric.Group([label, joint]);
+                        label.left = -label.width / 2;
+                        label.top = -label.height - joint.height;
+
+                        var group = new fabric.Group([label, joint], {
+                            left: 50,
+                            top: 50
+                        });
                         group.hasControls = false;
                         group.hasBorders = false;
                         canvas.add(group);
@@ -380,23 +471,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         rx: 5,
                         ry: 5
                     });
-
-                    outJointrect.hasControls = false;
-                    outJointrect.hasBorders = false;
-                    outJointrect.selectable = false;
-                    //canvas.add(outJointrect);
-
-                    var addOutJointButton = new fabric.Text('+', {
-                        left: 3,
-                        top: 1,
-                        stroke: "#f9f9f9",
-                        fill: "#f9f9f",
-                        fontSize: 30,
-                    });
-                    addOutJointButton.hasControls = false;
-                    addOutJointButton.hasBorders = false;
-                    addOutJointButton.selectable = false;
-                    //canvas.add(addOutJointButton);
 
                     function indexOfJoint(array, value) {
                         for (var i = 0; i < array.length; i++) {
@@ -425,12 +499,9 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             if (e.target) {
                                 e.target.opacity = 1;
                                 canvas.renderAll();
-
-                                if (e.target === addOutJointButton || e.target == outJointrect) {
-                                    addOutJoint();
-                                }
                             }
                             canvas.renderAll();
+                            calculateJointPercentages();
                         },
                         'object:moved': function(e) {
                             e.target.opacity = 0.5;
