@@ -223,3 +223,8 @@
 .component-builder{
      border: 2px solid #ffd7f3;
 }
+
+.dropzone .dz-preview .dz-image {
+    width: 500px;
+    height: 500px;
+}
