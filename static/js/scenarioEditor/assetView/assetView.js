@@ -191,7 +191,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     var componentRelationShips = {
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
-                        "Leg": "Upper Leg>LowerLeg>Foot>OUT",
+                        "Leg": "Upper Leg>Lower Leg>Foot>OUT",
                         "Torso": "Torso,Pelvis>OUT,Neck>OUT,Left Arm>OUT,Right Arm>OUT",
                         "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Pupil,Upper Jaw>Right Pupil",
                         "Pelvis": "Pelvis,Left Leg>OUT,Right Leg>OUT"
@@ -289,33 +289,40 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 percentages : calculateJointImgRelationship(inJointGroup, rootComponentImg)
                             }
                             
-                            var s = 0;
-                            var comps = scope.components;
-                            for(var i = 0; i < comps.length - 1;){
-                                var componentImg = componentImages[i + s];
-                                rels.push({
-                                    joint : {
-                                        parent : comps[i],
-                                        child  : comps[i + 1]
-                                    },
-                                    component : comps[i + s],
-                                    percentages : calculateJointImgRelationship(outJoints[i], componentImg)
-                                });  
-                                s++;
-                                if(s == 2){
-                                    i++;
-                                    s = 0;
+                            var sets = componentRelationShips[scope.componentType.label].split(",");
+                            for(var x = 0; x < sets.length; x++){
+                                var s = 0;
+                                var comps = sets[x].split(">");
+                                for(var i = 0; i < comps.length - 1;){
+                                    var compName = comps[i];
+                                    console.log(scope.components);
+                                    var imgIdx   = scope.components.indexOf(compName);
+                                    console.log(compName  + " " + imgIdx);
+                                    var componentImg = componentImages[imgIdx];
+                                    rels.push({
+                                        joint : {
+                                            parent : comps[i],
+                                            child  : comps[i + 1]
+                                        },
+                                        component : comps[i + s],
+                                        percentages : calculateJointImgRelationship(outJoints[i], componentImg)
+                                    });  
+                                    s++;
+                                    if(s == 2){
+                                        i++;
+                                        s = 0;
+                                    }
                                 }
                             }
                             
-                            rels.push({
+                            /*rels.push({
                                 joint: {
                                     parent: comps[comps.length - 1],
                                     child: "OUT"
                                 },
                                 component : comps[comps.length - 1],
                                 percentages : calculateJointImgRelationship(outJoints[outJoints.length - 1], componentImg)
-                            });  
+                            });  */
                             
                         }
                         console.log(JSON.stringify(rels));
@@ -331,8 +338,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         var iw = img.width * img.scaleX;
                         var ih = img.height * img.scaleY;
 
-                        var jx = joint.left - ix + Math.abs(joint.item(0).left);
-                        var jy = joint.top - iy - ih + Math.abs(joint.item(0).top);
+                        var jx = joint.width/2 + joint.left - ix;
+                        var jy = joint.height + joint.top - iy - ih - joint.item(0).height/2;
 
                         imgXPerc = jx / iw;
                         imgYPerc = -1 * (jy / ih);
@@ -416,7 +423,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         label.left = -label.width / 2;
                         label.top = -label.height - joint.height;
 
-                        var group = new fabric.Group([label, joint], {
+                        var group = new fabric.Group([joint, label], {
                             top: 50,
                             left: 120 + (120 * outJoints.length)
                         });
@@ -445,7 +452,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         label.left = -label.width / 2;
                         label.top = -label.height - joint.height;
 
-                        var group = new fabric.Group([label, joint], {
+                        var group = new fabric.Group([joint, label], {
                             left: 50,
                             top: 50
                         });
