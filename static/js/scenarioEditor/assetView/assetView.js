@@ -294,19 +294,21 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 var s = 0;
                                 var comps = sets[x].split(">");
                                 for(var i = 0; i < comps.length - 1;){
-                                    var compName = comps[i];
+                                    var compName = comps[i + s];
                                     console.log(scope.components);
                                     var imgIdx   = scope.components.indexOf(compName);
-                                    console.log(compName  + " " + imgIdx);
-                                    var componentImg = componentImages[imgIdx];
-                                    rels.push({
-                                        joint : {
-                                            parent : comps[i],
-                                            child  : comps[i + 1]
-                                        },
-                                        component : comps[i + s],
-                                        percentages : calculateJointImgRelationship(outJoints[i], componentImg)
-                                    });  
+                                    if(imgIdx >= 0){
+                                        console.log(compName  + " " + imgIdx);
+                                        var componentImg = componentImages[imgIdx];
+                                        rels.push({
+                                            joint : {
+                                                parent : comps[i],
+                                                child  : comps[i + 1]
+                                            },
+                                            component : comps[i + s],
+                                            percentages : calculateJointImgRelationship(outJoints[i], componentImg)
+                                        });  
+                                        }
                                     s++;
                                     if(s == 2){
                                         i++;
@@ -315,6 +317,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 }
                             }
                             
+                            console.log(JSON.stringify(rels))
                             /*rels.push({
                                 joint: {
                                     parent: comps[comps.length - 1],
@@ -323,9 +326,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 component : comps[comps.length - 1],
                                 percentages : calculateJointImgRelationship(outJoints[outJoints.length - 1], componentImg)
                             });  */
-                            
                         }
-                        console.log(JSON.stringify(rels));
                     }
 
                     // Calculates the relationship between a specific joint and image
@@ -343,8 +344,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                         imgXPerc = jx / iw;
                         imgYPerc = -1 * (jy / ih);
-                        
-                        console.log({x:imgXPerc, y:imgYPerc});
                         
                         return {x:imgXPerc, y:imgYPerc};
                     }
