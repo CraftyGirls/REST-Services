@@ -204,6 +204,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     var inJointGroup = null;
                     var outJoints = [];
+                    var outJointLabels = [];
                     var jointId = 0;
 
                     var shiftDown = false;
@@ -275,6 +276,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
 
                     // Calculates the joint/image percentages for all components
+                    // This is probably overly complicated and can probably be cleaned up/improved
                     function calculateJointPercentages() {
                         var rels = [];
                         
@@ -288,7 +290,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 component : scope.components[0],
                                 percentages : calculateJointImgRelationship(inJointGroup, rootComponentImg)
                             }
-                            
                             var sets = componentRelationShips[scope.componentType.label].split(",");
                             for(var x = 0; x < sets.length; x++){
                                 var s = 0;
@@ -297,8 +298,12 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     var compName = comps[i + s];
                                     console.log(scope.components);
                                     var imgIdx   = scope.components.indexOf(compName);
+                                    var jointName = comps[i] + " - " + comps[i + 1];
+                                    console.log(jointName);
+                                    var jointIdx = outJointLabels.indexOf(jointName) + s;
+                                    console.log(jointIdx)
+                                    console.log(outJointLabels);
                                     if(imgIdx >= 0){
-                                        console.log(compName  + " " + imgIdx);
                                         var componentImg = componentImages[imgIdx];
                                         rels.push({
                                             joint : {
@@ -306,7 +311,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                 child  : comps[i + 1]
                                             },
                                             component : comps[i + s],
-                                            percentages : calculateJointImgRelationship(outJoints[i], componentImg)
+                                            percentages : calculateJointImgRelationship(
+                                                outJoints[jointIdx], componentImg)
                                         });  
                                         }
                                     s++;
@@ -316,16 +322,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     }
                                 }
                             }
-                            
-                            console.log(JSON.stringify(rels))
-                            /*rels.push({
-                                joint: {
-                                    parent: comps[comps.length - 1],
-                                    child: "OUT"
-                                },
-                                component : comps[comps.length - 1],
-                                percentages : calculateJointImgRelationship(outJoints[outJoints.length - 1], componentImg)
-                            });  */
                         }
                     }
 
@@ -357,7 +353,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             canvas.remove(outJoints[i]);
                         }
                         outJoints = [];
-
+                        outJointLabels = [];
                         for (var i = 0; i < componentImages.length; i++) {
                             canvas.remove(componentImages[i]);
                         }
@@ -403,10 +399,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     }
 
 
-                    function addOutJoint(label) {
+                    function addOutJoint(labelText) {
                         var joint = createOutJoint();
 
-                        var label = new fabric.Text(label, {
+                        var label = new fabric.Text(labelText, {
                             left: 0,
                             top: 0,
                             stroke: null,
@@ -431,6 +427,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         canvas.add(group);
 
                         outJoints.push(group);
+                        outJointLabels.push(labelText);
                     }
 
                     function addInJoint() {
