@@ -10,14 +10,15 @@
    <select ng-show="showCharacterComponentTypes" ng-model="selectedComponentType" ng-options="item as item.label for item in componentTypes track by item.id" 
       ng-init="selectedComponentType = componentTypes[0]" ng-change="onComponentTypeChange()"></select>
    
-   <div id="file-upload-container"></div>
+   <div ng-show="showFileUploaders">
+      <div id="file-upload-container"></div>
+      <button id="upload-files" ng-click="uploadFiles()">Confirm Files</button>
+   </div>
    
-   <button id="upload-files" ng-click="uploadFiles()">Confirm Files</button>
-   
-   
-   <span>Component Scale : </span>
-   <input type="number" ng-model="componentScale" step="0.1" min = 0.1/>
-   
-   <component-builder components="componentImages" component-type="selectedComponentType" component-scale="componentScale"></component-builder>
+   <div ng-show="componentFilesConfirmed">
+      <span>Component Scale : </span>
+      <input type="number" ng-model="componentScale" step="0.1" min = 0.1/>
+      <component-builder components="componentImages" component-type="selectedComponentType" component-scale="componentScale"></component-builder>
+   </div>
 
 </div>

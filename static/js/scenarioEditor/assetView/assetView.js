@@ -17,12 +17,16 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     $scope.dropzoneVisible = true;
 
     $scope.showCharacterComponentTypes = false;
+    
+    $scope.showFileUploaders = false;
 
     $scope.selectedComponentType = -1;
 
     $scope.selectedAssetType = -1;
 
     $scope.componentScale = 1;
+    
+    $scope.componentFilesConfirmed = false;
 
     // Make this a serverside resource later on
     $scope.assetTypes = [{
@@ -80,6 +84,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         for (var i = 0; i < componentParts.length; i++) {
             addFileUploader(componentParts[i]);
         }
+        
+        $scope.showFileUploaders = true;
     }
 
     $scope.uploadFiles = function() {
@@ -87,6 +93,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
             $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
         }
+        $scope.componentFilesConfirmed = true;
     }
 
     function getFileUploadContainer() {
@@ -189,6 +196,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     var componentImages = [];
 
+                    // @TODO is there a better way to do this?
                     var componentRelationShips = {
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
                         "Leg": "Upper Leg>Lower Leg>Foot>OUT",
@@ -203,8 +211,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     canvas.setWidth(1280);
 
                     var inJointGroup = null;
+
+                    // @TODO - Combine these two arrays into one array of objects 
                     var outJoints = [];
                     var outJointLabels = [];
+
                     var jointId = 0;
 
                     var shiftDown = false;
@@ -257,7 +268,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             componentImages[i].scaleY = value;
                         }
                         canvas.renderAll();
-                        
+
                     });
 
                     canvasWrapper.addEventListener("keydowns", function(e) {
@@ -274,55 +285,52 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     }, false);
 
-
                     // Calculates the joint/image percentages for all components
                     // This is probably overly complicated and can probably be cleaned up/improved
                     function calculateJointPercentages() {
                         var rels = [];
-                        
+
                         if (componentImages.length > 0) {
                             var rootComponentImg = componentImages[0];
                             rels[0] = {
-                                joint  :{
-                                    parent : "IN",
-                                    child  : scope.components[0]  
+                                joint: {
+                                    parent: "IN",
+                                    child: scope.components[0]
                                 },
-                                component : scope.components[0],
-                                percentages : calculateJointImgRelationship(inJointGroup, rootComponentImg)
+                                component: scope.components[0],
+                                percentages: calculateJointImgRelationship(inJointGroup, rootComponentImg)
                             }
                             var sets = componentRelationShips[scope.componentType.label].split(",");
-                            for(var x = 0; x < sets.length; x++){
+                            for (var x = 0; x < sets.length; x++) {
                                 var s = 0;
                                 var comps = sets[x].split(">");
-                                for(var i = 0; i < comps.length - 1;){
+                                for (var i = 0; i < comps.length - 1;) {
                                     var compName = comps[i + s];
                                     console.log(scope.components);
-                                    var imgIdx   = scope.components.indexOf(compName);
+                                    var imgIdx = scope.components.indexOf(compName);
                                     var jointName = comps[i] + " - " + comps[i + 1];
-                                    console.log(jointName);
-                                    var jointIdx = outJointLabels.indexOf(jointName) + s;
-                                    console.log(jointIdx)
-                                    console.log(outJointLabels);
-                                    if(imgIdx >= 0){
+                                    var jointIdx = outJointLabels.indexOf(jointName) + s;;
+                                    if (imgIdx >= 0) {
                                         var componentImg = componentImages[imgIdx];
                                         rels.push({
-                                            joint : {
-                                                parent : comps[i],
-                                                child  : comps[i + 1]
+                                            joint: {
+                                                parent: comps[i],
+                                                child: comps[i + 1]
                                             },
-                                            component : comps[i + s],
-                                            percentages : calculateJointImgRelationship(
+                                            component: comps[i + s],
+                                            percentages: calculateJointImgRelationship(
                                                 outJoints[jointIdx], componentImg)
-                                        });  
-                                        }
+                                        });
+                                    }
                                     s++;
-                                    if(s == 2){
+                                    if (s == 2) {
                                         i++;
                                         s = 0;
                                     }
                                 }
                             }
                         }
+                        return rels
                     }
 
                     // Calculates the relationship between a specific joint and image
@@ -335,13 +343,16 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         var iw = img.width * img.scaleX;
                         var ih = img.height * img.scaleY;
 
-                        var jx = joint.width/2 + joint.left - ix;
-                        var jy = joint.height + joint.top - iy - ih - joint.item(0).height/2;
+                        var jx = joint.width / 2 + joint.left - ix;
+                        var jy = joint.height + joint.top - iy - ih - joint.item(0).height / 2;
 
                         imgXPerc = jx / iw;
                         imgYPerc = -1 * (jy / ih);
-                        
-                        return {x:imgXPerc, y:imgYPerc};
+
+                        return {
+                            x: imgXPerc,
+                            y: imgYPerc
+                        };
                     }
 
                     /**
