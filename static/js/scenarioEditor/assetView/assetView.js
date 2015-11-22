@@ -138,7 +138,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                 var dropzone = new Dropzone(element[0], {
                     url: "/scenario/upload_asset/",
-                    autoProcessQueue: false,
+                    //autoProcessQueue: false,
 
                     resize: function(file) {
 
@@ -200,9 +200,9 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     var componentRelationShips = {
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
                         "Leg": "Upper Leg>Lower Leg>Foot>OUT",
-                        "Torso": "Torso,Pelvis>OUT,Neck>OUT,Left Arm>OUT,Right Arm>OUT",
-                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Pupil,Upper Jaw>Right Pupil",
-                        "Pelvis": "Pelvis,Left Leg>OUT,Right Leg>OUT"
+                        "Torso": "Torso>Pelvis,Torso>Neck,Torso>Left Arm,Torso>Right Arm",
+                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Pupil,Upper Jaw>Right Pupil,Upper Jaw>OUT",
+                        "Pelvis": "Pelvis>Left Leg,Pelvis>Right Leg"
                     };
 
                     var canvas = new fabric.Canvas('c');
@@ -330,6 +330,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 }
                             }
                         }
+                        console.log(JSON.stringify(rels));
                         return rels
                     }
 

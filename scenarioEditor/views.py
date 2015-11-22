@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from api.models import PDUser, Scenario, UploadFile
 from scenarioEditor.forms import UploadFileForm
 from forms import UploadFileForm
+import gitlab_utility
 
 @login_required(login_url='/scenario/login/')
 def index(request):
@@ -171,8 +172,8 @@ def upload_asset(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            print(request.FILES['file'])
             new_file = UploadFile(file = request.FILES['file'])
+            gitlab_utility.create_file("TestComponentProject", "image_test3.png", request.FILES['file'].read(), "base64")
             #new_file.save()
             return HttpResponse(status=200)
     else:
