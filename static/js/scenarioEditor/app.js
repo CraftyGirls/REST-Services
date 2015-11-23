@@ -25,6 +25,12 @@ var application = angular.module('scenarioEditor', [
             $interpolateProvider.endSymbol('$}');
         }
     ])
+    .config(['$httpProvider', 
+        function($httpProvider){
+            $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+            $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        }
+    ])
     .directive('ngConfirmClick', [
         function() {
             return {

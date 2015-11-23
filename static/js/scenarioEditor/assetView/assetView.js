@@ -9,7 +9,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     });
 }])
 
-.controller('assetCtrl', ['$scope', '$compile', function($scope, $compile) {
+.controller('assetCtrl', ['$scope', '$compile', '$http', function($scope, $compile, $http) {
 
     $scope.dropzones = [];
     $scope.componentImages = [];
@@ -17,15 +17,17 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     $scope.dropzoneVisible = true;
 
     $scope.showCharacterComponentTypes = false;
-    
+
     $scope.showFileUploaders = false;
 
     $scope.selectedComponentType = -1;
 
     $scope.selectedAssetType = -1;
 
+    $scope.componentSetId = -1;
+
     $scope.componentScale = 1;
-    
+
     $scope.componentFilesConfirmed = false;
 
     // Make this a serverside resource later on
@@ -84,16 +86,27 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         for (var i = 0; i < componentParts.length; i++) {
             addFileUploader(componentParts[i]);
         }
-        
+
         $scope.showFileUploaders = true;
     }
 
     $scope.uploadFiles = function() {
-        $scope.componentImages = [];
-        for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
-            $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
-        }
-        $scope.componentFilesConfirmed = true;
+
+        $http.post('/scenario/service/component_set/', null).then(
+            function(response) { // success
+                $scope.componentSetId = response.data.id; // Triggers the process queue on the file uploaders
+
+                $scope.componentImages = [];
+
+                for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
+                    $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
+                }
+
+                $scope.componentFilesConfirmed = true;
+            },
+            function(response) { // failure
+                alert("Error creating component set");
+            });
     }
 
     function getFileUploadContainer() {
@@ -102,7 +115,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     function addFileUploader(componentName) {
         var container = getFileUploadContainer();
-        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' dropzones='dropzones'></div><br/>")($scope));
+        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' component-set-id='componentSetId' dropzones='dropzones'></div><br/>")($scope));
     }
 
     function addDropzone(dropzone) {
@@ -124,7 +137,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 dropzone: '=',
                 dropzoneConfig: '=',
                 eventHandlers: '=',
-                dropzones: "=dropzones"
+                dropzones: "=dropzones",
+                componentSetId: "="
             },
 
             link: function(scope, element, attrs, ctrls) {
@@ -138,7 +152,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                 var dropzone = new Dropzone(element[0], {
                     url: "/scenario/upload_asset/",
-                    //autoProcessQueue: false,
+                    autoProcessQueue: false,
 
                     resize: function(file) {
 
@@ -154,6 +168,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         };
 
                         return resizeInfo;
+                    },
+
+                    sending: function(file, xhr, formData) {
+                        formData.append("componentSetId", scope.componentSetId);
                     },
 
                     init: function() {
@@ -175,6 +193,12 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         dropzone.on(eventName, scope.eventHandlers[eventName]);
                     });
                 }
+
+                scope.$watch('componentSetId', function(value) {
+                    if (value != -1) {
+                        dropzone.processQueue();
+                    }
+                });
 
                 scope.dropzones.push(dropzone);
             }

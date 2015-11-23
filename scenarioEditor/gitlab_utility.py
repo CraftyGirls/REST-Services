@@ -34,3 +34,10 @@ def update_file(project_name, file, file_contents, encoding):
     git = login()
     proj_id = get_project_id_by_name(project_name) 
     git.updatefile(proj_id, file, "master", file_contents, "Content Created", encoding)
+    
+
+def get_project_url(project_name):
+    git = login()
+    for project in git.getprojects():
+        if project['name'] == project_name:
+            return project["web_url"]

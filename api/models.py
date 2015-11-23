@@ -18,7 +18,13 @@ class Scenario(models.Model):
 
     class Meta:
         ordering = ('created',)
-
+        
+        
+class ComponentSet(models.Model):
+    name = models.CharField(default='', max_length=100)
+    jsonRepresentation = models.TextField(default='')
+    fileUrl = models.CharField(default='', max_length=512)
+    
 
 class Component(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -27,7 +33,8 @@ class Component(models.Model):
     description = models.TextField(blank=False, default='')
     owner = models.ForeignKey(PDUser, related_name='components')
     rating = models.FloatField(default=0.0)
-
+    componentSet = models.ForeignKey(ComponentSet, null=True)
+    
     class Meta:
         ordering = ('name',)
         

@@ -8,10 +8,12 @@ from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from api.models import PDUser, Scenario, UploadFile
+from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet
 from scenarioEditor.forms import UploadFileForm
 from forms import UploadFileForm
 import gitlab_utility
+import uuid
+from django.core import serializers
 
 @login_required(login_url='/scenario/login/')
 def index(request):
@@ -152,6 +154,26 @@ def edit_scenario_view(request, scenario_id):
 
 
 @login_required(login_url='/scenario/login/')
+def component_set_service(request, component_set_id=None):
+    if(request.method == 'GET'):
+        if(component_set_id != None):
+            obj = ComponentSet.objects.get(id=component_set_id)
+            if(obj != None):
+                data = serializers.serialize('json', {obj, })
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return HttpResponse("Object could not be found", status=404)
+        else:
+            return HttpResponse("ID required", status=405)
+    elif(request.method == 'POST'):
+        comp_set = ComponentSet()
+        comp_set.save()
+        return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}', content_type='application/json')
+    else:
+        return HttpResponse("Invalid Method", status=405)
+
+
+@login_required(login_url='/scenario/login/')
 def create_scenario_view(request):
     if (request.method == 'GET'):
         return render(request, 'scenarioEditor/create/create_scenario.html/', {})
@@ -173,8 +195,13 @@ def upload_asset(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             new_file = UploadFile(file = request.FILES['file'])
-            gitlab_utility.create_file("TestComponentProject", "image_test3.png", request.FILES['file'].read(), "base64")
-            #new_file.save()
+            tex = Texture()
+            file_name = str(uuid.uuid4()) + ".png"
+            tex.name = "Temp" + file_name 
+            tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name 
+            print tex.imageUrl
+            gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
+            tex.save()
             return HttpResponse(status=200)
     else:
         return HttpResponse("Invalid Method", status=405)
