@@ -6,6 +6,9 @@
 {% block content %}
     <div hidden id="scenario-script">{{ scenario.script }}</div>
     <div ng-controller="EditorCtrl">
+        <div class="block-ui" ng-show="blockUi">
+            <span class="block-ui-text">Hold On</span>
+        </div>
         <div class="navbar navbar-default pd-navbar pd-secondary-navbar" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-collapse navbar-menubuilder">

@@ -13,6 +13,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     $scope.dropzones = [];
     $scope.componentImages = [];
+    $scope.componentAssetIds = [];
 
     $scope.dropzoneVisible = true;
 
@@ -30,6 +31,12 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     $scope.componentFilesConfirmed = false;
 
+    // Asset properties
+    $scope.assetName = "";
+    $scope.assetDescription = "";
+    $scope.assetTags = "";
+    $scope.assetType = "";
+
     // Make this a serverside resource later on
     $scope.assetTypes = [{
         id: -1,
@@ -38,7 +45,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         id: 1,
         label: 'Character Component'
     }];
-
 
     $scope.componentTypes = [{
         id: -1,
@@ -91,22 +97,47 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     }
 
     $scope.uploadFiles = function() {
+        $scope.componentFilesConfirmed = true;
+        $scope.componentImages = [];
+
+        for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
+            $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
+        }
+    }
+
+    $scope.uploadAsset = function() {
+        // Tell the app controller to block the ui
+        $scope.$emit('blockUi', [true]);
 
         $http.post('/scenario/service/component_set/', null).then(
             function(response) { // success
-                $scope.componentSetId = response.data.id; // Triggers the process queue on the file uploaders
+               
+               $scope.componentSetId = response.data.id; // Triggers the process queue on the file uploaders
 
-                $scope.componentImages = [];
-
-                for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
-                    $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
+                var data = {
+                    "name": $scope.assetName,
+                    "description": $scope.assetDescription,
+                    "tags": $scope.assetTags,
+                    "assetType": $scope.assetType,
+                    "componentSet" : response.data.id
+                };
+                
+                for(var i = 0; i < $scope.componentImages.length; i++){
+                    
+                    $http.post('/scenario/service/asset/', data).then(
+                        function(response) { // success
+                            $scope.componentSetId = response.data.id; // Triggers the process queue on the file uploaders
+                        },
+                        function(response) { // failure
+                            alert("Error creating component set");
+                        }
+                    );
                 }
-
-                $scope.componentFilesConfirmed = true;
             },
             function(response) { // failure
                 alert("Error creating component set");
-            });
+            }
+        );
     }
 
     function getFileUploadContainer() {

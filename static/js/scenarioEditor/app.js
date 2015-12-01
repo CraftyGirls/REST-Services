@@ -36,7 +36,7 @@ var application = angular.module('scenarioEditor', [
             return {
                 link: function(scope, element, attr) {
                     var msg = "Are you sure?";
-                    var clickAction = attr.confirmedClick;
+                    var clickAction = attr.ngClick;
                     element.bind('click', function(event) {
                         if (window.confirm(msg)) {
                             scope.$eval(clickAction)
@@ -81,6 +81,8 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         // SAVE JSON FILE
         $scope.dlVisible = false;
+        
+        $scope.blockUi = false;
 
         $scope.save = function(scenario_id) {
             $scope.dataObj = {
@@ -103,6 +105,10 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             convoService.setData($scope.dataObj.conversations);
             charService.setData($scope.dataObj.characters);
         };
+        
+        $scope.$on('blockUi', function(event, data) {
+            $scope.blockUi = data[0];
+        });
 
         angular.element(document).ready(function() {
             $scope.loadScript($("#scenario-script").text());

@@ -9,7 +9,7 @@ scenarioServices.service('convoService', function () {
     var convoData = [];
 
     var currConversation = null;
-    var currId = 0;
+    var currId = 1;
     
     function Line(){
         this.text = "";
@@ -108,21 +108,37 @@ scenarioServices.service('convoService', function () {
         return diag;
     };
     
+    function Option(convoId, label){
+        this.convoId = convoId;
+        this.label = label;
+    }
+    
+    Option.BuildFromData = function(data){
+        return new Option(data.convoId, data.label);
+    } 
+    
     function Conversation(id, name){
         this.id = id;
         this.name = name;
         this.dialogues = [];
+        this.options = [];
         
         this.addDialogue = function(){
             this.dialogues.push(new Dialogue("Dialogue " + this.dialogues.length));
         };
         
+        this.addOption = function(convoId, label){
+            this.options.push(new Option(convoId, label))        
+        }
     }
     
     Conversation.BuildFromData = function(data){
         var convo = new Conversation(data.id, data.name);
         for(var i = 0; i < data.dialogues.length; i++){
             convo.dialogues.push(Dialogue.BuildFromData(data.dialogues[i]));
+        }
+        for(var i = 0; i < data.options.length; i++){
+            convo.addOption(data.options[i].convoId, data.options[i].label);
         }
         return convo;
     }
@@ -136,21 +152,25 @@ scenarioServices.service('convoService', function () {
               convoData.push(Conversation.BuildFromData(convos[i]));
               currId = Math.max(currId, convos[i].id);
           }
-          currId++;
+          currId += 1;
+          console.log(currId);
         },
         addConversation: function () {
             var id = currId; 
             if(convoData.length > 0){
-                id = convoData.length;
+                id = convoData.length + 1;
             }
-            convoData.push(new Conversation(id, 'Conversation ' + convoData.length));
+            convoData.push(new Conversation(id, 'Conversation ' + id));
             currId++;
         },
         editConversation: function (convo) {
             currConversation = convo;
         },
         deleteConversation: function (convo) {
-            convoData.splice(convoData.indexOf(convo), 1);
+            var idx = convoData.indexOf(convo);
+            if(idx != -1){
+                convoData.splice(idx, 1);
+            }
         },
         addDialogue : function(){
             currConversation.addDialogue();
@@ -172,6 +192,9 @@ scenarioServices.service('convoService', function () {
         },
         addCondition : function(dialogue){
             dialogue.addCondition();
+        },
+        addOption : function(convoId, label){
+            currConversation.addOption(convoId, label)
         }
     };
 });

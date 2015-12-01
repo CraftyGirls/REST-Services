@@ -31,6 +31,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
   };
 
   $scope.deleteConvo = function (convo) {
+    console.log(convo)
     convoService.deleteConversation(convo);
     if(convoService.conversations().length == 0){
       $scope.editVisible = false;
@@ -57,11 +58,13 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
     convoService.addTriggerArg(trigger);
   }
   
-  
   $scope.addCondition = function(dialogue){
     convoService.addCondition(dialogue);
   }
-
+  
+  $scope.addOption = function(){
+    convoService.addOption(-1, "");
+  }
 }])
 
 .directive('dialogue', function() {

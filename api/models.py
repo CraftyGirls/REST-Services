@@ -20,24 +20,49 @@ class Scenario(models.Model):
         ordering = ('created',)
         
         
-class ComponentSet(models.Model):
-    name = models.CharField(default='', max_length=100)
-    jsonRepresentation = models.TextField(default='')
-    fileUrl = models.CharField(default='', max_length=512)
-    
-
 class Component(models.Model):
+    
     created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=100, blank=False, default='', unique=True)
     image = models.ImageField(upload_to='component_images', blank=True)
     description = models.TextField(blank=False, default='')
     owner = models.ForeignKey(PDUser, related_name='components')
     rating = models.FloatField(default=0.0)
-    componentSet = models.ForeignKey(ComponentSet, null=True)
+    componentSet = models.ForeignKey('ComponentSet', null=True)
     
     class Meta:
         ordering = ('name',)
         
+class ComponentSet(models.Model):
+    
+    TYPE_CHOICES = [
+        ('ARM', 'Arm'),
+        ('LEG', 'Leg'),
+        ('HEAD', 'Head'),
+        ('TORSO', 'Torso'),
+        ('PELVIS', 'Pelvis')
+        ];
+    
+    name = models.CharField(default='', max_length=100)
+    jsonRepresentation = models.TextField(default='')
+    fileUrl = models.CharField(default='', max_length=512)
+    
+    def getComponents(self):
+        return list(Component.objects.filter(componentSet=self))
+        
+        
+class Asset(models.Model):
+    
+    TYPE_CHOICES = [
+        ('COMPONENT_IMAGE', 'Component Image'),
+        ('MESH', 'Mesh'),
+        ];
+    
+    name        = models.CharField(max_length=100, blank=False, default='')
+    description = models.TextField(default='')
+    remoteUrl   = models.CharField(max_length=1000, blank=False, default='')
+    assetType   = models.CharField(max_length=255, choices=TYPE_CHOICES)
+    
     
 class Texture(models.Model):
     name = models.CharField(max_length=100, blank=False, default='')

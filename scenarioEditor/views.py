@@ -8,9 +8,8 @@ from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet
-from scenarioEditor.forms import UploadFileForm
-from forms import UploadFileForm
+from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet, Asset
+from scenarioEditor.forms import AssetFileForm, AssetForm
 import gitlab_utility
 import uuid
 from django.core import serializers
@@ -192,12 +191,12 @@ def create_scenario_view(request):
 @login_required(login_url='/scenario/login/')
 def upload_asset(request):
     if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
+        form = AssetFileForm(request.POST, request.FILES)
         if form.is_valid():
             new_file = UploadFile(file = request.FILES['file'])
             tex = Texture()
             file_name = str(uuid.uuid4()) + ".png"
-            tex.name = "Temp" + file_name 
+            tex.name = file_name 
             tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name 
             print tex.imageUrl
             gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
@@ -206,6 +205,31 @@ def upload_asset(request):
     else:
         return HttpResponse("Invalid Method", status=405)
 
+
+@login_required(login_url='/scenario/login/')
+def asset_service(request, asset_id):
+    if(request.method == 'GET'):
+        if(asset_id != None):
+            obj = Asset.objects.get(id=asset_id)
+            if(obj != None):
+                data = serializers.serialize('json', {obj, })
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return HttpResponse("Object could not be found", status=404)
+        else:
+            return HttpResponse("ID required", status=405)
+    elif(request.method == 'POST'):
+        form = AssetForm(request.POST)
+        asset = Asset()
+        asset.name = form.name
+        asset.description = form.description
+        asset.assetType = form.assetType
+        asset.componentSet = ComponentSet.get(id=form.componentSet)
+        asset.save()
+        return HttpResponse('{"status":"created", "id":' + str(asset.id) + '}', content_type='application/json')
+    else:
+        return HttpResponse("Invalid Method", status=405)
+        
 
 def logout_user_view(request):
     logout(request)

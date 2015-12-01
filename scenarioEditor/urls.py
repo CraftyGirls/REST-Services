@@ -22,5 +22,8 @@ urlpatterns = patterns('',
                        url(r'^create/', scenarioEditor.views.create_scenario_view, name='create_scenario'),
                        url(r'^edit/<(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.edit_scenario_view, name='edit_scenario'),
                        url(r'^upload_asset/', scenarioEditor.views.upload_asset, name='upload_asset'), # File POST
+                       
+                       # Services
                        url(r'^service/component_set(?:/(?P<component_set_id>[0-9]+))?/$', scenarioEditor.views.component_set_service, name='component_set_service'),
+                       url(r'^service/asset(?:/(?P<asset_id>[0-9]+))?/$', scenarioEditor.views.component_set_service, name='asset_service'),
                        )

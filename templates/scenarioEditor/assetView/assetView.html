@@ -4,21 +4,31 @@
    
    <span>Asset Type: </span>
    
-   <select ng-model="selectedAssetType" ng-options="item as item.label for item in assetTypes track by item.id" 
-      ng-init="selectedAssetType = assetTypes[0]" ng-change="onAssetTypeChange()"></select>
+   <div class="container">
+      <select ng-model="selectedAssetType" ng-options="item as item.label for item in assetTypes track by item.id" 
+         ng-init="selectedAssetType = assetTypes[0]" ng-change="onAssetTypeChange()"></select>
+   </div>
    
-   <select ng-show="showCharacterComponentTypes" ng-model="selectedComponentType" ng-options="item as item.label for item in componentTypes track by item.id" 
-      ng-init="selectedComponentType = componentTypes[0]" ng-change="onComponentTypeChange()"></select>
+   <div class="container">
+      <select ng-show="showCharacterComponentTypes" ng-model="selectedComponentType" ng-options="item as item.label for item in componentTypes track by item.id" 
+         ng-init="selectedComponentType = componentTypes[0]" ng-change="onComponentTypeChange()"></select>
+   </div>
+   
+   <div class="container" ng-show="selectedAssetType != assetTypes[0]">
+      <span class="row">Name:</span><input type="text" name="name" ng-model="assetName"/>
+      <span class="row">Description:</span><input type="text" name="name" ng-model="assetDescription"/>
+      <span class="row">Tags (Comma Seperated):</span><input type="text" name="name" ng-model="assetTags"/>
+   </div>
    
    <div ng-show="showFileUploaders">
       <div id="file-upload-container"></div>
-      <button id="upload-files" ng-click="uploadFiles()">Confirm Files</button>
+      <button class="btn btn-primary" id="upload-files" ng-click="uploadFiles()">Confirm Files</button>
    </div>
-   
+
    <div ng-show="componentFilesConfirmed">
       <span>Component Scale : </span>
       <input type="number" ng-model="componentScale" step="0.1" min = 0.1/>
       <component-builder components="componentImages" component-type="selectedComponentType" component-scale="componentScale"></component-builder>
+      <button class="btn btn-primary" ng-click="uploadAsset()">Save Asset</button>
    </div>
-
 </div>

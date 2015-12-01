@@ -5,20 +5,40 @@
             <h3>Conversations</h3>
             <form>
                 <span ng-repeat="conversation in getConvos()">
+                    {$conversation.id$}
                     Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
                     <button class="btn btn-default" ng-click="editConvo(conversation)">Edit {{conversation.name}}</button>
-                    <button class="btn btn-danger" ng-confirm-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
+                    <button class="btn btn-danger" ng-confirm-click ng-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
                     <hr/>
                 </span>
                 <button class="btn btn-default" ng-click="addConvo()">Add new conversation</button>
             </form>
         </div>
-    
-        <div class="col-md-10 conversation-edit fill-height"  ng-show="editVisible">
-            <span ng-repeat="dialogue in getCurrentCovnversation().dialogues ">
-        	   <div dialogue class="dialogue-container"></div>
-        	</span>
-            <button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
+
+        <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <div class="dialogue-container">
+                <span ng-repeat="dialogue in getCurrentCovnversation().dialogues">
+            	   <div dialogue class="dialogue-container"></div>
+            	</span>
+            	<button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
+        	</div>
+            <div class="dialogue-container">
+                <h3>Options/Link</h3>
+                <span ng-repeat="option in getCurrentCovnversation().options">
+                    <div class="dialogue-container">
+                        <span>Conversation:</span>
+                          <select name="convo-link" ng-model="option.convoId"
+                            ng-options="convo.id as convo.name for convo in getConvos()"
+                            ng-init="option.convoId == -1 ? option.convoId = getConvos()[0].id : option.convoId = option.convoId" >
+                        </select>
+                        <div ng-if="getCurrentCovnversation().options.length > 1">
+                            <span>Label : </span>
+                            <input type="text" name="optionLabel" ng-model="option.label"/>
+                        </div>
+                    </div>  
+                </span>
+                <button class="btn btn-primary" ng-click="addOption()">Add Option</button>
+	        </div>
         </div>
     </div>
 </div>

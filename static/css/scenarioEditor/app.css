@@ -228,3 +228,25 @@
     width: 500px;
     height: 500px;
 }
+
+.block-ui{
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    position:fixed;
+    background-color:rgba(200, 200, 200, 0.8); 
+    z-index:9999;
+}
+
+.block-ui-text{
+    font-size:60px;
+    margin-left:auto;
+    margin-right:auto;
+    position:fixed;
+    display:inline-block;
+    width:100%;
+    height:100%;
+    z-index:9999;
+}
