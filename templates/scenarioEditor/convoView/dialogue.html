@@ -25,14 +25,10 @@
             <input type="text" ng-model="trigger.func"/>
             <div class="arg-container">
                 Arguments = 
-                <span class="arg-container" ng-repeat="arg in trigger.args track by $index">
-                    <div class = "arg-container">
-                        <div ng-repeat="(key, val) in arg track by $index">
-                            <input id="trigger-arg-key-{$$parent.$index$}" type="text" ng-model="key" ng-change="updateArgKey(arg, 'trigger-arg-key-{$$parent.$index$}', '{$key$}')"/> 
-                                <span> = </span><input type="text" ng-model="arg[key]"/>
-                        </div>
+                    <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
+                        <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/> 
+                            <span> = </span><input type="text" ng-model="trigger.args[key]"/>
                     </div>
-                </span>
                 <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
             </div>
         </div>
@@ -47,14 +43,12 @@
             <input type="text" ng-model="condition.func"/>
             <div class="arg-container">
                 Arguments = 
-                <span ng-repeat="arg in condition.args">
-                    <div class = "arg-container">
-                        <div ng-repeat="(key, val) in arg track by $index">
-                            <input id="condition-arg-key-{$$parent.$index$}" type="text" ng-model="key" ng-change="updateArgKey(arg, 'condition-arg-key-{$$parent.$index$}', '{$key$}')"/> 
-                                <span> = </span><input type="text" ng-model="arg[key]"/>
-                        </div>
+                <div class = "arg-container">
+                    <div ng-repeat="(key, val) in condition.args track by $index" class="arg-container">
+                        <input id="condition-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(condition, 'condition-arg-key-{$$index$}', '{$key$}')"/> 
+                            <span> = </span><input type="text" ng-model="condition.args[key]"/>
                     </div>
-                </span>
+                </div>
                 <button class="btn btn-primary" ng-click="addConditionArg(condition)">Add Arg</button>
             </div>
         </div>

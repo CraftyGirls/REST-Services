@@ -66,11 +66,12 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
     convoService.addOption(-1, "");
   }
   
-  $scope.updateArgKey = function(arg, input, oldKey){
-    var value = arg[oldKey];
+  $scope.updateArg = function(argParent, input, oldKey){
     var newKey = document.getElementById(input).value;
-    delete arg[oldKey];
-    arg[newKey] = value;
+    // Work with json to maintain property order
+    var asJson = JSON.stringify(argParent.args);
+    asJson = asJson.replace(oldKey, newKey);
+    argParent.args = JSON.parse(asJson);
   }
   
 }])

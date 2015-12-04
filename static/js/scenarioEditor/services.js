@@ -37,38 +37,35 @@ scenarioServices.service('convoService', function() {
     };
 
     function Trigger() {
+        
         this.func = "";
-        this.args = [];
+        this.args = new Arg();
 
         this.addArg = function() {
-            this.args.push(new Arg());
+            this.args["key" + Object.keys(this.args).length] = "value";
         };
     }
 
     Trigger.BuildFromData = function(data) {
         var trig = new Trigger();
         trig.func = data.func;
-        for (var i = 0; i < data.args.length; i++) {
-            trig.args.push(Arg.BuildFromData(data.args[i]));
-        }
+        trig.args = Arg.BuildFromData(data.args);
         return trig;
     };
 
     function Condition() {
         this.func = "";
-        this.args = [];
+        this.args = new Arg();
 
-        this.addArg = function() {
-            this.args.push(new Arg());
+         this.addArg = function() {
+            this.args["key" + Object.keys(this.args).length] = "value";
         };
     }
 
     Condition.BuildFromData = function(data) {
         var cond = new Condition();
         cond.func = data.func;
-        for (var i = 0; i < data.args.length; i++) {
-            cond.args.push(Arg.BuildFromData(data.args[i]));
-        }
+        cond.args = Arg.BuildFromData(data.args);
         return cond;
     };
 
