@@ -65,6 +65,14 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
   $scope.addOption = function(){
     convoService.addOption(-1, "");
   }
+  
+  $scope.updateArgKey = function(arg, input, oldKey){
+    var value = arg[oldKey];
+    var newKey = document.getElementById(input).value;
+    delete arg[oldKey];
+    arg[newKey] = value;
+  }
+  
 }])
 
 .directive('dialogue', function() {

@@ -4,202 +4,207 @@
 
 var scenarioServices = angular.module('scenarioServices', []);
 
-scenarioServices.service('convoService', function () {
-    
+scenarioServices.service('convoService', function() {
+
     var convoData = [];
 
     var currConversation = null;
     var currId = 1;
-    
-    function Line(){
+
+    function Line() {
         this.text = "";
     }
-    
-    Line.BuildFromData = function(data){
+
+    Line.BuildFromData = function(data) {
         var line = new Line();
         line.text = data.text;
         return line;
     };
-    
-    function Arg(){
-        this.value = "";
-    }
-    
-    Arg.BuildFromData = function(data){
+
+    function Arg() {} // Object properties are not constant
+
+    Arg.BuildFromData = function(data) {
         var arg = new Arg();
-        arg.value = data.value;
+        // The key values of an arg are not set so we iterate through the stored 
+        // data object to determine what they are
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                arg[key] = data[key];
+            }
+        }
+
         return arg;
     };
-    
-    function Trigger(){
+
+    function Trigger() {
         this.func = "";
         this.args = [];
-        
-        this.addArg = function(){
+
+        this.addArg = function() {
             this.args.push(new Arg());
         };
     }
-    
-    Trigger.BuildFromData = function(data){
+
+    Trigger.BuildFromData = function(data) {
         var trig = new Trigger();
         trig.func = data.func;
-        for(var i =0; i < data.args.length; i++){
+        for (var i = 0; i < data.args.length; i++) {
             trig.args.push(Arg.BuildFromData(data.args[i]));
         }
         return trig;
     };
-    
-    function Condition(){
+
+    function Condition() {
         this.func = "";
         this.args = [];
-        
-        this.addArg = function(){
+
+        this.addArg = function() {
             this.args.push(new Arg());
         };
     }
-    
-    Condition.BuildFromData = function(data){
+
+    Condition.BuildFromData = function(data) {
         var cond = new Condition();
         cond.func = data.func;
-        for(var i = 0; i < data.args.length; i++){
+        for (var i = 0; i < data.args.length; i++) {
             cond.args.push(Arg.BuildFromData(data.args[i]));
         }
         return cond;
     };
-    
-    function Dialogue(name){
-        this.lines      = [];
-        this.triggers   = [];
+
+    function Dialogue(name) {
+        this.lines = [];
+        this.triggers = [];
         this.conditions = [];
-        this.speaker    = "";
-        this.name       = name;
-        
-        this.addLine = function(){
+        this.speaker = "";
+        this.name = name;
+
+        this.addLine = function() {
             this.lines.push(new Line());
         };
-        
-        this.addTrigger = function(){
+
+        this.addTrigger = function() {
             this.triggers.push(new Trigger());
         };
-        
-        this.addCondition = function(){
+
+        this.addCondition = function() {
             this.conditions.push(new Condition());
         };
     }
-    
-    Dialogue.BuildFromData = function(data){
+
+    Dialogue.BuildFromData = function(data) {
         var diag = new Dialogue();
-       
-        for(var i = 0; i < data.lines.length; i++){
+
+        for (var i = 0; i < data.lines.length; i++) {
             diag.lines.push(Line.BuildFromData(data.lines[i]));
         }
-        
-        for(var i = 0; i < data.triggers.length; i++){
-             diag.triggers.push(Trigger.BuildFromData(data.triggers[i]));
+
+        for (var i = 0; i < data.triggers.length; i++) {
+            diag.triggers.push(Trigger.BuildFromData(data.triggers[i]));
         }
-        
-        for(var i = 0; i < data.conditions.length; i++){
-             diag.conditions.push(Condition.BuildFromData(data.conditions[i]));
+
+        for (var i = 0; i < data.conditions.length; i++) {
+            diag.conditions.push(Condition.BuildFromData(data.conditions[i]));
         }
-        
+
         diag.speaker = data.speaker;
-        diag.name    = data.name;
-        
+        diag.name = data.name;
+
         return diag;
     };
-    
-    function Option(convoId, label){
+
+    function Option(convoId, label) {
         this.convoId = convoId;
         this.label = label;
     }
-    
-    Option.BuildFromData = function(data){
+
+    Option.BuildFromData = function(data) {
         return new Option(data.convoId, data.label);
-    } 
-    
-    function Conversation(id, name){
+    }
+
+    function Conversation(id, name) {
         this.id = id;
         this.name = name;
         this.dialogues = [];
         this.options = [];
-        
-        this.addDialogue = function(){
+
+        this.addDialogue = function() {
             this.dialogues.push(new Dialogue("Dialogue " + this.dialogues.length));
         };
-        
-        this.addOption = function(convoId, label){
-            this.options.push(new Option(convoId, label))        
+
+        this.addOption = function(convoId, label) {
+            this.options.push(new Option(convoId, label))
         }
     }
-    
-    Conversation.BuildFromData = function(data){
+
+    Conversation.BuildFromData = function(data) {
         var convo = new Conversation(data.id, data.name);
-        for(var i = 0; i < data.dialogues.length; i++){
+        for (var i = 0; i < data.dialogues.length; i++) {
             convo.dialogues.push(Dialogue.BuildFromData(data.dialogues[i]));
         }
-        for(var i = 0; i < data.options.length; i++){
+        for (var i = 0; i < data.options.length; i++) {
             convo.addOption(data.options[i].convoId, data.options[i].label);
         }
         return convo;
     }
 
     return {
-        conversations: function () {
+        conversations: function() {
             return convoData;
         },
-       setData: function(convos){
-          for(var i = 0; i < convos.length; i++){
-              convoData.push(Conversation.BuildFromData(convos[i]));
-              currId = Math.max(currId, convos[i].id);
-          }
-          currId += 1;
-          console.log(currId);
+        setData: function(convos) {
+            for (var i = 0; i < convos.length; i++) {
+                convoData.push(Conversation.BuildFromData(convos[i]));
+                currId = Math.max(currId, convos[i].id);
+            }
+            currId += 1;
+            console.log(currId);
         },
-        addConversation: function () {
-            var id = currId; 
-            if(convoData.length > 0){
+        addConversation: function() {
+            var id = currId;
+            if (convoData.length > 0) {
                 id = convoData.length + 1;
             }
             convoData.push(new Conversation(id, 'Conversation ' + id));
             currId++;
         },
-        editConversation: function (convo) {
+        editConversation: function(convo) {
             currConversation = convo;
         },
-        deleteConversation: function (convo) {
+        deleteConversation: function(convo) {
             var idx = convoData.indexOf(convo);
-            if(idx != -1){
+            if (idx != -1) {
                 convoData.splice(idx, 1);
             }
         },
-        addDialogue : function(){
+        addDialogue: function() {
             currConversation.addDialogue();
         },
-        addLine : function(dialogue){
+        addLine: function(dialogue) {
             dialogue.addLine();
         },
-        getCurrentCovnversation : function(){
+        getCurrentCovnversation: function() {
             return currConversation;
         },
-        addTrigger : function(dialogue){
+        addTrigger: function(dialogue) {
             dialogue.addTrigger();
         },
-        addTriggerArg : function(trigger){
+        addTriggerArg: function(trigger) {
             trigger.addArg();
         },
-        addConditionArg : function(condition){
+        addConditionArg: function(condition) {
             condition.addArg();
         },
-        addCondition : function(dialogue){
+        addCondition: function(dialogue) {
             dialogue.addCondition();
         },
-        addOption : function(convoId, label){
+        addOption: function(convoId, label) {
             currConversation.addOption(convoId, label)
         }
     };
 });
 
-scenarioServices.service('charService', function () {
+scenarioServices.service('charService', function() {
     // The characters
     var charData = [];
 
@@ -209,91 +214,97 @@ scenarioServices.service('charService', function () {
 
     // The character currently being edited
     var currChar = null;
-    
-    function State(id, name){
+
+    function State(id, name) {
         this.id = id;
-        this.name = name; 
+        this.name = name;
     }
-    
-    State.BuildFromData = function(data){
+
+    State.BuildFromData = function(data) {
         var state = new State(data.id, data.name);
         return state;
     }
-    
-    function Character(id, name){
-        this.id     = id;
-        this.name   = name;
+
+    function Character(id, name) {
+        this.id = id;
+        this.name = name;
         this.states = [];
-        
-        this.addState = function(state){
+
+        this.addState = function(state) {
             var stateId = 0;
-            for(var i = 0; i < this.states.length; i++){
+            for (var i = 0; i < this.states.length; i++) {
                 stateId = Math.max(stateId, this.states[i].id);
             }
             stateId++;
             this.states.push(new State(stateId, ""));
         }
     }
-    
-    Character.BuildFromData = function(data){
+
+    Character.BuildFromData = function(data) {
         var char = new Character(data.id, data.name);
-        for(var i = 0; i < data.states.length; i++){
+        for (var i = 0; i < data.states.length; i++) {
             char.states.push(data.states[i]);
         }
         return char;
     }
 
     return {
-        chars: function () {
+        chars: function() {
             return charData;
         },
-        setData: function(chars){
-          for(var i = 0; i < chars.length; i++){
+        setData: function(chars) {
+            for (var i = 0; i < chars.length; i++) {
                 charData.push(Character.BuildFromData(chars[i]));
                 // Find the highest saved ID
                 currId = Math.max(currId, chars[i].id);
-          }
-          // Increment it at the end for use when adding a new character
-          currId++;
+            }
+            // Increment it at the end for use when adding a new character
+            currId++;
         },
-        addChar: function () {
+        addChar: function() {
             charData.push(new Character(currId, ""));
             currId++;
         },
-        deleteChar: function (character) {
+        deleteChar: function(character) {
             charData.splice(charData.indexOf(character), 1);
         },
-        editChar: function (character) {
+        editChar: function(character) {
             currChar = character;
         },
-        getCurrChar: function () {
+        getCurrChar: function() {
             return currChar;
         },
-        addStateToChar: function (character) {
+        addStateToChar: function(character) {
             character.addState();
         },
-        getStatesLength: function (character) {
+        getStatesLength: function(character) {
             return charData[charData.indexOf(character)].states.length;
         }
     };
 });
 
-scenarioServices.service('lineService', function () {
-    var lineData = [
-        {'id': 0, 'character': '', 'text': ''}
-    ];
+scenarioServices.service('lineService', function() {
+    var lineData = [{
+        'id': 0,
+        'character': '',
+        'text': ''
+    }];
 
     var currLine = 0;
 
     return {
-        lines: function () {
+        lines: function() {
             return lineData;
         },
-        addLine: function () {
+        addLine: function() {
             currLine++;
-            lineData.push({'id': currLine, 'character': '', text: ''});
+            lineData.push({
+                'id': currLine,
+                'character': '',
+                text: ''
+            });
         },
-        deleteLine: function (character) {
+        deleteLine: function(character) {
             lineData.splice(lineData.indexOf(character), 1);
         }
     };
