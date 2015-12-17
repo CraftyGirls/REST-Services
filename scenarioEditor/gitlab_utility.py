@@ -9,7 +9,7 @@ def get_private_token():
     return configParser.get('contents', 'token')
     
 def login():
-    return gitlab.Gitlab("gitlab.com", token=get_private_token())
+    return gitlab.Gitlab("http://192.168.0.109/", token=get_private_token())
     
 
 def get_project_id_by_name(project_name):

@@ -25,7 +25,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     $scope.selectedAssetType = -1;
 
-    $scope.componentSetId = -1;
+    $scope.assetId = -1;
 
     $scope.componentScale = 1;
 
@@ -37,14 +37,24 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     $scope.assetTags = "";
     $scope.assetType = "";
 
+
+    var CHARACTER_COMPONENT = 1;
+    var ITEM                = 2;
+
     // Make this a serverside resource later on
     $scope.assetTypes = [{
         id: -1,
         label: 'Select Asset Type'
-    }, {
-        id: 1,
-        label: 'Character Component'
-    }];
+        }, 
+        {
+            id: CHARACTER_COMPONENT,
+            label: 'Character Component'
+        },
+        {
+            id: ITEM,
+            label : 'Item'
+        }
+    ];
 
     $scope.componentTypes = [{
         id: -1,
@@ -72,7 +82,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         "Torso": ["Torso"],
         "Head": ["Lower Jaw", "Upper Jaw", "Nose", "Left Pupil", "Right Pupil"],
         "Pelvis": ["Pelvis"]
-    }
+    };
 
     $scope.onAssetTypeChange = function() {
         switch ($scope.selectedAssetType.label) {
@@ -80,7 +90,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 $scope.showCharacterComponentTypes = true;
                 break;
         }
-    }
+    };
 
     $scope.onComponentTypeChange = function() {
 
@@ -94,7 +104,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         }
 
         $scope.showFileUploaders = true;
-    }
+    };
 
     $scope.uploadFiles = function() {
         $scope.componentFilesConfirmed = true;
@@ -103,42 +113,93 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
             $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
         }
-    }
+    };
 
     $scope.uploadAsset = function() {
         // Tell the app controller to block the ui
         $scope.$emit('blockUi', [true]);
-
-        $http.post('/scenario/service/component_set/', null).then(
-            function(response) { // success
-               
-               $scope.componentSetId = response.data.id; // Triggers the process queue on the file uploaders
-
-                var data = {
-                    "name": $scope.assetName,
-                    "description": $scope.assetDescription,
-                    "tags": $scope.assetTags,
-                    "assetType": $scope.assetType,
-                    "componentSet" : response.data.id
+        switch($scope.selectedAssetType.id){
+            case CHARACTER_COMPONENT :
+                var compSetData = {
+                    name: $scope.assetName,
+                    description: $scope.assetDescription,
+                    tags: $scope.assetTags,
+                    componentType: $scope.selectedComponentType.label.toUpperCase()
                 };
-                
-                for(var i = 0; i < $scope.componentImages.length; i++){
-                    
-                    $http.post('/scenario/service/asset/', data).then(
-                        function(response) { // success
-                            $scope.componentSetId = response.data.id; // Triggers the process queue on the file uploaders
-                        },
-                        function(response) { // failure
-                            alert("Error creating component set");
+                // Create a component set and get the id that is returned 
+                $http.post('/scenario/service/component_set/', compSetData).then(
+                    function(response) { // success
+                       $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
+
+                        // Create a data object which contains the relevant data for the components
+                        // Send along the component set I'd so we know which part of the component type
+                        var data = {
+                                    assetType : $scope.assetType,
+                                    componentPiece: $scope.componentType,
+                                    componentSet : response.data.id
+                                    };
+                        
+                        for(var i = 0; i < $scope.componentImages.length; i++){
+                            $http.post('/scenario/service/asset/', data).then(
+                                function(response) { // success
+                                    $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
+                                },
+                                function(response) { // failure
+                                    alert("Error creating component set");
+                                }
+                            );
                         }
-                    );
-                }
-            },
-            function(response) { // failure
-                alert("Error creating component set");
-            }
-        );
-    }
+                        $scope.$emit('blockUi', [false]);
+                    },
+                    function(response) { // failure
+                        alert("Error creating component set - " + response.data);
+                        $scope.$emit('blockUi', [false]);
+                    }
+                );
+                break;
+
+            case ITEM:
+                var itemData = {
+                    name: $scope.assetName,
+                    description: $scope.assetDescription,
+                    tag: $scope.assetTags
+                    // Extra item attributes
+                };
+
+                // Create an item set and get the id that is returned 
+                $http.post('/scenario/service/item/', null).then(
+                    function(response) { // success
+                       
+                       $scope.itemId = response.data.id; // Triggers the process queue on the file uploaders
+
+                        // Create a data object which contains the relevant data for the item
+                        // Send alonng the component set I'd so we know which part of the component type 
+                        var data = {
+                                    "assetType" : $scope.assetType,
+                                    "componentSet" : response.data.id
+                                };
+                        
+                        // This should be changed to the item image
+                        for(var i = 0; i < $scope.componentImages.length; i++){
+                            $http.post('/scenario/service/asset/', data).then(
+                                function(response) { // success
+                                    $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
+                                },
+                                function(response) { // failure
+                                    alert("Error creating component set");
+                                }
+                            );
+                        }
+                    },
+                    function(response) { // failure
+                        alert("Error creating component set");
+                    }
+                );
+
+                break;
+
+        }
+    };
 
     function getFileUploadContainer() {
         return angular.element(document.getElementById('file-upload-container'));
@@ -146,7 +207,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     function addFileUploader(componentName) {
         var container = getFileUploadContainer();
-        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' component-set-id='componentSetId' dropzones='dropzones'></div><br/>")($scope));
+        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' component-set-id='assetId' dropzones='dropzones'></div><br/>")($scope));
     }
 
     function addDropzone(dropzone) {
@@ -169,7 +230,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 dropzoneConfig: '=',
                 eventHandlers: '=',
                 dropzones: "=dropzones",
-                componentSetId: "="
+                assetId: "=",
+                additionalData: "="
             },
 
             link: function(scope, element, attrs, ctrls) {
@@ -202,7 +264,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     },
 
                     sending: function(file, xhr, formData) {
-                        formData.append("componentSetId", scope.componentSetId);
+                        formData.append("assetId", scope.assetId);
                     },
 
                     init: function() {
@@ -225,7 +287,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     });
                 }
 
-                scope.$watch('componentSetId', function(value) {
+                scope.$watch('assetId', function(value) {
                     if (value != -1) {
                         dropzone.processQueue();
                     }
@@ -354,7 +416,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 },
                                 component: scope.components[0],
                                 percentages: calculateJointImgRelationship(inJointGroup, rootComponentImg)
-                            }
+                            };
                             var sets = componentRelationShips[scope.componentType.label].split(",");
                             for (var x = 0; x < sets.length; x++) {
                                 var s = 0;
@@ -364,7 +426,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     console.log(scope.components);
                                     var imgIdx = scope.components.indexOf(compName);
                                     var jointName = comps[i] + " - " + comps[i + 1];
-                                    var jointIdx = outJointLabels.indexOf(jointName) + s;;
+                                    var jointIdx = outJointLabels.indexOf(jointName) + s;
                                     if (imgIdx >= 0) {
                                         var componentImg = componentImages[imgIdx];
                                         rels.push({

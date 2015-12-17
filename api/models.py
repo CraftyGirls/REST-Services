@@ -18,7 +18,9 @@ class Scenario(models.Model):
 
     class Meta:
         ordering = ('created',)
-        
+
+class Taggable(models.Model):
+    pass
         
 class Component(models.Model):
     
@@ -33,7 +35,7 @@ class Component(models.Model):
     class Meta:
         ordering = ('name',)
         
-class ComponentSet(models.Model):
+class ComponentSet(Taggable):
     
     TYPE_CHOICES = [
         ('ARM', 'Arm'),
@@ -41,7 +43,7 @@ class ComponentSet(models.Model):
         ('HEAD', 'Head'),
         ('TORSO', 'Torso'),
         ('PELVIS', 'Pelvis')
-        ];
+        ]
     
     name = models.CharField(default='', max_length=100)
     jsonRepresentation = models.TextField(default='')
@@ -56,12 +58,12 @@ class Asset(models.Model):
     TYPE_CHOICES = [
         ('COMPONENT_IMAGE', 'Component Image'),
         ('MESH', 'Mesh'),
-        ];
+        ]
     
     name        = models.CharField(max_length=100, blank=False, default='')
     description = models.TextField(default='')
     remoteUrl   = models.CharField(max_length=1000, blank=False, default='')
-    assetType   = models.CharField(max_length=255, choices=TYPE_CHOICES)
+    assetType   = models.CharField(max_length=255, choices=TYPE_CHOICES, default='')
     
     
 class Texture(models.Model):
@@ -155,19 +157,20 @@ class FurnitureComponent(models.Model):
 class FurnitureType(models.Model):
     name = models.CharField(max_length=100, blank=False, default='')
     room = models.ForeignKey(Room, null=True)
-    furnitureComponent = models.ForeignKey(FurnitureComponent, null=True) 
-     
-    
+    furnitureComponent = models.ForeignKey(FurnitureComponent, null=True)
+
 class Tag(models.Model):
-    name = models.CharField(max_length=100, blank=False, default='')
-    description = models.TextField(blank=False, default='')
+    value = models.CharField(max_length=100, blank=False, default='')
+    #description = models.TextField(blank=False, default='')
     
     # Foreign keys to taggable types - look into abstract classes for these
-    room = models.ForeignKey(Room, null=True)
-    furnitureType = models.ForeignKey(FurnitureType, null=True)
-    itemDefinition = models.ForeignKey(ItemDefinition, null=True)
-    characterComponent = models.ForeignKey(CharacterComponent, null=True)
-    furnitureComponent = models.ForeignKey(FurnitureComponent, null=True)
+    #room = models.ForeignKey(Room, null=True)
+    #furnitureType = models.ForeignKey(FurnitureType, null=True)
+    #itemDefinition = models.ForeignKey(ItemDefinition, null=True)
+    #characterComponent = models.ForeignKey(CharacterComponent, null=True)
+    #furnitureComponent = models.ForeignKey(FurnitureComponent, null=True)
+
+    owner = models.ForeignKey(Taggable, null=True)
     
     
 class Trigger(models.Model):

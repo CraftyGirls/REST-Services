@@ -25,5 +25,6 @@ urlpatterns = patterns('',
                        
                        # Services
                        url(r'^service/component_set(?:/(?P<component_set_id>[0-9]+))?/$', scenarioEditor.views.component_set_service, name='component_set_service'),
-                       url(r'^service/asset(?:/(?P<asset_id>[0-9]+))?/$', scenarioEditor.views.component_set_service, name='asset_service'),
+                       url(r'^service/item(?:/(?P<item_id>[0-9]+))?/$', scenarioEditor.views.item_service, name='item_service'),
+                       url(r'^service/asset(?:/(?P<asset_id>[0-9]+))?/$', scenarioEditor.views.asset_service, name='asset_service'),
                        )
