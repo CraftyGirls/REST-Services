@@ -42,7 +42,11 @@ scenarioServices.service('convoService', function() {
         this.args = new Arg();
 
         this.addArg = function() {
-            this.args["key" + Object.keys(this.args).length] = "value";
+            var id = 0;
+            while(this.args.hasOwnProperty("key" + id)){
+                id++;
+            }
+            this.args["key" + id] = "value";
         };
     }
 
@@ -58,7 +62,11 @@ scenarioServices.service('convoService', function() {
         this.args = new Arg();
 
          this.addArg = function() {
-            this.args["key" + Object.keys(this.args).length] = "value";
+            var id = 0;
+            while(this.args.hasOwnProperty("key" + id)){
+                id++;
+            }
+            this.args["key" + id++] = "value";
         };
     }
 
@@ -117,7 +125,7 @@ scenarioServices.service('convoService', function() {
 
     Option.BuildFromData = function(data) {
         return new Option(data.convoId, data.label);
-    }
+    };
 
     function Conversation(id, name) {
         this.id = id;

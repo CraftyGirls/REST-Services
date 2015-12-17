@@ -23,7 +23,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
   
   $scope.addLine = function (dialogue) {
     convoService.addLine(dialogue)
-  }
+  };
 
   $scope.editConvo = function (convo) {
     convoService.editConversation(convo);
@@ -40,31 +40,31 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
   
   $scope.addDialogue = function(convo){
     convoService.addDialogue(convo)
-  }
+  };
   
   $scope.getCurrentCovnversation = function(){
     return convoService.getCurrentCovnversation();
-  }
+  };
   
   $scope.addTrigger = function(dialogue) {
     convoService.addTrigger(dialogue);
-  }
+  };
   
   $scope.addTriggerArg = function(trigger) {
     convoService.addTriggerArg(trigger);
-  }
+  };
   
   $scope.addConditionArg = function(trigger) {
     convoService.addTriggerArg(trigger);
-  }
+  };
   
   $scope.addCondition = function(dialogue){
     convoService.addCondition(dialogue);
-  }
+  };
   
   $scope.addOption = function(){
     convoService.addOption(-1, "");
-  }
+  };
   
   $scope.updateArg = function(argParent, input, oldKey){
     var newKey = document.getElementById(input).value;

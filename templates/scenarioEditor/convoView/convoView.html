@@ -6,7 +6,7 @@
             <form>
                 <span ng-repeat="conversation in getConvos()">
                     {$conversation.id$}
-                    Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
+                    Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"/><br/>
                     <button class="btn btn-default" ng-click="editConvo(conversation)">Edit {{conversation.name}}</button>
                     <button class="btn btn-danger" ng-confirm-click ng-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
                     <hr/>
@@ -19,6 +19,7 @@
             <div class="dialogue-container">
                 <span ng-repeat="dialogue in getCurrentCovnversation().dialogues">
             	   <div dialogue class="dialogue-container"></div>
+                   <div sweet-delete variable="dialogue" container="getCurrentCovnversation().dialogues"></div>
             	</span>
             	<button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
         	</div>
@@ -36,6 +37,7 @@
                             <input type="text" name="optionLabel" ng-model="option.label"/>
                         </div>
                     </div>  
+                    <div sweet-delete variable="option" container="getCurrentCovnversation().options"></div>
                 </span>
                 <button class="btn btn-primary" ng-click="addOption()">Add Option</button>
 	        </div>

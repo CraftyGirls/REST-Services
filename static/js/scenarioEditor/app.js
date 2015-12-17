@@ -46,6 +46,42 @@ var application = angular.module('scenarioEditor', [
             };
         }
     ])
+    .directive('sweetDelete', [
+        function(){
+            return {
+                scope: {
+                    variable : "=",
+                    container : "="
+                },
+                template: '<span class="glyphicon glyphicon-remove clickable" ng-click="sweetDelete()"></span>',
+                link: function($scope, iElm, iAttrs, controller) {
+                    $scope.sweetDelete = function(){
+                        var idx = $scope.container.indexOf($scope.variable);
+                        if(idx !== -1){
+                            $scope.container = $scope.container.splice(idx, 1);
+                        }
+                    }
+                }
+            };
+        }
+    ])
+    .directive('sweetKeyedDelete', [
+        function(){
+            return {
+                scope: {
+                    key : "=",
+                    container : "="
+                },
+                transclude: true,
+                template: '<span class="glyphicon glyphicon-remove clickable" ng-click="sweetKeyedDelete()"></span>',
+                link: function($scope, iElm, iAttrs, controller) {
+                    $scope.sweetKeyedDelete = function(){
+                        delete $scope.container[$scope.key];
+                    }
+                }
+            };
+        }
+    ]);
    
 
 var scenarioEditor = angular.module('scenarioEditor');

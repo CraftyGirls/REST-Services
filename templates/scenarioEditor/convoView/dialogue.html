@@ -9,11 +9,12 @@
     </select>
 </div>
 <div class="lines-container">
-     <h4>Lines</h4>
-     <span ng-repeat="line in dialogue.lines">
+    <h4>Lines</h4>
+    <span ng-repeat="line in dialogue.lines">
  	    <div class="line">
             Text : <input type="text" name="line-input" value={$line.text$} ng-model="line.text"/>
         </div>
+        <div sweet-delete variable="line" container="dialogue.lines"></div>
 	</span>
 	<button class="btn btn-primary" ng-click="addLine(dialogue)">Add Line</button>
 </div>
@@ -28,10 +29,12 @@
                     <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
                         <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/> 
                             <span> = </span><input type="text" ng-model="trigger.args[key]"/>
+                            <div sweet-keyed-delete key="key" container="trigger.args"></div>
                     </div>
                 <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
             </div>
         </div>
+        <div sweet-delete variable="trigger" container="dialogue.triggers"></div>
     </span>
     <button class="btn btn-primary" ng-click="addTrigger(dialogue)">Add Trigger</button>
 </div>
@@ -47,11 +50,13 @@
                     <div ng-repeat="(key, val) in condition.args track by $index" class="arg-container">
                         <input id="condition-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(condition, 'condition-arg-key-{$$index$}', '{$key$}')"/> 
                             <span> = </span><input type="text" ng-model="condition.args[key]"/>
+                            <div sweet-keyed-delete key="key" container="condition.args"></div>  
                     </div>
                 </div>
                 <button class="btn btn-primary" ng-click="addConditionArg(condition)">Add Arg</button>
             </div>
         </div>
+        <div sweet-delete variable="condition" container="dialogue.conditions"></div>
     </span>
     <button class="btn btn-primary" ng-click="addCondition(dialogue)">Add Condition</button>
 </div>
