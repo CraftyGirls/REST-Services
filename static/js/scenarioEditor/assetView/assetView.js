@@ -41,6 +41,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     var CHARACTER_COMPONENT = 1;
     var ITEM                = 2;
 
+    var dropzonesProcessed = 0;
+
     // Make this a serverside resource later on
     $scope.assetTypes = [{
         id: -1,
@@ -138,8 +140,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     componentPiece: $scope.componentType,
                                     componentSet : response.data.id
                                     };
-                        
-                        for(var i = 0; i < $scope.componentImages.length; i++){
+
+
+                        $scope.dropzones[0].processQueue();
+                        // Triggers the process queue on the file uploaders as they are watching for
+                        // the id value to know that the owner of the file has been created
+                        //$scope.assetId = response.data.id;
+
+                        /*for(var i = 0; i < $scope.componentImages.length; i++){
                             $http.post('/scenario/service/asset/', data).then(
                                 function(response) { // success
                                     $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
@@ -148,8 +156,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     alert("Error creating component set");
                                 }
                             );
-                        }
-                        $scope.$emit('blockUi', [false]);
+                        }*/
                     },
                     function(response) { // failure
                         alert("Error creating component set - " + response.data);
@@ -201,13 +208,32 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         }
     };
 
+    /**
+     * The dropzones need to be processed syncronously so that Gitlab doesn't throw
+     * an error due to simultaneous commits. When a dropzone has committed its file
+     * it will emit a dropzoneComplete event. When this is recieved we tell the next
+     * on in the array to commit its file
+     */
+    $scope.$on('dropzoneComplete', function(event, data) {
+        dropzonesProcessed++;
+        if(dropzonesProcessed == $scope.dropzones.length){
+            // Successfully uploaded all of the files
+            $scope.$emit('blockUi', [false]);
+            $scope.$apply();
+        }else{
+            // Use the dropzonesProcessed as the idx since we process the first one outside
+            // of this function
+            $scope.dropzones[dropzonesProcessed].processQueue();
+        }
+    });
+
     function getFileUploadContainer() {
         return angular.element(document.getElementById('file-upload-container'));
     }
 
     function addFileUploader(componentName) {
         var container = getFileUploadContainer();
-        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' component-set-id='assetId' dropzones='dropzones'></div><br/>")($scope));
+        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' asset-id='assetId' dropzones='dropzones'></div><br/>")($scope));
     }
 
     function addDropzone(dropzone) {
@@ -234,7 +260,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 additionalData: "="
             },
 
-            link: function(scope, element, attrs, ctrls) {
+            link: function($scope, element, attrs, ctrls) {
                 try {
                     Dropzone
                 }
@@ -249,7 +275,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     resize: function(file) {
 
-                        var resizeInfo = {
+                        return {
                             srcX: 0,
                             srcY: 0,
                             trgX: 0,
@@ -259,41 +285,37 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             trgWidth: file.width,
                             trgHeight: file.height
                         };
-
-                        return resizeInfo;
                     },
 
                     sending: function(file, xhr, formData) {
-                        formData.append("assetId", scope.assetId);
+                        formData.append("assetId", $scope.assetId);
                     },
 
                     init: function() {
                         this.on("addedfile", function() {
                             if (this.files[1] != null) {
-                                this.removeFile(this.files[0]);
+                               this.removeFile(this.files[0]);
                             }
                         });
                     }
                 });
 
                 dropzone.on("success", function(file, response) {
-                    console.log(file);
-                    console.log(response);
+                    $scope.$emit('dropzoneComplete', []);
                 });
 
-                if (scope.eventHandlers) {
-                    Object.keys(scope.eventHandlers).forEach(function(eventName) {
-                        dropzone.on(eventName, scope.eventHandlers[eventName]);
+                dropzone.on("error", function(file, response) {
+                    $scope.$emit('blockUi', [false]);
+                    alert("Error uploading asset file");
+                });
+
+                if ($scope.eventHandlers) {
+                    Object.keys($scope.eventHandlers).forEach(function(eventName) {
+                        dropzone.on(eventName, $scope.eventHandlers[eventName]);
                     });
                 }
 
-                scope.$watch('assetId', function(value) {
-                    if (value != -1) {
-                        dropzone.processQueue();
-                    }
-                });
-
-                scope.dropzones.push(dropzone);
+                $scope.dropzones.push(dropzone);
             }
         };
     })
@@ -350,7 +372,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         for (var i = 0; i < imgElems.length; i++) {
                             var imgInstance = new fabric.Image(imgElems[i], {
                                 left: 10 + lx,
-                                top: 200,
+                                top: 200
                             });
 
                             imgInstance.hasControls = false;
@@ -388,7 +410,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     });
 
-                    canvasWrapper.addEventListener("keydowns", function(e) {
+                    canvasWrapper.addEventListener("keydown", function(e) {
                         if (e.shiftKey) {
                             shiftDown = true;
                         }
@@ -453,8 +475,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     // Calculates the relationship between a specific joint and image
                     function calculateJointImgRelationship(joint, img) {
-                        var imgXPerc = 0.0;
-                        var imgYPerc = 0.0;
 
                         var ix = img.left;
                         var iy = img.top;
@@ -464,8 +484,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         var jx = joint.width / 2 + joint.left - ix;
                         var jy = joint.height + joint.top - iy - ih - joint.item(0).height / 2;
 
-                        imgXPerc = jx / iw;
-                        imgYPerc = -1 * (jy / ih);
+                        var imgXPerc = jx / iw;
+                        var imgYPerc = -1 * (jy / ih);
 
                         return {
                             x: imgXPerc,

@@ -2,14 +2,15 @@ import gitlab
 import ConfigParser
 import base64
 
-def get_private_token():
+def get_config():
     configParser = ConfigParser.RawConfigParser()   
     configFilePath = "gitlab.cnf"
     configParser.read(configFilePath)
-    return configParser.get('contents', 'token')
-    
+    return (configParser.get('contents', 'url'), configParser.get('contents', 'token'))
+
 def login():
-    return gitlab.Gitlab("http://192.168.0.109/", token=get_private_token())
+    config = get_config()
+    return gitlab.Gitlab(config[0], config[1])
     
 
 def get_project_id_by_name(project_name):

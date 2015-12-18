@@ -150,4 +150,4 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             $scope.loadScript($("#scenario-script").text());
         });
     }
-])
+]);
