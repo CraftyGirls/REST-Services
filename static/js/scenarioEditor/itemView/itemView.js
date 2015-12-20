@@ -9,6 +9,19 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
             });
     }])
     
-    .controller('itemCtrl', ['$scope', function($scope) {
-      
+    .controller('itemCtrl', ['$scope', 'itemService', function($scope, itemService) {
+  		$scope.editVisible = false;
+	
+		$scope.getConvos = function () {
+		    return itemService.items();
+		};
+
+	 	$scope.addItem = function () {
+			itemService.addItem();
+	  	};
+
+	  	$scope.editItem = function (item) {
+    		itemService.editItem(item);
+    		$scope.editVisible = true;
+  		};
     }])

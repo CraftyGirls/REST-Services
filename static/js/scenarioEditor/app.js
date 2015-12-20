@@ -86,8 +86,8 @@ var application = angular.module('scenarioEditor', [
 
 var scenarioEditor = angular.module('scenarioEditor');
 
-scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService',
-    function($scope, $http, convoService, charService, lineService) {
+scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService', 'itemService',
+    function($scope, $http, convoService, charService, lineService, itemService) {
 
         // ABSTRACTION LAYER
         $scope.getChars = function() {
@@ -96,6 +96,10 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.getConvos = function() {
             return convoService.conversations();
+        };
+
+        $scope.getItems = function(){
+            return itemService.items();
         };
 
         $scope.getLines = function() {

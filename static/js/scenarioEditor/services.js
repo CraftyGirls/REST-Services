@@ -314,3 +314,41 @@ scenarioServices.service('lineService', function() {
         }
     };
 });
+
+scenarioServices.service('itemService', function() {
+    var itemData = [];
+    var currItem = null;
+
+    function Item(name, id){
+        this.name = name;
+        this.id = id;
+    }
+
+    Item.BuildFromData = function(data){
+        var item = new Item();
+        item.name = data.name;
+        item.id = data.id;
+    }
+
+    function getNextId(){
+        var id = 0;
+        for(var i = 0; i < itemData.length; i++){
+            id = Math.max(itemData[i].id, id);
+        }
+        id++;
+        return id;
+    }
+
+    return {
+        items: function() {
+            return itemData;
+        },
+        addItem: function(){
+            var id = getNextId();
+            itemData.push(new Item("Item" + id, id));
+        },
+        editItem: function(item){
+            currItem = item;
+        }
+    };
+});

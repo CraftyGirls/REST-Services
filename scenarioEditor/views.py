@@ -60,7 +60,7 @@ def user_scenarios_view(request):
 @login_required(login_url='/scenario/login/')
 def user_home_view(request):
     return render(request, 'scenarioEditor/profile/home.html/', {})
-
+ 
 
 def browse_scenarios_view(request):
     get_params = request.GET

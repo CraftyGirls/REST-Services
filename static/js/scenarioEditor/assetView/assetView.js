@@ -252,8 +252,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             template: '<div ng-transclude></div>',
             transclude: true,
             scope: {
-                dropzone: '=',
-                dropzoneConfig: '=',
                 eventHandlers: '=',
                 dropzones: "=dropzones",
                 assetId: "=",
@@ -289,6 +287,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     sending: function(file, xhr, formData) {
                         formData.append("assetId", $scope.assetId);
+                        formData.append("assetType", $scope.assetType);
+                        formData.append("additionalData", $scope.additionalData);
                     },
 
                     init: function() {
