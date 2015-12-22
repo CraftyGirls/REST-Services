@@ -109,7 +109,9 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.dropzones = [];
 
         for (var i = 0; i < componentParts.length; i++) {
-            addFileUploader(componentParts[i]);
+            var dropzone = addFileUploader(componentParts[i]);
+            var additionalData = {componentType : componentParts[i]}
+            dropzone.attr('additional-data', JSON.stringify(additionalData));
         }
 
         $scope.showFileUploaders = true;
@@ -217,7 +219,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     function addFileUploader(componentName) {
         var container = getFileUploadContainer();
-        container.append($compile("<span>File for " + componentName + "</span> <div file-uploader id='drop_zone' asset-id='assetId' dropzones='dropzones'></div><br/>")($scope));
+        container.append($compile(
+                "<span>File for " + componentName + "</span><div file-uploader id='drop_zone' dropzone_" + $scope.dropzones.length + " asset-id='assetId' dropzones='dropzones' additional-data=''></div><br/>"
+            )($scope));
+        // append adds to dropzones so use the length minus one
+        return $("div[dropzone_" + ($scope.dropzones.length - 1) + "]");
     }
 
     function addDropzone(dropzone) {
