@@ -122,50 +122,43 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.$emit('blockUi', [true]);
         switch($scope.selectedAssetType.id){
             case CHARACTER_COMPONENT :
+                
+                // Setup the appropriate data object for a component set
                 var compSetData = {
                     name: $scope.assetName,
                     description: $scope.assetDescription,
                     tags: $scope.assetTags,
                     componentType: $scope.selectedComponentType.label.toUpperCase()
                 };
+
                 // Create a component set and get the id that is returned 
                 $http.post('/scenario/service/component_set/', compSetData).then(
                     function(response) { // success
                        $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
 
                         // Create a data object which contains the relevant data for the components
-                        // Send along the component set I'd so we know which part of the component type
+                        // Send along the component set ID with the dropzone so we know which part of the component type
                         var data = {
                                     assetType : $scope.assetType,
                                     componentPiece: $scope.componentType,
                                     componentSet : response.data.id
                                     };
 
-
                         $scope.dropzones[0].processQueue();
-                        // Triggers the process queue on the file uploaders as they are watching for
-                        // the id value to know that the owner of the file has been created
-                        //$scope.assetId = response.data.id;
-
-                        /*for(var i = 0; i < $scope.componentImages.length; i++){
-                            $http.post('/scenario/service/asset/', data).then(
-                                function(response) { // success
-                                    $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
-                                },
-                                function(response) { // failure
-                                    alert("Error creating component set");
-                                }
-                            );
-                        }*/
                     },
+
+                    //@TODO Add some propper error notification
                     function(response) { // failure
                         alert("Error creating component set - " + response.data);
                         $scope.$emit('blockUi', [false]);
                     }
                 );
+
                 break;
 
             case ITEM:
+
+                // Create the appropriate data object for an item
                 var itemData = {
                     name: $scope.assetName,
                     description: $scope.assetDescription,
@@ -178,28 +171,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     function(response) { // success
                        
                        $scope.itemId = response.data.id; // Triggers the process queue on the file uploaders
-
-                        // Create a data object which contains the relevant data for the item
-                        // Send alonng the component set I'd so we know which part of the component type 
-                        var data = {
-                                    "assetType" : $scope.assetType,
-                                    "componentSet" : response.data.id
-                                };
-                        
-                        // This should be changed to the item image
-                        for(var i = 0; i < $scope.componentImages.length; i++){
-                            $http.post('/scenario/service/asset/', data).then(
-                                function(response) { // success
-                                    $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
-                                },
-                                function(response) { // failure
-                                    alert("Error creating component set");
-                                }
-                            );
-                        }
+                    $scope.dropzones[0].processQueue();
                     },
                     function(response) { // failure
-                        alert("Error creating component set");
+                        alert("Error creating item");
                     }
                 );
 

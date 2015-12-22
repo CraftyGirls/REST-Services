@@ -7,11 +7,11 @@
                 <span ng-repeat="item in getItems()">
                     {$item.id$}
                     Name: <input type="text" ng-model="item.name" cols="25" rows="3"/><br/>
-                    <button class="btn btn-default" ng-click="editItem(item)">Edit {{item.name}}</button>
+                    <button class="btn btn-default" ng-click="editItem(item)">Edit {$item.name$}</button>
                     <div sweet-delete variable="item" container="getItems()"></div>
                     <hr/>
                 </span>
-                <button class="btn btn-default" ng-click="addItem()">Add new item</button>
+                <button class="btn btn-default" ng-click="addItem()">Add New Item</button>
             </form>
         </div>
     </div>

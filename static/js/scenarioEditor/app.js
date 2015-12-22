@@ -86,8 +86,8 @@ var application = angular.module('scenarioEditor', [
 
 var scenarioEditor = angular.module('scenarioEditor');
 
-scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService', 'itemService',
-    function($scope, $http, convoService, charService, lineService, itemService) {
+scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService', 'itemService', 'roomService',
+    function($scope, $http, convoService, charService, lineService, itemService, roomService) {
 
         // ABSTRACTION LAYER
         $scope.getChars = function() {
@@ -101,6 +101,10 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.getItems = function(){
             return itemService.items();
         };
+
+        $scope.getRooms = function(){
+            return roomService.rooms();
+        }
 
         $scope.getLines = function() {
             return lineService.lines();
@@ -127,7 +131,9 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.save = function(scenario_id) {
             $scope.dataObj = {
                 characters: $scope.getChars(),
-                conversations: $scope.getConvos()
+                conversations: $scope.getConvos(),
+                items: $scope.getItems(),
+                rooms: $scope.getRooms()
             };
 
             console.log(angular.toJson($scope.dataObj));
@@ -144,6 +150,8 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             $scope.dataObj = angular.fromJson(script);
             convoService.setData($scope.dataObj.conversations);
             charService.setData($scope.dataObj.characters);
+            itemService.setData($scope.dataObj.items);
+            roomService.setData($scope.dataObj.rooms);
         };
         
         $scope.$on('blockUi', function(event, data) {

@@ -1,8 +1,18 @@
 {% load staticfiles %}
 <div ngController="roomCtrl">
- 	<div class="row fill-height">
+	<div class="row fill-height">
         <div class="col-md-2 list-view">
             <h3>Rooms</h3>
+            <form>
+                <span ng-repeat="room in getRooms()">
+                    {$room.id$}
+                    Name: <input type="text" ng-model="room.name" cols="25" rows="3"/><br/>
+                    <button class="btn btn-default" ng-click="editRoom(room)">Room {$roomm.name$}</button>
+                    <div sweet-delete variable="item" container="getItems()"></div>
+                    <hr/>
+                </span>
+                <button class="btn btn-default" ng-click="addRoom()">Add New Room</button>
+            </form>
         </div>
     </div>
 </div>

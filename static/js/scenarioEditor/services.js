@@ -328,6 +328,7 @@ scenarioServices.service('itemService', function() {
         var item = new Item();
         item.name = data.name;
         item.id = data.id;
+        return item;
     }
 
     function getNextId(){
@@ -349,6 +350,55 @@ scenarioServices.service('itemService', function() {
         },
         editItem: function(item){
             currItem = item;
+        },
+        setData: function(data){
+            for(var i = 0; i < data.length; i++){
+                itemData.push(Item.BuildFromData(data[i]));
+            }
+        }
+    };
+});
+
+scenarioServices.service('roomService', function() {
+    var roomData = [];
+    var currRoom = null;
+
+    function Room(name, id){
+        this.name = name;
+        this.id = id;
+    }
+
+    Room.BuildFromData = function(data){
+        var room = new Room();
+        room.name = data.name;
+        room.id = data.id;
+        return room;
+    }
+
+    function getNextId(){
+        var id = 0;
+        for(var i = 0; i < roomData.length; i++){
+            id = Math.max(roomData[i].id, id);
+        }
+        id++;
+        return id;
+    }
+
+    return {
+        rooms: function() {
+            return roomData;
+        },
+        addRoom: function(){
+            var id = getNextId();
+            roomData.push(new Room("Room" + id, id));
+        },
+        editRoom: function(room){
+            currRoom = room;
+        },
+        setData: function(data){
+            for(var i = 0; i < data.length; i++){
+                roomData.push(Room.BuildFromData(data[i]));
+            }
         }
     };
 });
