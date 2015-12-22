@@ -64,19 +64,12 @@ class Asset(models.Model):
     description = models.TextField(default='')
     remoteUrl   = models.CharField(max_length=1000, blank=False, default='')
     assetType   = models.CharField(max_length=255, choices=TYPE_CHOICES, default='')
-    
+
     
 class Texture(models.Model):
-    name = models.CharField(max_length=100, blank=False, default='')
+    # name = models.CharField(max_length=100, blank=False, default='')
     imageUrl = models.TextField(blank=False, default='')
-    
-    
-class ItemDefinition(models.Model):
-    name = models.CharField(max_length=100, blank=False, default='')
-    description = models.TextField(blank=False, default='')
-    interactable = models.BooleanField(default=False)
-    texture = models.OneToOneField(Texture, null=True)
-    
+
 
 class Room(models.Model):
     size = models.IntegerField(default=0)
@@ -88,9 +81,16 @@ class Character(models.Model):
     description = models.TextField(blank=False, default='')
     scenario    = models.ForeignKey(Scenario, null=True)
 
+
+class ItemDefinition(Taggable):
+    name = models.CharField(max_length=100, blank=False, default='')
+    description = models.TextField(blank=False, default='')
+    interactable = models.BooleanField(default=False)
+    texture = models.OneToOneField(Texture, null=True)
+
     
 class Item(models.Model):
-    itemDef   = models.OneToOneField(ItemDefinition, null=True)
+    itemDef   = models.ForeignKey(ItemDefinition, null=True)
     scenario  = models.ForeignKey(Scenario, null=True)
     room      = models.ForeignKey(Room, null=True)
     character = models.ForeignKey(Character, null=True)

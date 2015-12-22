@@ -1,3 +1,4 @@
+
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -8,8 +9,8 @@ from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet, Asset, Item, Tag
-from scenarioEditor.forms import AssetFileForm, AssetForm, ComponentSetForm
+from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet, Asset, ItemDefinition, Tag
+from scenarioEditor.forms import AssetFileForm, AssetForm, ComponentSetForm, ItemForm
 import gitlab_utility
 import uuid
 from django.core import serializers
@@ -199,13 +200,26 @@ def item_service(request, item_id=None):
                     return HttpResponse(data, content_type='application/json')
             except:
                 return HttpResponse("Object could not be found", status=404)
-
         else:
             return HttpResponse("ID required", status=405)
     elif(request.method == 'POST'):
-        item = Item()
-        item.save()
-        return HttpResponse('{"status":"created", "id":' + str(item.id) + '}', content_type='application/json')
+        try:
+            in_data = json.loads(request.body)
+            itemForm = ItemForm(data=in_data)
+            if(itemForm.is_valid()):
+                item = ItemDefinition()
+                item.name = itemForm.cleaned_data["name"]
+                item.description = itemForm.cleaned_data["description"]
+                item.save()
+                for t in itemForm.cleaned_data["tags"]:
+                    tag = Tag(value=t)
+                    tag.owner = item
+                    tag.save()
+                return HttpResponse('{"status":"created", "id":' + str(item.id) + '}', content_type='application/json')
+            else:
+                return HttpResponse("Invalid request data - " + itemForm.errors.as_json(), status=400)
+        except:
+            return HttpResponse("Bad post data - " + request.body, status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
 

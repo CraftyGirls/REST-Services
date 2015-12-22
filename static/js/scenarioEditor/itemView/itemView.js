@@ -12,7 +12,7 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
     .controller('itemCtrl', ['$scope', 'itemService', function($scope, itemService) {
   		$scope.editVisible = false;
 	
-		$scope.getConvos = function () {
+		$scope.getItems = function () {
 		    return itemService.items();
 		};
 

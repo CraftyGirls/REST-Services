@@ -87,9 +87,16 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     };
 
     $scope.onAssetTypeChange = function() {
-        switch ($scope.selectedAssetType.label) {
-            case 'Character Component': // Character Component
+        switch ($scope.selectedAssetType.id) {
+            
+            case CHARACTER_COMPONENT : // Character Component
                 $scope.showCharacterComponentTypes = true;
+                break;
+
+            case ITEM : 
+                addFileUploader("Texture for item");
+                $scope.showFileUploaders = true;
+
                 break;
         }
     };
@@ -118,6 +125,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     };
 
     $scope.uploadAsset = function() {
+
         // Tell the app controller to block the ui
         $scope.$emit('blockUi', [true]);
         switch($scope.selectedAssetType.id){
@@ -134,7 +142,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 // Create a component set and get the id that is returned 
                 $http.post('/scenario/service/component_set/', compSetData).then(
                     function(response) { // success
-                       $scope.assetId = response.data.id; // Triggers the process queue on the file uploaders
+                       $scope.assetId = response.data.id;
 
                         // Create a data object which contains the relevant data for the components
                         // Send along the component set ID with the dropzone so we know which part of the component type
@@ -167,19 +175,20 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 };
 
                 // Create an item set and get the id that is returned 
-                $http.post('/scenario/service/item/', null).then(
+                $http.post('/scenario/service/item/', itemData).then(
                     function(response) { // success
-                       
-                       $scope.itemId = response.data.id; // Triggers the process queue on the file uploaders
-                    $scope.dropzones[0].processQueue();
+                        alert(response.data);
+                        $scope.assetId = response.data.id;
+                        $scope.dropzones[0].processQueue();
+                        $scope.$emit('blockUi', [false]);
                     },
                     function(response) { // failure
-                        alert("Error creating item");
+                        alert(response.data);
+                        $scope.$emit('blockUi', [false]);
                     }
                 );
 
                 break;
-
         }
     };
 
