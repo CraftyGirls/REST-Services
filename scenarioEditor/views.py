@@ -9,7 +9,8 @@ from django.template import Template, Context, RequestContext
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet, Asset, ItemDefinition, Tag
+from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet, Asset, ItemDefinition, Tag, \
+    CharacterComponent
 from scenarioEditor.forms import AssetFileForm, AssetForm, ComponentSetForm, ItemForm
 import gitlab_utility
 import uuid
@@ -157,16 +158,35 @@ def edit_scenario_view(request, scenario_id):
 @login_required(login_url='/scenario/login/')
 def component_set_service(request, component_set_id=None):
     if(request.method == 'GET'):
-        if(component_set_id != None):
-            try:
-                obj = ComponentSet.objects.get(id=component_set_id)
-                if(obj != None):
-                    data = serializers.serialize('json', {obj, })
-                    return HttpResponse(data, content_type='application/json')
-            except:
-                return HttpResponse("Object could not be found", status=404)
+        #try:
+        if component_set_id != None :
+            obj = ComponentSet.objects.get(id=component_set_id)
+            if(obj != None):
+                data = serializers.serialize('json', {obj, })
+                return HttpResponse(data, content_type='application/json')
         else:
-            return HttpResponse("ID required", status=405)
+            get_params = request.GET
+            simple_query_items = dict()
+            complex_query_items = []
+
+            if 'setType' in get_params:
+                simple_query_items['setType__startswith'] = unicode.upper(get_params['setType'])
+
+            if 'tags' in get_params:
+                tags = get_params['tags'].split()
+                tagQuery = Tag.objects.filter(value__in=tags)
+
+            sets = ComponentSet.objects.filter(*complex_query_items, **simple_query_items)
+
+            if(sets.all() != None):
+                cj = []
+                for c in sets.all():
+                    cj.append(c.asDict())
+                data = json.dumps(cj, sort_keys=True, indent=4, separators=(',', ': '))
+                return HttpResponse(data, content_type='application/json')
+        #except:
+        #    return HttpResponse("Object could not be found", status=404)
+
     elif(request.method == 'POST'):
         try:
             in_data = json.loads(request.body)
@@ -175,6 +195,7 @@ def component_set_service(request, component_set_id=None):
                 comp_set = ComponentSet()
                 comp_set.name = compSetForm.cleaned_data["name"]
                 comp_set.description = compSetForm.cleaned_data["description"]
+                comp_set.setType = compSetForm.cleaned_data["setType"]
                 comp_set.save()
                 for t in compSetForm.cleaned_data["tags"]:
                     tag = Tag(value=t)
@@ -245,15 +266,42 @@ def upload_asset(request):
     if request.method == 'POST':
         form = AssetFileForm(request.POST, request.FILES)
         if form.is_valid():
-            new_file = UploadFile(file = request.FILES['file'])
+            assetType = form.cleaned_data["assetType"]
+            assetId = form.cleaned_data["assetId"]
+
             tex = Texture()
-            file_name = str(uuid.uuid4()) + ".png"
+            uuid_str = str(uuid.uuid4())
+            file_name = uuid_str + ".png"
             tex.name = file_name
-            tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
-            print tex.imageUrl
-            gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
-            tex.save()
+
+            additionalData = json.loads(form.cleaned_data["additionalData"])
+
+            if assetType == Asset.CHARACTER_COMPONENT:
+                charComp = CharacterComponent()
+                charComp.componentType = additionalData["componentType"]
+                charComp.name = uuid_str
+
+                file_name = "components/" + file_name
+                tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+                gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
+                tex.save()
+
+                charComp.texture = tex
+
+                parent_set = ComponentSet.objects.get(pk=int(assetId))
+                charComp.componentSet = parent_set
+
+                charComp.save()
+
+            elif assetType == Asset.ITEM:
+                file_name = "items/" + file_name
+                tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+                gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
+                tex.save()
+            elif assetType == Asset.MESH:
+                pass
             return HttpResponse(status=200)
+
         else:
            return HttpResponse("Bad asset request - " + form.errors.as_json(), status=400)
     else:

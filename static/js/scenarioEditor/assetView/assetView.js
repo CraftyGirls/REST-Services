@@ -136,7 +136,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     name: $scope.assetName,
                     description: $scope.assetDescription,
                     tags: $scope.assetTags,
-                    componentType: $scope.selectedComponentType.label.toUpperCase()
+                    setType: $scope.selectedComponentType.label.toUpperCase()
                 };
 
                 // Create a component set and get the id that is returned 

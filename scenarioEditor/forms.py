@@ -16,13 +16,14 @@ class TagField(forms.CharField):
 class AssetFileForm(forms.Form):
     file = forms.FileField()
     assetType = forms.ChoiceField(Asset.TYPE_CHOICES)
+    assetId = forms.CharField()
     additionalData = forms.CharField(required=False)
     
     
 class ComponentSetForm(forms.Form):
     name = forms.CharField(max_length=100)
     description = forms.CharField()
-    componentType = forms.ChoiceField(ComponentSet.TYPE_CHOICES)
+    setType = forms.ChoiceField(ComponentSet.TYPE_CHOICES)
     tags = TagField()
     
     
