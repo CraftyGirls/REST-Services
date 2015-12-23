@@ -194,7 +194,7 @@ def item_service(request, item_id=None):
     if(request.method == 'GET'):
         if(item_id != None):
             try:
-                obj = Item.objects.get(id=item_id)
+                obj = ItemDefinition.objects.get(id=item_id)
                 if(obj != None):
                     data = serializers.serialize('json', {obj, })
                     return HttpResponse(data, content_type='application/json')
@@ -255,7 +255,7 @@ def upload_asset(request):
             tex.save()
             return HttpResponse(status=200)
         else:
-           return HttpResponse("Bad asset request", status=400)
+           return HttpResponse("Bad asset request - " + form.errors.as_json(), status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
 

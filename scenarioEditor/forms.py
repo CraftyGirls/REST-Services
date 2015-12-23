@@ -15,7 +15,8 @@ class TagField(forms.CharField):
 
 class AssetFileForm(forms.Form):
     file = forms.FileField()
-    # assetType = forms.ChoiceField(Asset.TYPE_CHOICES)
+    assetType = forms.ChoiceField(Asset.TYPE_CHOICES)
+    additionalData = forms.CharField(required=False)
     
     
 class ComponentSetForm(forms.Form):

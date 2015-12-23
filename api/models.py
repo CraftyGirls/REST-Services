@@ -44,7 +44,7 @@ class ComponentSet(Taggable):
         ('TORSO', 'Torso'),
         ('PELVIS', 'Pelvis')
         ]
-    
+
     name = models.CharField(default='', max_length=100)
     jsonRepresentation = models.TextField(default='')
     fileUrl = models.CharField(default='', max_length=512)
@@ -56,10 +56,11 @@ class ComponentSet(Taggable):
 class Asset(models.Model):
     
     TYPE_CHOICES = [
-        ('COMPONENT_IMAGE', 'Component Image'),
+        ('CHARACTER COMPONENT', 'Character Component'),
         ('MESH', 'Mesh'),
+        ('ITEM', 'Item')
         ]
-    
+
     name        = models.CharField(max_length=100, blank=False, default='')
     description = models.TextField(default='')
     remoteUrl   = models.CharField(max_length=1000, blank=False, default='')

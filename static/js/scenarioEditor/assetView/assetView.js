@@ -37,7 +37,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     $scope.assetTags = "";
     $scope.assetType = "";
 
-
     var CHARACTER_COMPONENT = 1;
     var ITEM                = 2;
 
@@ -79,11 +78,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
     }];
 
     $scope.componentPartsByType = {
-        "Arm": ["Uppper Arm", "Lower Arm", "Hand"],
-        "Leg": ["Upper Leg", "Lower Leg", "Foot"],
-        "Torso": ["Torso"],
-        "Head": ["Lower Jaw", "Upper Jaw", "Nose", "Left Pupil", "Right Pupil"],
-        "Pelvis": ["Pelvis"]
+        "Arm"    : ["Uppper Arm", "Lower Arm", "Hand"],
+        "Leg"    : ["Upper Leg", "Lower Leg", "Foot"],
+        "Torso"  : ["Torso"],
+        "Head"   : ["Lower Jaw", "Upper Jaw", "Nose", "Left Pupil", "Right Pupil"],
+        "Pelvis" : ["Pelvis"]
     };
 
     $scope.onAssetTypeChange = function() {
@@ -94,9 +93,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 break;
 
             case ITEM : 
-                addFileUploader("Texture for item");
+                addFileUploader("Item Texture");
                 $scope.showFileUploaders = true;
-
                 break;
         }
     };
@@ -110,7 +108,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
         for (var i = 0; i < componentParts.length; i++) {
             var dropzone = addFileUploader(componentParts[i]);
-            var additionalData = {componentType : componentParts[i]}
+            var additionalData = {componentType : componentParts[i]};
             dropzone.attr('additional-data', JSON.stringify(additionalData));
         }
 
@@ -144,20 +142,20 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 // Create a component set and get the id that is returned 
                 $http.post('/scenario/service/component_set/', compSetData).then(
                     function(response) { // success
-                       $scope.assetId = response.data.id;
 
-                        // Create a data object which contains the relevant data for the components
-                        // Send along the component set ID with the dropzone so we know which part of the component type
-                        var data = {
-                                    assetType : $scope.assetType,
-                                    componentPiece: $scope.componentType,
-                                    componentSet : response.data.id
-                                    };
+                        $scope.assetId = response.data.id;
+
+                        for(var i = 0; i < $scope.dropzones.length; i++) {
+                            var dropzone = $('div[dropzone_' + i + ']');
+                            dropzone.attr('asset-id', $scope.assetId);
+                            dropzone.attr('asset-type', $scope.selectedAssetType.label);
+                        }
 
                         $scope.dropzones[0].processQueue();
+                        $scope.$emit('blockUi', [false]);
                     },
 
-                    //@TODO Add some propper error notification
+                    //@TODO Add some proper error notification
                     function(response) { // failure
                         alert("Error creating component set - " + response.data);
                         $scope.$emit('blockUi', [false]);
@@ -167,7 +165,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 break;
 
             case ITEM:
-
                 // Create the appropriate data object for an item
                 var itemData = {
                     name: $scope.assetName,
@@ -179,8 +176,16 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 // Create an item set and get the id that is returned 
                 $http.post('/scenario/service/item/', itemData).then(
                     function(response) { // success
-                        alert(response.data);
+
                         $scope.assetId = response.data.id;
+
+                        //@TODO Why?
+                         for(var i = 0; i < $scope.dropzones.length; i++){
+                            var dropzone = $('div[dropzone_' + i + ']');
+                            dropzone.attr('asset-id', $scope.assetId);
+                            dropzone.attr('asset-type', $scope.selectedAssetType.label);
+                        }
+
                         $scope.dropzones[0].processQueue();
                         $scope.$emit('blockUi', [false]);
                     },
@@ -189,9 +194,9 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         $scope.$emit('blockUi', [false]);
                     }
                 );
-
                 break;
         }
+
     };
 
     /**
@@ -217,10 +222,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         return angular.element(document.getElementById('file-upload-container'));
     }
 
-    function addFileUploader(componentName) {
+    function addFileUploader(label) {
         var container = getFileUploadContainer();
         container.append($compile(
-                "<span>File for " + componentName + "</span><div file-uploader id='drop_zone' dropzone_" + $scope.dropzones.length + " asset-id='assetId' dropzones='dropzones' additional-data=''></div><br/>"
+                "<span>File for " + label + "</span><div file-uploader id='drop_zone' asset-type='' dropzone_" + $scope.dropzones.length + " asset-id='' dropzones='dropzones' additional-data=''></div><br/>"
             )($scope));
         // append adds to dropzones so use the length minus one
         return $("div[dropzone_" + ($scope.dropzones.length - 1) + "]");
@@ -236,7 +241,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 }])
 
 // Directive for dropzone file uploader
-.directive('fileUploader', function() {
+.directive('fileUploader', ['$parse', function($parse) {
         return {
             restrict: 'AE',
             template: '<div ng-transclude></div>',
@@ -244,8 +249,9 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             scope: {
                 eventHandlers: '=',
                 dropzones: "=dropzones",
-                assetId: "=",
-                additionalData: "="
+                assetId: "@",
+                additionalData: "@",
+                assetType: "@"
             },
 
             link: function($scope, element, attrs, ctrls) {
@@ -256,6 +262,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 catch (error) {
                     throw new Error('Dropzone.js not loaded.');
                 }
+
+                // @TODO Why do we have to do this
+                var assetId = null;
+                var assetType = null;
+                var additionalData = null;
 
                 var dropzone = new Dropzone(element[0], {
                     url: "/scenario/upload_asset/",
@@ -276,9 +287,13 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     },
 
                     sending: function(file, xhr, formData) {
-                        formData.append("assetId", $scope.assetId);
-                        formData.append("assetType", $scope.assetType);
-                        formData.append("additionalData", $scope.additionalData);
+                        //@TODO How do we do this properly
+                        var id = $(dropzone.element).attr("asset-id");
+                        var type = $(dropzone.element).attr("asset-type");
+                        var data = $(dropzone.element).attr("additional-data");
+                        formData.append("assetId", id);
+                        formData.append("assetType", type.toUpperCase());
+                        formData.append("additionalData", data);
                     },
 
                     init: function() {
@@ -296,7 +311,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                 dropzone.on("error", function(file, response) {
                     $scope.$emit('blockUi', [false]);
-                    alert("Error uploading asset file");
+                    alert("Error uploading asset file - " + response);
                 });
 
                 if ($scope.eventHandlers) {
@@ -305,10 +320,17 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     });
                 }
 
+
+                dropzone.process = function(){
+                    $scope.$evalAsync(function () {
+                        dropzone.processQueue();
+                    });
+                };
+
                 $scope.dropzones.push(dropzone);
             }
         };
-    })
+    }])
     .directive('componentBuilder', [
         function() {
             return {
