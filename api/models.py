@@ -95,6 +95,12 @@ class Texture(models.Model):
     name = models.CharField(max_length=100, blank=False, default='')
     imageUrl = models.TextField(blank=False, default='')
 
+    def asDict(self):
+        return {
+            'name':self.name,
+            'imageUrl':self.imageUrl
+        }
+
 
 class Room(models.Model):
     size = models.IntegerField(default=0)
@@ -112,6 +118,17 @@ class ItemDefinition(Taggable):
     description = models.TextField(blank=False, default='')
     interactable = models.BooleanField(default=False)
     texture = models.OneToOneField(Texture, null=True)
+
+    def asDict(self):
+        tex = None
+        if self.texture != None:
+            tex = self.texture.asDict()
+        return {
+            'name':self.name,
+            'description':self.description,
+            'interactable':self.interactable,
+            'texture': tex
+        }
 
 
 class Item(models.Model):
@@ -185,12 +202,12 @@ class CharacterComponent(models.Model):
     # outJoints = models.ForeignKey(Joint, null=True)
 
     def asDict(self):
+        tex = None
+        if self.texture != None:
+            tex = self.texture.asDict()
         return {
             'name': self.name,
-            'texture': {
-                'name': self.texture.name,
-                'imageUrl': self.texture.imageUrl
-            },
+            'texture': self.texture.asDict(),
             'componentType': self.componentType
         }
 

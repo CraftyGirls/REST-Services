@@ -158,34 +158,52 @@ def edit_scenario_view(request, scenario_id):
 @login_required(login_url='/scenario/login/')
 def component_set_service(request, component_set_id=None):
     if(request.method == 'GET'):
-        #try:
-        if component_set_id != None :
-            obj = ComponentSet.objects.get(id=component_set_id)
-            if(obj != None):
-                data = serializers.serialize('json', {obj, })
-                return HttpResponse(data, content_type='application/json')
-        else:
-            get_params = request.GET
-            simple_query_items = dict()
-            complex_query_items = []
+        try:
+            if component_set_id != None :
+                obj = ComponentSet.objects.get(id=component_set_id)
+                if(obj != None):
+                    data = json.dumps( obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
+                    return HttpResponse(data, content_type='application/json')
+            else:
+                get_params = request.GET
+                simple_query_items = dict()
+                complex_query_items = []
 
-            if 'setType' in get_params:
-                simple_query_items['setType__startswith'] = unicode.upper(get_params['setType'])
+                if 'setType' in get_params:
+                    simple_query_items['setType__istartswith'] = get_params['setType']
 
-            if 'tags' in get_params:
-                tags = get_params['tags'].split()
-                tagQuery = Tag.objects.filter(value__in=tags)
+                if 'name' in get_params:
+                    simple_query_items['name__istartswith'] = get_params['name']
 
-            sets = ComponentSet.objects.filter(*complex_query_items, **simple_query_items)
+                sets = ComponentSet.objects.filter(*complex_query_items, **simple_query_items)
 
-            if(sets.all() != None):
-                cj = []
-                for c in sets.all():
-                    cj.append(c.asDict())
-                data = json.dumps(cj, sort_keys=True, indent=4, separators=(',', ': '))
-                return HttpResponse(data, content_type='application/json')
-        #except:
-        #    return HttpResponse("Object could not be found", status=404)
+                tagResult = None
+
+                # @TODO This logic should be achievable using a single query
+                if 'tags' in get_params:
+                    tags = get_params['tags'].split(",")
+                    tagResult = Tag.objects.filter(value__in=tags, owner__in=sets)
+
+                filteredSets = []
+
+                if tagResult != None and 'tags' in get_params:
+                    for tag in tagResult:
+                        for set in sets.all():
+                            if tag.owner.id == set.id and set not in filteredSets:
+                                filteredSets.append(set)
+                else:
+                    filteredSets = sets.all()
+
+                if(len(filteredSets) > 0):
+                    cj = []
+                    for c in filteredSets:
+                        cj.append(c.asDict())
+                    data = json.dumps(cj, sort_keys=True, indent=4, separators=(',', ': '))
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return HttpResponse("No objects found for query", status=404)
+        except:
+            return HttpResponse("Object could not be found", status=404)
 
     elif(request.method == 'POST'):
         try:
@@ -214,15 +232,48 @@ def component_set_service(request, component_set_id=None):
 def item_service(request, item_id=None):
     if(request.method == 'GET'):
         if(item_id != None):
-            try:
+            #try:
                 obj = ItemDefinition.objects.get(id=item_id)
                 if(obj != None):
-                    data = serializers.serialize('json', {obj, })
+                    data = json.dumps(obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
                     return HttpResponse(data, content_type='application/json')
-            except:
+            #except:
                 return HttpResponse("Object could not be found", status=404)
         else:
-            return HttpResponse("ID required", status=405)
+            get_params = request.GET
+            simple_query_items = dict()
+            complex_query_items = []
+
+            if 'name' in get_params:
+                simple_query_items['name__istartswith'] = get_params['name']
+
+            items = ItemDefinition.objects.filter(*complex_query_items, **simple_query_items)
+
+            tagResult = None
+
+            # @TODO This logic should be achievable using a single query
+            if 'tags' in get_params:
+                tags = get_params['tags'].split(",")
+                tagResult = Tag.objects.filter(value__in=tags, owner__in=items)
+
+            filteredItems = []
+
+            if tagResult != None and 'tags' in get_params:
+                for tag in tagResult:
+                    for item in items.all():
+                        if tag.owner.id == item.id and item not in filteredItems:
+                            filteredItems.append(item)
+            else:
+                filteredItems = items.all()
+
+            if(len(filteredItems) > 0):
+                cj = []
+                for c in filteredItems:
+                    cj.append(c.asDict())
+                data = json.dumps(cj , sort_keys=True, indent=4, separators=(',', ': '))
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return HttpResponse("No objects found for query", status=404)
     elif(request.method == 'POST'):
         try:
             in_data = json.loads(request.body)
@@ -274,7 +325,12 @@ def upload_asset(request):
             file_name = uuid_str + ".png"
             tex.name = file_name
 
-            additionalData = json.loads(form.cleaned_data["additionalData"])
+            additionalData = None
+
+            try:
+                additionalData = json.loads(form.cleaned_data["additionalData"])
+            except:
+                pass
 
             if assetType == Asset.CHARACTER_COMPONENT:
                 charComp = CharacterComponent()
@@ -288,16 +344,20 @@ def upload_asset(request):
 
                 charComp.texture = tex
 
-                parent_set = ComponentSet.objects.get(pk=int(assetId))
+                parent_set = ComponentSet.objects.get(pk=long(assetId))
                 charComp.componentSet = parent_set
 
                 charComp.save()
 
             elif assetType == Asset.ITEM:
+
+                itemDef = ItemDefinition.objects.get(id=long(assetId))
                 file_name = "items/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
                 gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
                 tex.save()
+                itemDef.texture = tex
+                itemDef.save()
             elif assetType == Asset.MESH:
                 pass
             return HttpResponse(status=200)

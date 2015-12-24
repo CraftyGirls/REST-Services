@@ -169,7 +169,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 var itemData = {
                     name: $scope.assetName,
                     description: $scope.assetDescription,
-                    tag: $scope.assetTags
+                    tags: $scope.assetTags
                     // Extra item attributes
                 };
 
