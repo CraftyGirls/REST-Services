@@ -4,7 +4,6 @@
 var application = angular.module('scenarioEditor', [
         'ngRoute',
         'scenarioEditor.charView',
-        'scenarioEditor.lineView',
         'scenarioEditor.convoView',
         'scenarioEditor.assetView',
         'scenarioEditor.roomView',
@@ -86,8 +85,8 @@ var application = angular.module('scenarioEditor', [
 
 var scenarioEditor = angular.module('scenarioEditor');
 
-scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'lineService', 'itemService', 'roomService',
-    function($scope, $http, convoService, charService, lineService, itemService, roomService) {
+scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService',
+    function($scope, $http, convoService, charService, itemService, roomService) {
 
         // ABSTRACTION LAYER
         $scope.getChars = function() {
@@ -105,20 +104,12 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.getRooms = function(){
             return roomService.rooms();
         }
-
-        $scope.getLines = function() {
-            return lineService.lines();
-        };
         // CHECK FOR CHANGES
         $scope.$watch('getChars()', function() {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);
         $scope.$watch('getConvos()', function() {
-            $scope.msg = '*';
-            $scope.dlVisible = false;
-        }, true);
-        $scope.$watch('getLines()', function() {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);

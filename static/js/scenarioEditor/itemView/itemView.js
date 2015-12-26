@@ -24,4 +24,16 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
     		itemService.editItem(item);
     		$scope.editVisible = true;
   		};
-    }])
+
+		$scope.currentItem = function(){
+			return itemService.getCurrentItem();
+		};
+
+        $scope.addEffect = function(){
+          itemService.addEffect($scope.currentItem());
+        };
+
+        $scope.addArg = function(trigger){
+            trigger.addArg();
+        }
+    }]);

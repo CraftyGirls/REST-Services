@@ -9,10 +9,43 @@
                     Name: <input type="text" ng-model="item.name" cols="25" rows="3"/><br/>
                     <button class="btn btn-default" ng-click="editItem(item)">Edit {$item.name$}</button>
                     <div sweet-delete variable="item" container="getItems()"></div>
-                    <hr/>
                 </span>
                 <button class="btn btn-default" ng-click="addItem()">Add New Item</button>
             </form>
+        </div>
+        <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <div class="dialogue-container">
+                <label>
+                    Name
+                    <input type="text" ng-model="currentItem().name"/>
+                </label>
+                <label>
+                    Description
+                    <input type="text" ng-model="currentItem().description"/>
+                </label>
+                <label>
+                    Interactable
+                    <input type="checkbox" ng-model="currentItem().interactable"/>
+                </label>
+                 <h4>Effects</h4>
+                <span ng-repeat="trigger in currentItem().effects">
+                    <div class="trigger">
+                        Function =
+                        <input type="text" ng-model="trigger.func"/>
+                        <div class="arg-container">
+                            Arguments =
+                                <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
+                                    <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
+                                        <span> = </span><input type="text" ng-model="trigger.args[key]"/>
+                                        <div sweet-keyed-delete key="key" container="trigger.args"></div>
+                                </div>
+                            <button class="btn btn-primary" ng-click="addArg(trigger)">Add Arg</button>
+                        </div>
+                    </div>
+                    <div sweet-delete variable="trigger" container="currentItem().effects"></div>
+                </span>
+                <button class="btn btn-primary" ng-click="addEffect(currentItem())">Add Effect</button>
+            </div>
         </div>
     </div>
 </div>
