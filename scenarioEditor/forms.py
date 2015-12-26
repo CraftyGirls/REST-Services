@@ -24,6 +24,7 @@ class ComponentSetForm(forms.Form):
     name = forms.CharField(max_length=100)
     description = forms.CharField()
     setType = forms.ChoiceField(ComponentSet.TYPE_CHOICES)
+    joints = forms.CharField()
     tags = TagField()
     
     

@@ -1,4 +1,4 @@
-<div ngController="assetCtrl">
+<div ng-Controller="assetCtrl">
    
    <h1>Assets</h1> 
    
@@ -28,7 +28,7 @@
    <div ng-show="componentFilesConfirmed">
       <span>Component Scale : </span>
       <input type="number" ng-model="componentScale" step="0.1" min = 0.1/>
-      <component-builder components="componentImages" component-type="selectedComponentType" component-scale="componentScale"></component-builder>
+      <component-builder joints="joints" components="componentImages" component-type="selectedComponentType" component-scale="componentScale"></component-builder>
    </div>
     <button class="btn btn-primary" ng-click="uploadAsset()">Save Asset</button>
 </div>

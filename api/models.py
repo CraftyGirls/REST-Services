@@ -22,7 +22,8 @@ class Scenario(models.Model):
 
 
 class Taggable(models.Model):
-    pass
+    def getTags(self):
+        return Tag.objects.filter(owner=self.id).all()
 
 
 class Component(models.Model):
@@ -62,12 +63,19 @@ class ComponentSet(Taggable):
         for c in components:
             compsArr.append(c.asDict())
 
+        tagsArr = []
+        tags = self.getTags()
+
+        for t in tags:
+            tagsArr.append(t.asDict())
+
         return {
             'id': self.id,
             'name': self.name,
             'jsonRepresentation': self.jsonRepresentation,
             'setType': self.setType,
-            'components':compsArr
+            'components':compsArr,
+            'tags':tagsArr
         }
 
     def asJson(self):
@@ -246,6 +254,9 @@ class Tag(models.Model):
     # furnitureComponent = models.ForeignKey(FurnitureComponent, null=True)
 
     owner = models.ForeignKey(Taggable, null=True)
+
+    def asDict(self):
+        return {"value":self.value}
 
 
 class Trigger(models.Model):

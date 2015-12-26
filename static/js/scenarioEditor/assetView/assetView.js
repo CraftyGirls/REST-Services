@@ -31,6 +31,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     $scope.componentFilesConfirmed = false;
 
+    $scope.joints = {};
+
     // Asset properties
     $scope.assetName = "";
     $scope.assetDescription = "";
@@ -55,6 +57,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             id: ITEM,
             label : 'Item'
         }
+
     ];
 
     $scope.componentTypes = [{
@@ -76,7 +79,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         id: 5,
         label: 'Pelvis'
     }];
-
+    
     $scope.componentPartsByType = {
         "Arm"    : ["Uppper Arm", "Lower Arm", "Hand"],
         "Leg"    : ["Upper Leg", "Lower Leg", "Foot"],
@@ -136,7 +139,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     name: $scope.assetName,
                     description: $scope.assetDescription,
                     tags: $scope.assetTags,
-                    setType: $scope.selectedComponentType.label.toUpperCase()
+                    setType: $scope.selectedComponentType.label.toUpperCase(),
+                    joints: JSON.stringify($scope.joints)
                 };
 
                 // Create a component set and get the id that is returned 
@@ -338,12 +342,15 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 scope: {
                     components: "=",
                     componentType: "=",
-                    componentScale: "="
+                    componentScale: "=",
+                    joints: "="
                 },
+
+                transclude: true,
 
                 template: '<div id="c-wrapper"><canvas id="c" class="component-builder"></canvas></div>',
 
-                link: function(scope, element, attr) {
+                link: function($scope, element, attr) {
 
                     var componentImages = [];
 
@@ -375,7 +382,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     canvasWrapper.tabIndex = 1000;
 
-                    scope.$watch('components', function(value) {
+                    $scope.$watch('components', function(value) {
 
                         clearExisting();
 
@@ -396,7 +403,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             lx += imgInstance.width;
                         }
 
-                        var rels = componentRelationShips[scope.componentType.label];
+                        var rels = componentRelationShips[$scope.componentType.label];
 
                         if (rels != undefined) {
 
@@ -413,7 +420,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         inJointGroup.moveTo(1000);
                     });
 
-                    scope.$watch('componentScale', function(value) {
+                    $scope.$watch('componentScale', function(value) {
                         for (var i = 0; i < componentImages.length; i++) {
                             componentImages[i].scaleX = value;
                             componentImages[i].scaleY = value;
@@ -446,19 +453,19 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             rels[0] = {
                                 joint: {
                                     parent: "IN",
-                                    child: scope.components[0]
+                                    child: $scope.components[0]
                                 },
-                                component: scope.components[0],
+                                component: $scope.components[0],
                                 percentages: calculateJointImgRelationship(inJointGroup, rootComponentImg)
                             };
-                            var sets = componentRelationShips[scope.componentType.label].split(",");
+                            var sets = componentRelationShips[$scope.componentType.label].split(",");
                             for (var x = 0; x < sets.length; x++) {
                                 var s = 0;
                                 var comps = sets[x].split(">");
                                 for (var i = 0; i < comps.length - 1;) {
                                     var compName = comps[i + s];
-                                    console.log(scope.components);
-                                    var imgIdx = scope.components.indexOf(compName);
+                                    console.log($scope.components);
+                                    var imgIdx = $scope.components.indexOf(compName);
                                     var jointName = comps[i] + " - " + comps[i + 1];
                                     var jointIdx = outJointLabels.indexOf(jointName) + s;
                                     if (imgIdx >= 0) {
@@ -481,7 +488,9 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 }
                             }
                         }
-                        console.log(JSON.stringify(rels));
+                        $scope.joints = rels;
+                        // Since we're in a watch we need to run an apply
+                        $scope.$apply();
                         return rels
                     }
 

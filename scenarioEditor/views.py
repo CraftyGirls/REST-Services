@@ -214,7 +214,17 @@ def component_set_service(request, component_set_id=None):
                 comp_set.name = compSetForm.cleaned_data["name"]
                 comp_set.description = compSetForm.cleaned_data["description"]
                 comp_set.setType = compSetForm.cleaned_data["setType"]
+
+                joints_file_name = "components/" + str(uuid.uuid4()) + ".json"
+
+                jsonObj = json.loads(compSetForm.cleaned_data["joints"])
+
+                gitlab_utility.create_file("TestComponentProject", joints_file_name,
+                                           json.dumps(jsonObj, sort_keys=True, indent=4, separators=(',', ': ')), "text")
+
+                comp_set.jsonRepresentation = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + joints_file_name
                 comp_set.save()
+
                 for t in compSetForm.cleaned_data["tags"]:
                     tag = Tag(value=t)
                     tag.owner = comp_set
@@ -339,7 +349,9 @@ def upload_asset(request):
 
                 file_name = "components/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+
                 gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
+
                 tex.save()
 
                 charComp.texture = tex

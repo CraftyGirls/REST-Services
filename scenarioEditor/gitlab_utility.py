@@ -27,8 +27,10 @@ def get_project_id_by_name(project_name):
     
 def create_file(project_name, file, file_contents, encoding):
     git = login()
-    proj_id = get_project_id_by_name(project_name) 
-    git.createfile(proj_id, file, "master", base64.b64encode(file_contents), "Content Created", encoding)
+    proj_id = get_project_id_by_name(project_name)
+    if encoding == "base64":
+        file_contents = base64.b64encode(file_contents)
+    git.createfile(proj_id, file, "master", file_contents, "Content Created", encoding)
     
     
 def update_file(project_name, file, file_contents, encoding):
