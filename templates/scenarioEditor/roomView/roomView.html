@@ -7,12 +7,38 @@
                 <span ng-repeat="room in getRooms()">
                     {$room.id$}
                     Name: <input type="text" ng-model="room.name" cols="25" rows="3"/><br/>
-                    <button class="btn btn-default" ng-click="editRoom(room)">Room {$roomm.name$}</button>
+                    <button class="btn btn-default" ng-click="editRoom(room)">Edit {$room.name$}</button>
                     <div sweet-delete variable="room" container="getRooms()"></div>
                     <hr/>
                 </span>
                 <button class="btn btn-default" ng-click="addRoom()">Add New Room</button>
             </form>
+        </div>
+        <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <div class="dialogue-container">
+                <label>
+                    Name
+                    <input type="text" ng-model="currentRoom().name"/>
+                </label>
+                <label>
+                    Description
+                    <input type="text" ng-model="currentRoom().description"/>
+                </label>
+                <span ng-repeat="char in charactersForCurrRoom()">
+                    <span>{$char.name$}</span>
+                    <br/>
+                </span>
+                <label>
+                    Add Character :
+                    <select ng-model="selectedChar" ng-options="char.id as char.name for char in getUnusedCharacters()"
+                        ng-init="getUnusedCharacters().length > 0 ?  selectedChar = getUnusedCharacters()[0].id : null">
+                    </select>
+                </label>
+                <button ng-click="addSelectedChar()">
+                    Add Character
+                </button>
+
+            </div>
         </div>
     </div>
 </div>

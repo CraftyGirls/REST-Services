@@ -197,17 +197,28 @@ Conversation.BuildFromData = function (data) {
 };
 
 function Room(name, id) {
-    this.name = name;
-    this.id = id;
+    this.name           = name;
+    this.id             = id;
+    this.description    = "";
+    this.furnitureTypes = [];
+    this.characters     = [];
+    this.items          = [];
+    this.tags           = [];
+    this.size           = null;
 }
 
 Room.BuildFromData = function (data) {
-    var room = new Room();
-    room.name = data.name;
-    room.id = data.id;
+    var room            = new Room();
+    room.name           = data.name;
+    room.id             = data.id;
+    room.description    = data.description;
+    room.furnitureTypes = data.furnitureTypes;
+    room.items          = data.items;
+    room.characters     = data.characters;
+    room.tags           = data.tags;
+    room.size           = data.size;
     return room;
 };
-
 
 // Services
 
@@ -318,6 +329,21 @@ scenarioServices.service('charService', function () {
         },
         getStatesLength: function (character) {
             return charData[charData.indexOf(character)].states.length;
+        },
+        getById : function (id) {
+            for(var i = 0; i < charData.length; i++){
+                if(charData[i].id === id){
+                    return charData[i];
+                }
+            }
+            return null;
+        },
+        getIds : function(){
+            ids = [];
+            for(var i = 0; i < charData.length; i++) {
+                ids.push(charData[i].id);
+            }
+            return ids;
         }
     };
 });
@@ -388,6 +414,12 @@ scenarioServices.service('roomService', function () {
             for (var i = 0; i < data.length; i++) {
                 roomData.push(Room.BuildFromData(data[i]));
             }
+        },
+        getCurrentRoom : function () {
+            return currRoom;
+        },
+        getRooms : function(){
+            return roomData;
         }
     };
 });
