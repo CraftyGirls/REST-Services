@@ -168,17 +168,19 @@ Character.BuildFromData = function (data) {
 };
 
 function Item(name, id) {
-    this.name = name;
-    this.id = id;
-    this.interactable = true;
-    this.effects = [];
+    this.name           = name;
+    this.id             = id;
+    this.interactable   = true;
+    this.description    = "";
+    this.effects        = [];
 }
 
 Item.BuildFromData = function (data) {
-    var item = new Item();
-    item.name = data.name;
-    item.id = data.id;
-    item.interactable = data.interactable;
+    var item            = new Item();
+    item.name           = data.name;
+    item.id             = data.id;
+    item.interactable   = data.interactable;
+    item.description    = data.description;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
     }
@@ -196,6 +198,8 @@ Conversation.BuildFromData = function (data) {
     return convo;
 };
 
+const ROOM_SIZES = ["Small", "Medium", "Large"];
+
 function Room(name, id) {
     this.name           = name;
     this.id             = id;
@@ -204,7 +208,7 @@ function Room(name, id) {
     this.characters     = [];
     this.items          = [];
     this.tags           = [];
-    this.size           = null;
+    this.size           = ROOM_SIZES[0];
 }
 
 Room.BuildFromData = function (data) {
@@ -382,6 +386,21 @@ scenarioServices.service('itemService', function () {
         },
         getCurrentItem: function(){
             return currItem;
+        },
+        getById : function (id) {
+            for(var i = 0; i < itemData.length; i++){
+                if(itemData[i].id === id){
+                    return itemData[i];
+                }
+            }
+            return null;
+        },
+        getIds : function(){
+            ids = [];
+            for(var i = 0; i < itemData.length; i++) {
+                ids.push(itemData[i].id);
+            }
+            return ids;
         }
     };
 });
@@ -420,6 +439,9 @@ scenarioServices.service('roomService', function () {
         },
         getRooms : function(){
             return roomData;
+        },
+        getRoomSizeOptions: function(){
+            return ROOM_SIZES;
         }
     };
 });

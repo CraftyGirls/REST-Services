@@ -9,10 +9,13 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
             });
     }])
     
-    .controller('roomCtrl', ['$scope', 'roomService', 'charService', function($scope, roomService, charService) {
+    .controller('roomCtrl', ['$scope', 'roomService', 'charService', 'itemService',
+        function($scope, roomService, charService, itemService) {
+
 		$scope.editVisible = false;
 
         $scope.selectedChar = null;
+        $scope.selectedItem = null;
 
 		$scope.getRooms = function () {
 		    return roomService.rooms();
@@ -38,16 +41,10 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
         $scope.addSelectedChar = function(){
             if($scope.selectedChar != null){
                 $scope.currentRoom().characters.push($scope.selectedChar);
-                var unusedChar = $scope.getUnusedCharacters();
-                if(unusedChar.length > 0){
-                    $scope.selectedChar = unusedChars[0].id;
-                }else{
-                    $scope.selectedChar = null;
-                }
             }
         };
 
-        $scope.charactersForCurrRoom = function(){
+        $scope.charactersForCurrentRoom = function(){
             var charObjs = [];
             if(roomService.getCurrentRoom() != null) {
                 for (var i = 0; i < roomService.getCurrentRoom().characters.length; i++) {
@@ -74,6 +71,54 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
             for(var c = 0; c < allIds.length; c++){
                 chars.push(charService.getById(allIds[c]));
             }
+            if(chars.length > 0){
+                $scope.selectedChar = chars[0].id;
+            }
             return chars;
+        };
+
+
+        $scope.addSelectedItem = function(){
+            if($scope.selectedItem != null){
+                $scope.currentRoom().items.push($scope.selectedItem);
+            }
+        };
+
+        $scope.itemsForCurrentRoom = function(){
+            var itemObjs = [];
+            if(roomService.getCurrentRoom() != null) {
+                for (var i = 0; i < roomService.getCurrentRoom().items.length; i++) {
+                    itemObjs.push(itemService.getById(roomService.getCurrentRoom().items[i]));
+                }
+            }
+            return itemObjs;
+        };
+
+        $scope.getUnusedItems = function(){
+            var allIds  = itemService.getIds();
+            var usedIds = [];
+            for(var i = 0; i < roomService.getRooms().length; i++){
+                for(var j = 0; j < roomService.getRooms()[i].items.length; j++){
+                    usedIds.push(roomService.getRooms()[i].items[j]);
+
+                }
+            }
+            for(var x = 0; x < usedIds.length; x++){
+                var idx = allIds.indexOf(usedIds[x]);
+                allIds.splice(idx, 1);
+            }
+            var items = [];
+            for(var c = 0; c < allIds.length; c++){
+                items.push(itemService.getById(allIds[c]));
+            }
+            if(items.length > 0){
+                $scope.selectedItem = items[0].id;
+            }
+            return items;
+        };
+
+
+        $scope.roomSizes = function(){
+            return roomService.getRoomSizeOptions();
         }
     }]);

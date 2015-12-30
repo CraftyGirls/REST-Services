@@ -9,11 +9,18 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         });
     }])
 
-    .controller('CharCtrl', ['$scope', 'charService', 'convoService', function($scope, charService, convoService) {
+    .controller('CharCtrl', ['$scope', '$http', 'charService', 'convoService', function($scope, $http, charService, convoService) {
         $scope.editVisible = false;
 
         $scope.currBodyPart = "";
         $scope.editBodyPartVisible = false;
+
+        $scope.nameQuery = null;
+        $scope.tagsQuery = null;
+
+        $scope.componentSets = [];
+
+        $scope.selectedComponents = {};
 
         $scope.getChars = function () {
             return charService.chars();
@@ -54,13 +61,53 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.editBodyPart = function (name) {
+            $scope.componentSets = [];
+            $scope.nameQuery = null;
+            $scope.tagsQuery = null;
             $scope.editBodyPartVisible = true;
             $scope.currBodyPart = name;
+            $scope.getComponentImages(name, null, null);
         };
 
         $scope.closeBodyPart = function () {
             $scope.editBodyPartVisible = false;
         };
-    }])
-    
+
+        $scope.queryChanged = function(){
+            $scope.getComponentImages($scope.currBodyPart, $scope.tagsQuery, $scope.nameQuery);
+        };
+
+        $scope.selectComponent = function(component){
+            $scope.selectedComponents[$scope.currBodyPart] = component;
+            $scope.closeBodyPart();
+        };
+
+        $scope.getComponentImages = function(setType, tags, name){
+            var params = {};
+            if(setType != null && setType.length > 0){
+                var s = setType;
+                var splitSetType = setType.split("_");
+                if(splitSetType.length > 1){
+                    s = splitSetType[1];
+                }
+                params["setType"] = s;
+            }
+            if(tags != null && tags.length > 0){
+                params["tags"] = tags;
+            }
+            if(name != null && name.length > 0){
+                params["name"] = name;
+            }
+            $http.get("/scenario/service/component_set", {
+                params : params
+            })
+            .then(function success(response){
+                    $scope.componentSets = response.data;
+                },
+                function failure(response){
+                    console.log("Failure");
+                }
+            );
+        };
+    }]);
 

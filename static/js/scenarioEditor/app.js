@@ -129,7 +129,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
             console.log(angular.toJson($scope.dataObj));
 
-            $http.post('/scenario/save/<' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function(data) {
+            $http.post('/scenario/save/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function(data) {
                 $scope.msg = 'Data saved.';
                 $scope.dlVisible = true;
             });
