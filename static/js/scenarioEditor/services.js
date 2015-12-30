@@ -148,6 +148,7 @@ function Character(id, name) {
     this.id = id;
     this.name = name;
     this.states = [];
+    this.components = {};
 
     this.addState = function (state) {
         var stateId = 0;
@@ -164,6 +165,7 @@ Character.BuildFromData = function (data) {
     for (var i = 0; i < data.states.length; i++) {
         char.states.push(data.states[i]);
     }
+    char.components = data.components;
     return char;
 };
 

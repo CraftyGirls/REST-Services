@@ -49,16 +49,30 @@ var application = angular.module('scenarioEditor', [
         function(){
             return {
                 scope: {
-                    variable : "=",
-                    container : "="
+                    variable  : "=",
+                    container : "=",
+                    confirm   : "="
                 },
                 template: '<span class="glyphicon glyphicon-remove clickable" ng-click="sweetDelete()"></span>',
                 link: function($scope, iElm, iAttrs, controller) {
                     $scope.sweetDelete = function(){
-                        var idx = $scope.container.indexOf($scope.variable);
-                        if(idx !== -1){
-                            $scope.container = $scope.container.splice(idx, 1);
+                        this.del = function() {
+                            var idx = $scope.container.indexOf($scope.variable);
+                            if (idx !== -1) {
+                                $scope.container = $scope.container.splice(idx, 1);
+                            }
+                        };
+
+                        if($scope.confirm == true){
+                            var msg = "Are you sure?";
+                             if (window.confirm(msg)) {
+                                $scope.$eval(this.del());
+                            }
+                        }else{
+                            this.del();
                         }
+
+
                     }
                 }
             };
@@ -103,7 +117,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.getRooms = function(){
             return roomService.rooms();
-        }
+        };
         // CHECK FOR CHANGES
         $scope.$watch('getChars()', function() {
             $scope.msg = '*';

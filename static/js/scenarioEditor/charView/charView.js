@@ -20,8 +20,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
 
         $scope.componentSets = [];
 
-        $scope.selectedComponents = {};
-
         $scope.getChars = function () {
             return charService.chars();
         };
@@ -78,7 +76,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.selectComponent = function(component){
-            $scope.selectedComponents[$scope.currBodyPart] = component;
+            charService.getCurrChar().components[$scope.currBodyPart] = component;
             $scope.closeBodyPart();
         };
 
