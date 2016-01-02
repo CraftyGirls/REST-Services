@@ -1,6 +1,6 @@
 {% load staticfiles %}
-<div ngController="itemCtrl">
- 	<div class="row fill-height">
+<div ng-controller="itemCtrl">
+    <div class="row fill-height">
         <div class="col-md-2 list-view">
             <h3>Items</h3>
             <form>
@@ -27,25 +27,69 @@
                     Interactable
                     <input type="checkbox" ng-model="currentItem().interactable"/>
                 </label>
-                 <h4>Effects</h4>
+                <h4>Effects</h4>
                 <span ng-repeat="trigger in currentItem().effects">
                     <div class="trigger">
                         Function =
                         <input type="text" ng-model="trigger.func"/>
                         <div class="arg-container">
                             Arguments =
-                                <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
-                                    <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
-                                        <span> = </span><input type="text" ng-model="trigger.args[key]"/>
-                                        <div sweet-keyed-delete key="key" container="trigger.args"></div>
-                                </div>
+                            <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
+                                <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
+                                <span> = </span><input type="text" ng-model="trigger.args[key]"/>
+                                <div sweet-keyed-delete key="key" container="trigger.args"></div>
+                            </div>
                             <button class="btn btn-primary" ng-click="addArg(trigger)">Add Arg</button>
                         </div>
                     </div>
                     <div sweet-delete variable="trigger" container="currentItem().effects"></div>
                 </span>
+                <img src="{$currentItem().texture.imageUrl$}"/>
                 <button class="btn btn-primary" ng-click="addEffect(currentItem())">Add Effect</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#component-modal" ng-click="editTexture()">Edit Texture</button>
             </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="component-modal">
+        <div class="modal-content">
+            <span>Name:</span>
+            <input type="text" ng-model="itemQuery.name" ng-change="queryChanged()"/>
+
+            <span>Tags(Comma Separated):</span>
+            <input type="text" ng-model="itemQuery.tags" ng-change="queryChanged()"/>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="h4">Name</th>
+                    <th class="h4">Description</th>
+                    <th class="h4">Tags</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="item in itemTextures">
+                    <td>
+                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item)">Select</button>
+                    </td>
+                    <td>
+                        <span>{$item.name$}</span>
+                    </td>
+                    <td>
+                        <span>{$item.description$}</span>
+                    </td>
+                    <td>
+                        <div ng-repeat="tag in item.tags">
+                            <span>{$tag.value$}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <img class="thumbnail" src="{$item.texture.imageUrl$}"/>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
         </div>
     </div>
 </div>

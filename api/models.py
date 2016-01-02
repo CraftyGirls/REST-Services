@@ -131,11 +131,20 @@ class ItemDefinition(Taggable):
         tex = None
         if self.texture != None:
             tex = self.texture.asDict()
+
+        tagsArr = []
+        tags = self.getTags()
+
+        for t in tags:
+            tagsArr.append(t.asDict())
+
         return {
             'name':self.name,
             'description':self.description,
             'interactable':self.interactable,
-            'texture': tex
+            'texture': tex,
+            'tags':tagsArr
+
         }
 
 

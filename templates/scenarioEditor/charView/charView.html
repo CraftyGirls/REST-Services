@@ -1,23 +1,22 @@
 {% load staticfiles %}
-<div id="sidebar" class="list-view">
-    <h3>Characters</h3>
+<div ng-controller="CharCtrl">
+    <div id="sidebar" class="list-view">
+        <h3>Characters</h3>
 
-    <!-- SIDEBAR FOR LIST OF CHARACTERS -->
-    <form>
+        <!-- SIDEBAR FOR LIST OF CHARACTERS -->
+        <form>
 	<span ng-repeat="character in getChars()">
 		Name: <input type="text" ng-model="character.name"><br/>
 		<button class="btn btn-default" ng-click="editChar(character)">Edit</button>
 		<sweet-delete variable="character" container="getChars()" confirm="true"></sweet-delete>
 		<hr/>
 	</span>
-        <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
-    </form>
-</div>
+            <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
+        </form>
+    </div>
 
-
-
-<!-- AREA FOR EDITING CHARACTERS -->
-<div id="main" ng-show="editVisible">
+    <!-- AREA FOR EDITING CHARACTERS -->
+    <div id="main" ng-show="editVisible">
 	<span ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
 		<h3>{$character.name$}</h3>
 		<table style="text-align:center;float:right;padding:10px;">
@@ -99,54 +98,55 @@
             <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
         </form>
 	</span>
-</div>
+    </div>
 
-<!-- MODAL WINDOW FOR PICKING/UPLOADING ASSETS -->
-<div class="modal fade" id="component-modal" ng-show="editBodyPartVisible">
-    <div class="modal-content">
+    <!-- MODAL WINDOW FOR PICKING/UPLOADING ASSETS -->
+    <div class="modal fade" id="component-modal" ng-show="editBodyPartVisible">
+        <div class="modal-content">
         <span>
             Pick asset for: {$currBodyPart$}
         </span>
 
-        <span>Name:</span>
-        <input type="text" ng-model="nameQuery" ng-change="queryChanged()"/>
+            <span>Name:</span>
+            <input type="text" ng-model="nameQuery" ng-change="queryChanged()"/>
 
-        <span>Tags(Comma Separated):</span>
-        <input type="text" ng-model="tagsQuery" ng-change="queryChanged()"/>
+            <span>Tags(Comma Separated):</span>
+            <input type="text" ng-model="tagsQuery" ng-change="queryChanged()"/>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th></th>
-                <th class="h4">Name</th>
-                <th class="h4">Description</th>
-                <th class="h4">Tags</th>
-                <th class="h4">Components</th>
-            </tr>
-            </thead>
-            <tr ng-repeat="comp in componentSets">
-                <td>
-                    <button class="btn btn-primary" data-dismiss="modal" ng-click="selectComponent(comp)">Select</button>
-                </td>
-                <td>
-                    <span>{$comp.name$}</span>
-                </td>
-                <td>
-                    <span>{$comp.description$}</span>
-                </td>
-                <td>
-                    <div ng-repeat="tag in comp.tags">
-                        <span>{$tag.value$}</span>
-                    </div>
-                </td>
-                <td ng-repeat="img in comp.components">
-                    <img class="thumbnail" src="{$img.texture.imageUrl$}"/>
-                    <span>{$img.componentType$}</span>
-                </td>
-            </tr>
-        </table>
-        <hr/>
-        <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="h4">Name</th>
+                    <th class="h4">Description</th>
+                    <th class="h4">Tags</th>
+                    <th class="h4">Components</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="comp in componentSets">
+                    <td>
+                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectComponent(comp)">Select</button>
+                    </td>
+                    <td>
+                        <span>{$comp.name$}</span>
+                    </td>
+                    <td>
+                        <span>{$comp.description$}</span>
+                    </td>
+                    <td>
+                        <div ng-repeat="tag in comp.tags">
+                            <span>{$tag.value$}</span>
+                        </div>
+                    </td>
+                    <td ng-repeat="img in comp.components">
+                        <img class="thumbnail" src="{$img.texture.imageUrl$}"/>
+                        <span>{$img.componentType$}</span>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
+        </div>
     </div>
 </div>
 

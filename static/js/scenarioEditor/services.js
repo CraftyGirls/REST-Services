@@ -174,6 +174,7 @@ function Item(name, id) {
     this.id             = id;
     this.interactable   = true;
     this.description    = "";
+    this.texture        = "";
     this.effects        = [];
 }
 
@@ -183,6 +184,7 @@ Item.BuildFromData = function (data) {
     item.id             = data.id;
     item.interactable   = data.interactable;
     item.description    = data.description;
+    item.texture        = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
     }

@@ -71,8 +71,6 @@ var application = angular.module('scenarioEditor', [
                         }else{
                             this.del();
                         }
-
-
                     }
                 }
             };
