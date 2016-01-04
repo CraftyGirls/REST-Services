@@ -71,7 +71,9 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                         console.log("here");
                     },
                     function failure(response){
-                        console.log("Failure");
+                        if(response.status == 404){
+                            $scope.itemTextures = [];
+                        }
                     }
                 );
         }

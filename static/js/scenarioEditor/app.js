@@ -12,31 +12,31 @@ var application = angular.module('scenarioEditor', [
         'scenarioServices'
     ])
     .config(['$routeProvider',
-        function($routeProvider) {
+        function ($routeProvider) {
             $routeProvider.otherwise({
                 redirectTo: '/charView'
             });
         }
     ])
     .config(['$interpolateProvider',
-        function($interpolateProvider) {
+        function ($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
         }
     ])
-    .config(['$httpProvider', 
-        function($httpProvider){
+    .config(['$httpProvider',
+        function ($httpProvider) {
             $httpProvider.defaults.xsrfCookieName = 'csrftoken';
             $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         }
     ])
     .directive('ngConfirmClick', [
-        function() {
+        function () {
             return {
-                link: function(scope, element, attr) {
+                link: function (scope, element, attr) {
                     var msg = "Are you sure?";
                     var clickAction = attr.ngClick;
-                    element.bind('click', function(event) {
+                    element.bind('click', function (event) {
                         if (window.confirm(msg)) {
                             scope.$eval(clickAction)
                         }
@@ -46,29 +46,29 @@ var application = angular.module('scenarioEditor', [
         }
     ])
     .directive('sweetDelete', [
-        function(){
+        function () {
             return {
                 scope: {
-                    variable  : "=",
-                    container : "=",
-                    confirm   : "="
+                    variable: "=",
+                    container: "=",
+                    confirm: "="
                 },
-                template: '<span class="glyphicon glyphicon-remove clickable" ng-click="sweetDelete()"></span>',
-                link: function($scope, iElm, iAttrs, controller) {
-                    $scope.sweetDelete = function(){
-                        this.del = function() {
+                template: '<span class="glyphicon glyphicon-remove clickable hover-fade" ng-click="sweetDelete()"></span>',
+                link: function ($scope, iElm, iAttrs, controller) {
+                    $scope.sweetDelete = function () {
+                        this.del = function () {
                             var idx = $scope.container.indexOf($scope.variable);
                             if (idx !== -1) {
                                 $scope.container = $scope.container.splice(idx, 1);
                             }
                         };
 
-                        if($scope.confirm == true){
+                        if ($scope.confirm == true) {
                             var msg = "Are you sure?";
-                             if (window.confirm(msg)) {
+                            if (window.confirm(msg)) {
                                 $scope.$eval(this.del());
                             }
-                        }else{
+                        } else {
                             this.del();
                         }
                     }
@@ -77,61 +77,62 @@ var application = angular.module('scenarioEditor', [
         }
     ])
     .directive('sweetKeyedDelete', [
-        function(){
+        function () {
             return {
                 scope: {
-                    key : "=",
-                    container : "="
+                    key: "=",
+                    container: "="
                 },
                 transclude: true,
-                template: '<span class="glyphicon glyphicon-remove clickable" ng-click="sweetKeyedDelete()"></span>',
-                link: function($scope, iElm, iAttrs, controller) {
-                    $scope.sweetKeyedDelete = function(){
+                template: '<span class="glyphicon glyphicon-remove clickable hover-fade" ng-click="sweetKeyedDelete()"></span>',
+                link: function ($scope, iElm, iAttrs, controller) {
+                    $scope.sweetKeyedDelete = function () {
                         delete $scope.container[$scope.key];
                     }
                 }
             };
         }
     ]);
-   
 
 var scenarioEditor = angular.module('scenarioEditor');
 
 scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService',
-    function($scope, $http, convoService, charService, itemService, roomService) {
+    function ($scope, $http, convoService, charService, itemService, roomService) {
 
         // ABSTRACTION LAYER
-        $scope.getChars = function() {
+        $scope.getChars = function () {
             return charService.chars();
         };
 
-        $scope.getConvos = function() {
+        $scope.getConvos = function () {
             return convoService.conversations();
         };
 
-        $scope.getItems = function(){
+        $scope.getItems = function () {
             return itemService.items();
         };
 
-        $scope.getRooms = function(){
+        $scope.getRooms = function () {
             return roomService.rooms();
         };
         // CHECK FOR CHANGES
-        $scope.$watch('getChars()', function() {
+        $scope.$watch('getChars()', function () {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);
-        $scope.$watch('getConvos()', function() {
+        $scope.$watch('getConvos()', function () {
             $scope.msg = '*';
             $scope.dlVisible = false;
         }, true);
 
         // SAVE JSON FILE
         $scope.dlVisible = false;
-        
+
         $scope.blockUi = false;
 
-        $scope.save = function(scenario_id) {
+        $scope.messages = [];
+
+        $scope.save = function (scenario_id) {
             $scope.dataObj = {
                 characters: $scope.getChars(),
                 conversations: $scope.getConvos(),
@@ -141,7 +142,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
             console.log(angular.toJson($scope.dataObj));
 
-            $http.post('/scenario/save/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function(data) {
+            $http.post('/scenario/save/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
                 $scope.msg = 'Data saved.';
                 $scope.dlVisible = true;
             });
@@ -149,19 +150,41 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             $scope.msg2 = 'Data sent: ' + $scope.jsonData;
         };
 
-        $scope.loadScript = function(script) {
+        $scope.clearMessages = function(){
+            $scope.messages = [];
+        };
+
+        $scope.loadScript = function (script) {
             $scope.dataObj = angular.fromJson(script);
             convoService.setData($scope.dataObj.conversations);
             charService.setData($scope.dataObj.characters);
             itemService.setData($scope.dataObj.items);
             roomService.setData($scope.dataObj.rooms);
         };
-        
-        $scope.$on('blockUi', function(event, data) {
-            $scope.blockUi = data[0];
+
+        $scope.$on('blockUi', function (event, data) {
+            if(data.length > 0){
+                if(data[0] === true){
+                    $('#ui-blocker').fadeIn();
+                }else {
+                    $('#ui-blocker').fadeOut();
+                }
+            }
         });
 
-        angular.element(document).ready(function() {
+        $scope.$on('showMessage', function (event, data) {
+            if(data.length > 0){
+                var message = {};
+                message.text = data[0];
+                message.severity = "info";
+                if(data.length > 1){
+                    message.severity = data[1];
+                }
+                $scope.messages.push(message);
+            }
+        });
+
+        angular.element(document).ready(function () {
             $scope.loadScript($("#scenario-script").text());
         });
     }

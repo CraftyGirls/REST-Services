@@ -2,250 +2,338 @@
 
 angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
-.config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/assetView', {
-        templateUrl: '/scenario/assetView/',
-        controller: 'assetCtrl'
-    });
-}])
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.when('/assetView', {
+            templateUrl: '/scenario/assetView/',
+            controller: 'assetCtrl'
+        });
+    }])
 
-.controller('assetCtrl', ['$scope', '$compile', '$http', function($scope, $compile, $http) {
+    .controller('assetCtrl', ['$scope', '$compile', '$http', '$route', function ($scope, $compile, $http, $route) {
 
-    $scope.dropzones = [];
-    $scope.componentImages = [];
-    $scope.componentAssetIds = [];
+        $scope.CONST = {};
+        $scope.CONST.ASSET_TYPES = {
+            NONE: -1,
+            CHARACTER_COMPONENT: 1,
+            ITEM: 2
+        };
 
-    $scope.dropzoneVisible = true;
+        // Current Asset
+        $scope.asset = {};
+        $scope.asset.name = "";
+        $scope.asset.description = "";
+        $scope.asset.tags = "";
+        $scope.asset.type = "";
 
-    $scope.showCharacterComponentTypes = false;
-
-    $scope.showFileUploaders = false;
-
-    $scope.selectedComponentType = -1;
-
-    $scope.selectedAssetType = -1;
-
-    $scope.assetId = -1;
-
-    $scope.componentScale = 1;
-
-    $scope.componentFilesConfirmed = false;
-
-    $scope.joints = {};
-
-    // Asset properties
-    $scope.assetName = "";
-    $scope.assetDescription = "";
-    $scope.assetTags = "";
-    $scope.assetType = "";
-
-    var CHARACTER_COMPONENT = 1;
-    var ITEM                = 2;
-
-    var dropzonesProcessed = 0;
-
-    // Make this a serverside resource later on
-    $scope.assetTypes = [{
-        id: -1,
-        label: 'Select Asset Type'
-        }, 
-        {
-            id: CHARACTER_COMPONENT,
-            label: 'Character Component'
+        // @TODO Make this a server-side resource later on
+        $scope.asset.types = [{
+            id: $scope.CONST.ASSET_TYPES.NONE,
+            label: 'Select Asset Type'
         },
-        {
-            id: ITEM,
-            label : 'Item'
-        }
+            {
+                id: $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT,
+                label: 'Character Component'
+            },
+            {
+                id: $scope.CONST.ASSET_TYPES.ITEM,
+                label: 'Item'
+            }
+        ];
 
-    ];
-
-    $scope.componentTypes = [{
-        id: -1,
-        label: 'Select Component Type'
-    }, {
-        id: 1,
-        label: 'Leg'
-    }, {
-        id: 2,
-        label: 'Arm'
-    }, {
-        id: 3,
-        label: 'Torso'
-    }, {
-        id: 4,
-        label: 'Head'
-    }, {
-        id: 5,
-        label: 'Pelvis'
-    }];
-    
-    $scope.componentPartsByType = {
-        "Arm"    : ["Uppper Arm", "Lower Arm", "Hand"],
-        "Leg"    : ["Upper Leg", "Lower Leg", "Foot"],
-        "Torso"  : ["Torso"],
-        "Head"   : ["Lower Jaw", "Upper Jaw", "Nose", "Left Pupil", "Right Pupil"],
-        "Pelvis" : ["Pelvis"]
-    };
-
-    $scope.onAssetTypeChange = function() {
-        switch ($scope.selectedAssetType.id) {
-            
-            case CHARACTER_COMPONENT : // Character Component
-                $scope.showCharacterComponentTypes = true;
-                break;
-
-            case ITEM : 
-                addFileUploader("Item Texture");
-                $scope.showFileUploaders = true;
-                break;
-        }
-    };
-
-    $scope.onComponentTypeChange = function() {
-
-        var componentParts = $scope.componentPartsByType[$scope.selectedComponentType.label];
-
-        $(getFileUploadContainer()).empty();
         $scope.dropzones = [];
 
-        for (var i = 0; i < componentParts.length; i++) {
-            var dropzone = addFileUploader(componentParts[i]);
-            var additionalData = {componentType : componentParts[i]};
-            dropzone.attr('additional-data', JSON.stringify(additionalData));
-        }
-
-        $scope.showFileUploaders = true;
-    };
-
-    $scope.uploadFiles = function() {
-        $scope.componentFilesConfirmed = true;
         $scope.componentImages = [];
 
-        for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
-            $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
-        }
-    };
+        $scope.componentAssetIds = [];
 
-    $scope.uploadAsset = function() {
+        $scope.dropzoneVisible = true;
 
-        // Tell the app controller to block the ui
-        $scope.$emit('blockUi', [true]);
-        switch($scope.selectedAssetType.id){
-            case CHARACTER_COMPONENT :
-                
-                // Setup the appropriate data object for a component set
-                var compSetData = {
-                    name: $scope.assetName,
-                    description: $scope.assetDescription,
-                    tags: $scope.assetTags,
-                    setType: $scope.selectedComponentType.label.toUpperCase(),
-                    joints: JSON.stringify($scope.joints)
-                };
+        $scope.showCharacterComponentTypes = false;
 
-                // Create a component set and get the id that is returned 
-                $http.post('/scenario/service/component_set/', compSetData).then(
-                    function(response) { // success
+        $scope.showFileUploaders = false;
 
-                        $scope.assetId = response.data.id;
+        $scope.selectedComponentType = -1;
 
-                        for(var i = 0; i < $scope.dropzones.length; i++) {
-                            var dropzone = $('div[dropzone_' + i + ']');
-                            dropzone.attr('asset-id', $scope.assetId);
-                            dropzone.attr('asset-type', $scope.selectedAssetType.label);
+        $scope.selectedAsset = -1;
+
+        $scope.assetId = -1;
+
+        $scope.componentScale = 1;
+
+        $scope.componentFilesConfirmed = false;
+
+        $scope.joints = {};
+
+        var dropzonesProcessed = 0;
+
+        $scope.componentTypes = [{
+            id: -1,
+            label: 'Select Component Type'
+        }, {
+            id: 1,
+            label: 'Leg'
+        }, {
+            id: 2,
+            label: 'Arm'
+        }, {
+            id: 3,
+            label: 'Torso'
+        }, {
+            id: 4,
+            label: 'Head'
+        }, {
+            id: 5,
+            label: 'Pelvis'
+        }];
+
+        $scope.componentPartsByType = {
+            "Arm": ["Uppper Arm", "Lower Arm", "Hand"],
+            "Leg": ["Upper Leg", "Lower Leg", "Foot"],
+            "Torso": ["Torso"],
+            "Head": ["Lower Jaw", "Upper Jaw", "Nose", "Left Pupil", "Right Pupil"],
+            "Pelvis": ["Pelvis"]
+        };
+
+        $scope.onAssetTypeChanged = function () {
+            resetFileUploaders();
+            switch ($scope.selectedAsset.id) {
+
+                case $scope.CONST.ASSET_TYPES.NONE :
+                    $scope.showCharacterComponentTypes = false;
+                    break;
+
+                case $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT : // Character Component
+                    $scope.showCharacterComponentTypes = true;
+                    if ($scope.selectedComponentType.id != -1) {
+                        $scope.onComponentTypeChange();
+                    }
+                    break;
+
+                case $scope.CONST.ASSET_TYPES.ITEM :
+                    addFileUploader("Item Texture");
+                    $scope.showFileUploaders = true;
+                    $scope.showCharacterComponentTypes = false;
+                    break;
+            }
+        };
+
+        $scope.onComponentTypeChange = function () {
+
+            var componentParts = $scope.componentPartsByType[$scope.selectedComponentType.label];
+
+            $(getFileUploadContainer()).empty();
+
+            $scope.dropzones = [];
+
+            for (var i = 0; i < componentParts.length; i++) {
+                var dropzone = addFileUploader(componentParts[i]);
+                var additionalData = {componentType: componentParts[i]};
+                dropzone.attr('additional-data', JSON.stringify(additionalData));
+            }
+
+            $scope.showFileUploaders = true;
+        };
+
+        $scope.initJointPlacement = function () {
+
+            var valid = true;
+            var errors = [];
+
+            for (var i = 0; i < $scope.dropzones.length; i++) {
+                if ($scope.dropzones[i].files.length != 1) {
+                    errors.push("A file is required for each component");
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                $scope.componentFilesConfirmed = true;
+                $scope.componentImages = [];
+
+                for (var i = 0; i < $scope.componentPartsByType[$scope.selectedComponentType.label].length; i++) {
+                    $scope.componentImages.push($scope.componentPartsByType[$scope.selectedComponentType.label][i]);
+                }
+            } else {
+                for (var i = 0; i < errors.length; i++) {
+                    $scope.$emit('showMessage', [errors[i], 'danger']);
+                }
+
+            }
+        };
+
+        $scope.uploadAsset = function () {
+
+            var valid = true;
+            var errors = [];
+
+            if ($scope.asset.name == "") {
+                errors.push('Name is required');
+                valid = false;
+            }
+
+            if ($scope.asset.description == "") {
+                errors.push('Description is required');
+                valid = false;
+            }
+
+            if (valid) {
+                // Tell the app controller to block the ui
+                switch ($scope.selectedAsset.id) {
+                    case $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT :
+
+                        var valid = true;
+                        var errors = [];
+
+                        if($scope.selectedComponentType.id  == -1){
+                            errors.push('A valid component type must be selected');
+                            valid = false;
                         }
 
-                        $scope.dropzones[0].processQueue();
-                        $scope.$emit('blockUi', [false]);
-                    },
-
-                    //@TODO Add some proper error notification
-                    function(response) { // failure
-                        alert("Error creating component set - " + response.data);
-                        $scope.$emit('blockUi', [false]);
-                    }
-                );
-
-                break;
-
-            case ITEM:
-                // Create the appropriate data object for an item
-                var itemData = {
-                    name: $scope.assetName,
-                    description: $scope.assetDescription,
-                    tags: $scope.assetTags
-                    // Extra item attributes
-                };
-
-                // Create an item set and get the id that is returned 
-                $http.post('/scenario/service/item/', itemData).then(
-                    function(response) { // success
-
-                        $scope.assetId = response.data.id;
-
-                        //@TODO Why?
-                         for(var i = 0; i < $scope.dropzones.length; i++){
-                            var dropzone = $('div[dropzone_' + i + ']');
-                            dropzone.attr('asset-id', $scope.assetId);
-                            dropzone.attr('asset-type', $scope.selectedAssetType.label);
+                        for (var i = 0; i < $scope.dropzones.length; i++) {
+                            if ($scope.dropzones[i].files.length != 1) {
+                                errors.push('A file is required for each component');
+                                valid = false;
+                                break;
+                            }
                         }
 
-                        $scope.dropzones[0].processQueue();
-                        $scope.$emit('blockUi', [false]);
-                    },
-                    function(response) { // failure
-                        alert(response.data);
-                        $scope.$emit('blockUi', [false]);
-                    }
-                );
-                break;
+                        if(Object.getOwnPropertyNames($scope.joints).length == 0){
+                            errors.push('Joints must be specified');
+                            valid = false;
+                        }
+
+                        if(valid) {
+                            // Setup the appropriate data object for a component set
+                            var compSetData = {
+                                name: $scope.asset.name,
+                                description: $scope.asset.description,
+                                tags: $scope.asset.tags,
+                                setType: $scope.selectedComponentType.label.toUpperCase(),
+                                joints: JSON.stringify($scope.joints)
+                            };
+
+                            $scope.$emit('blockUi', [true]);
+
+                            // Create a component set and get the id that is returned
+                            $http.post('/scenario/service/component_set/', compSetData).then(
+                                function (response) { // success
+
+                                    $scope.assetId = response.data.id;
+
+                                    for (var i = 0; i < $scope.dropzones.length; i++) {
+                                        var dropzone = $('div[dropzone_' + i + ']');
+                                        dropzone.attr('asset-id', $scope.assetId);
+                                        dropzone.attr('asset-type', $scope.selectedAsset.label);
+                                    }
+
+                                    $scope.dropzones[0].processQueue();
+                                },
+
+                                //@TODO Add some proper error notification
+                                function (response) { // failure
+                                    alert("Error creating component set - " + response.data);
+                                    $scope.$emit('blockUi', [false]);
+                                }
+                            );
+                        }else{
+                            for(var i = 0; i <errors.length; i++) {
+                                $scope.$emit('showMessage', [errors[i], 'danger']);
+                            }
+                        }
+
+                        break;
+
+                    case $scope.CONST.ASSET_TYPES.ITEM:
+
+                        if ($scope.dropzones[0].files.length == 1) {
+
+                            // Create the appropriate data object for an item
+                            var itemData = {
+                                name: $scope.asset.name,
+                                description: $scope.assetDescription,
+                                tags: $scope.asset.tags
+                                // Extra item attributes
+                            };
+
+                            $scope.$emit('blockUi', [true]);
+
+                            // Create an item set and get the id that is returned
+                            $http.post('/scenario/service/item/', itemData).then(
+                                function (response) { // success
+
+                                    $scope.assetId = response.data.id;
+
+                                    //@TODO Why?
+                                    for (var i = 0; i < $scope.dropzones.length; i++) {
+                                        var dropzone = $('div[dropzone_' + i + ']');
+                                        dropzone.attr('asset-id', $scope.assetId);
+                                        dropzone.attr('asset-type', $scope.selectedAsset.label);
+                                    }
+
+                                    $scope.dropzones[0].processQueue();
+                                },
+                                function (response) { // failure
+                                    alert(response.data);
+                                    $scope.$emit('blockUi', [false]);
+                                }
+                            );
+                        } else {
+                            $scope.$emit('showMessage', ['Item texture is required', 'danger']);
+                        }
+                        break;
+                }
+            } else {
+                for (var i = 0; i < errors.length; i++) {
+                    $scope.$emit('showMessage', [errors[i], 'danger']);
+                }
+            }
+        };
+
+        /**
+         * The dropzones need to be processed syncronously so that Gitlab doesn't throw
+         * an error due to simultaneous commits. When a dropzone has committed its file
+         * it will emit a dropzoneComplete event. When this is recieved we tell the next
+         * on in the array to commit its file
+         */
+        $scope.$on('dropzoneComplete', function (event, data) {
+            dropzonesProcessed++;
+            if (dropzonesProcessed == $scope.dropzones.length) {
+                // Successfully uploaded all of the files
+                $scope.$apply();
+                $scope.$emit('showMessage', ['Asset created successfully', 'success']);
+                $route.reload();
+                $scope.$emit('blockUi', [false]);
+            } else {
+                // Use the dropzonesProcessed as the idx since we process the first one outside
+                // of this function
+                $scope.dropzones[dropzonesProcessed].processQueue();
+            }
+        });
+
+        function getFileUploadContainer() {
+            return angular.element(document.getElementById('file-upload-container'));
         }
 
-    };
-
-    /**
-     * The dropzones need to be processed syncronously so that Gitlab doesn't throw
-     * an error due to simultaneous commits. When a dropzone has committed its file
-     * it will emit a dropzoneComplete event. When this is recieved we tell the next
-     * on in the array to commit its file
-     */
-    $scope.$on('dropzoneComplete', function(event, data) {
-        dropzonesProcessed++;
-        if(dropzonesProcessed == $scope.dropzones.length){
-            // Successfully uploaded all of the files
-            $scope.$emit('blockUi', [false]);
-            $scope.$apply();
-        }else{
-            // Use the dropzonesProcessed as the idx since we process the first one outside
-            // of this function
-            $scope.dropzones[dropzonesProcessed].processQueue();
-        }
-    });
-
-    function getFileUploadContainer() {
-        return angular.element(document.getElementById('file-upload-container'));
-    }
-
-    function addFileUploader(label) {
-        var container = getFileUploadContainer();
-        container.append($compile(
+        function addFileUploader(label) {
+            var container = getFileUploadContainer();
+            container.append($compile(
                 "<span>File for " + label + "</span><div file-uploader id='drop_zone' asset-type='' dropzone_" + $scope.dropzones.length + " asset-id='' dropzones='dropzones' additional-data=''></div><br/>"
             )($scope));
-        // append adds to dropzones so use the length minus one
-        return $("div[dropzone_" + ($scope.dropzones.length - 1) + "]");
-    }
+            // append adds to dropzones so use the length minus one
+            return $("div[dropzone_" + ($scope.dropzones.length - 1) + "]");
+        }
 
-    function addDropzone(dropzone) {
-        $scope.dropzones.push(dropzone);
-    }
+        function resetFileUploaders() {
+            $scope.dropzones = [];
+            var cont = getFileUploadContainer();
+            $(cont).html("");
+        }
 
-    function componentKeyToIndex(key) {
-        return $scope.selectedComponentType.indexOf(key);
-    }
-}])
+    }])
 
-// Directive for dropzone file uploader
-.directive('fileUploader', ['$parse', function($parse) {
+    // Directive for dropzone file uploader
+    .directive('fileUploader', ['$parse', function ($parse) {
         return {
             restrict: 'AE',
             template: '<div ng-transclude></div>',
@@ -255,10 +343,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 dropzones: "=dropzones",
                 assetId: "@",
                 additionalData: "@",
-                assetType: "@"
+                assetName: "@"
             },
 
-            link: function($scope, element, attrs, ctrls) {
+            link: function ($scope, element, attrs, ctrls) {
                 try {
                     Dropzone
                 }
@@ -269,14 +357,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                 // @TODO Why do we have to do this
                 var assetId = null;
-                var assetType = null;
+                var assetName = null;
                 var additionalData = null;
 
                 var dropzone = new Dropzone(element[0], {
                     url: "/scenario/upload_asset/",
                     autoProcessQueue: false,
 
-                    resize: function(file) {
+                    resize: function (file) {
 
                         return {
                             srcX: 0,
@@ -290,7 +378,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         };
                     },
 
-                    sending: function(file, xhr, formData) {
+                    sending: function (file, xhr, formData) {
                         //@TODO How do we do this properly
                         var id = $(dropzone.element).attr("asset-id");
                         var type = $(dropzone.element).attr("asset-type");
@@ -300,32 +388,32 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         formData.append("additionalData", data);
                     },
 
-                    init: function() {
-                        this.on("addedfile", function() {
+                    init: function () {
+                        this.on("addedfile", function () {
                             if (this.files[1] != null) {
-                               this.removeFile(this.files[0]);
+                                this.removeFile(this.files[0]);
                             }
                         });
                     }
                 });
 
-                dropzone.on("success", function(file, response) {
+                dropzone.on("success", function (file, response) {
                     $scope.$emit('dropzoneComplete', []);
                 });
 
-                dropzone.on("error", function(file, response) {
+                dropzone.on("error", function (file, response) {
                     $scope.$emit('blockUi', [false]);
                     alert("Error uploading asset file - " + response);
                 });
 
                 if ($scope.eventHandlers) {
-                    Object.keys($scope.eventHandlers).forEach(function(eventName) {
+                    Object.keys($scope.eventHandlers).forEach(function (eventName) {
                         dropzone.on(eventName, $scope.eventHandlers[eventName]);
                     });
                 }
 
 
-                dropzone.process = function(){
+                dropzone.process = function () {
                     $scope.$evalAsync(function () {
                         dropzone.processQueue();
                     });
@@ -336,7 +424,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         };
     }])
     .directive('componentBuilder', [
-        function() {
+        function () {
             return {
 
                 scope: {
@@ -350,7 +438,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                 template: '<div id="c-wrapper"><canvas id="c" class="component-builder"></canvas></div>',
 
-                link: function($scope, element, attr) {
+                link: function ($scope, element, attr) {
 
                     var componentImages = [];
 
@@ -382,7 +470,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     canvasWrapper.tabIndex = 1000;
 
-                    $scope.$watch('components', function(value) {
+                    $scope.$watch('components', function (value) {
 
                         clearExisting();
 
@@ -420,7 +508,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         inJointGroup.moveTo(1000);
                     });
 
-                    $scope.$watch('componentScale', function(value) {
+                    $scope.$watch('componentScale', function (value) {
                         for (var i = 0; i < componentImages.length; i++) {
                             componentImages[i].scaleX = value;
                             componentImages[i].scaleY = value;
@@ -429,14 +517,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                     });
 
-                    canvasWrapper.addEventListener("keydown", function(e) {
+                    canvasWrapper.addEventListener("keydown", function (e) {
                         if (e.shiftKey) {
                             shiftDown = true;
                         }
 
                     }, false);
 
-                    canvasWrapper.addEventListener("keyup", function(e) {
+                    canvasWrapper.addEventListener("keyup", function (e) {
                         if (e.shiftKey == false) {
                             shiftDown = false;
                         }
@@ -655,7 +743,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     }
 
                     canvas.on({
-                        'mouse:down': function(e) {
+                        'mouse:down': function (e) {
                             if (e.target) {
                                 if (shiftDown == true) {
                                     if (indexOfJoint(outJoints, e.target) >= 0) {
@@ -668,7 +756,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 }
                             }
                         },
-                        'mouse:up': function(e) {
+                        'mouse:up': function (e) {
                             if (e.target) {
                                 e.target.opacity = 1;
                                 canvas.renderAll();
@@ -676,10 +764,10 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             canvas.renderAll();
                             calculateJointPercentages();
                         },
-                        'object:moved': function(e) {
+                        'object:moved': function (e) {
                             e.target.opacity = 0.5;
                         },
-                        'object:modified': function(e) {
+                        'object:modified': function (e) {
                             e.target.opacity = 1;
                         }
                     });

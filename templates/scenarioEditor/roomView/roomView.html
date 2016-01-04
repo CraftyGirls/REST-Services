@@ -6,28 +6,27 @@
 
             <form>
                 <span ng-repeat="room in getRooms()">
-                    {$room.id$}
-                    Name: <input type="text" ng-model="room.name" cols="25" rows="3"/><br/>
-                    <button class="btn btn-default" ng-click="editRoom(room)">Edit {$room.name$}</button>
-                    <div sweet-delete variable="room" container="getRooms()"></div>
-                    <hr/>
+                    <div class="padded-top-bottom-10">
+                        <span>Name:</span> <input type="text" ng-model="room.name"/>
+                        <span class="glyphicon glyphicon-edit hover-fade clickable" ng-click="editRoom(room)"></span>
+                        <sweet-delete confirm="true" variable="room" container="getRooms()"></sweet-delete>
+                    </div>
                 </span>
                 <button class="btn btn-default" ng-click="addRoom()">Add New Room</button>
             </form>
         </div>
-        <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
-            <div class="table table-striped">
-                <div class="dialogue-container">
-                    <div class="row">
+        <div class="col-md-10 content-block fill-height" ng-show="editVisible">
+            <div>
+                <div>
+                    <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
                             <span>Name</span>
                         </div>
                         <div class="col-sm-1">
                             <input type="text" class="input input-sm" ng-model="currentRoom().name" title="name"/>
                         </div>
-
                     </div>
-                    <div class="row">
+                    <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
                             <span>Description</span>
                         </div>
@@ -36,7 +35,7 @@
                                       title="description"></textarea>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
                             <span>Size</span>
                         </div>
@@ -45,55 +44,55 @@
                                     ng-options="size as size for size in roomSizes()" title="Size"></select>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
                             <span>Characters</span>
                         </div>
                         <div class="col-md-6">
                             <div class="row" ng-repeat="char in charactersForCurrentRoom()">
                                 <div>
-                                    <span class="col-md-2">{$char.name$}</span>
+                                    <span class="col-sm-2">{$char.name$}</span>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-3">
                                     <sweet-delete variable="char.id"
                                                   container="currentRoom().characters"></sweet-delete>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-1">
+                            <div class="row padded-top-bottom-5">
+                                <div class="col-sm-2">
                                     <select class="input-sm" ng-model="selectedChar"
                                             ng-options="char.id as char.name for char in getUnusedCharacters()"
                                             title="Characters">
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-sm-2">
                                     <button class="btn btn-primary" ng-click="addSelectedChar()">Add Character</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
                             <span>Items</span>
                         </div>
                         <div class="col-md-6">
                             <div class="row" ng-repeat="item in itemsForCurrentRoom()">
                                 <div>
-                                    <span class="col-md-2">{$item.name$}</span>
+                                    <span class="col-sm-2">{$item.name$}</span>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-2">
                                     <sweet-delete variable="item.id"
                                                   container="currentRoom().items"></sweet-delete>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-1">
+                            <div class="row padded-top-bottom-5">
+                                <div class="col-sm-2">
                                     <select class="input-sm" ng-model="selectedItem"
                                             ng-options="item.id as item.name for item in getUnusedItems()"
                                             title="Items">
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-sm-2">
                                     <button class="btn btn-primary" ng-click="addSelectedItem()">Add Item</button>
                                 </div>
                             </div>
