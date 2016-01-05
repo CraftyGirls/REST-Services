@@ -40,31 +40,45 @@
                         <input type="checkbox" ng-model="currentItem().interactable"/>
                     </div>
                 </div>
-                <h4>Effects</h4>
-                <span ng-repeat="trigger in currentItem().effects">
-                    <div class="trigger">
-                        Function =
-                        <input type="text" ng-model="trigger.func"/>
+                <hr/>
+                <div class="padded-top-bottom-10">
+                    <h4>Effects</h4>
+                    <div class="content-block">
+                        <div class="row" ng-repeat="trigger in currentItem().effects">
+                            <div class="content-block">
+                                <span>Function = </span>
+                                <input type="text" ng-model="trigger.func"/>
+                                <sweet-delete variable="trigger" container="currentItem().effects"></sweet-delete>
+                                <div class="content-block padded-top-bottom-10">
+                                    <span>Arguments = </span>
+                                    <div ng-repeat="(key, val) in trigger.args track by $index" class="content-block padded-top-bottom-10">
+                                        <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key"
+                                               ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
+                                        <span> = </span><input type="text" ng-model="trigger.args[key]"/>
 
-                        <div class="arg-container">
-                            Arguments =
-                            <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
-                                <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key"
-                                       ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
-                                <span> = </span><input type="text" ng-model="trigger.args[key]"/>
-
-                                <div sweet-keyed-delete key="key" container="trigger.args"></div>
+                                        <sweet-keyed-delete key="key" container="trigger.args"></sweet-keyed-delete>
+                                    </div>
+                                    <button class="btn btn-primary" ng-click="addArg(trigger)">Add Arg</button>
+                                </div>
                             </div>
-                            <button class="btn btn-primary" ng-click="addArg(trigger)">Add Arg</button>
                         </div>
                     </div>
-                    <div sweet-delete variable="trigger" container="currentItem().effects"></div>
-                </span>
-                <img src="{$currentItem().texture.imageUrl$}"/>
+                </div>
                 <button class="btn btn-primary" ng-click="addEffect(currentItem())">Add Effect</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#component-modal"
-                        ng-click="editTexture()">Edit Texture
-                </button>
+            </div>
+            <hr/>
+            <div >
+                <h4>Texture</h4>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#component-modal"
+                                ng-click="editTexture()">Edit Texture
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <img src="{$currentItem().texture.imageUrl$}"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

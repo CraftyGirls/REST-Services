@@ -34,10 +34,7 @@ function Trigger() {
     this.args = new Arg();
 
     this.addArg = function () {
-        var id = 0;
-        while (this.args.hasOwnProperty("key" + id)) {
-            id++;
-        }
+        var id = Object.getOwnPropertyNames(this.args).length + 1;
         this.args["key" + id] = "value";
     };
 }
@@ -54,11 +51,8 @@ function Condition() {
     this.args = new Arg();
 
     this.addArg = function () {
-        var id = 0;
-        while (this.args.hasOwnProperty("key" + id)) {
-            id++;
-        }
-        this.args["key" + id++] = "value";
+        var id = Object.getOwnPropertyNames(this.args).length + 1;
+        this.args["key" + id] = "value";
     };
 }
 

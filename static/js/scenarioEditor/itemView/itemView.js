@@ -2,19 +2,19 @@
 
 angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
 
-    .config(['$routeProvider', function($routeProvider) {
+    .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/itemView', {
             templateUrl: '/scenario/itemView/',
             controller: 'itemCtrl'
         });
     }])
 
-    .controller('itemCtrl', ['$scope', '$http', 'itemService', function($scope, $http, itemService) {
+    .controller('itemCtrl', ['$scope', '$http', 'itemService', function ($scope, $http, itemService) {
         $scope.editVisible = false;
 
         $scope.itemTextures = [];
 
-        $scope.itemQuery      = {};
+        $scope.itemQuery = {};
         $scope.itemQuery.name = null;
         $scope.itemQuery.tags = null;
 
@@ -31,47 +31,56 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
             $scope.editVisible = true;
         };
 
-        $scope.currentItem = function(){
+        $scope.currentItem = function () {
             return itemService.getCurrentItem();
         };
 
-        $scope.addEffect = function(){
+        $scope.addEffect = function () {
             itemService.addEffect($scope.currentItem());
         };
 
-        $scope.addArg = function(trigger){
+        $scope.addArg = function (trigger) {
             trigger.addArg();
         };
 
-        $scope.editTexture = function(){
+        $scope.editTexture = function () {
             getItemTextures(null, null);
         };
 
-        $scope.selectTexture = function(item){
+        $scope.selectTexture = function (item) {
             $scope.currentItem().texture = item.texture;
         };
 
-        $scope.queryChanged = function(){
+        $scope.queryChanged = function () {
             getItemTextures($scope.itemQuery.tags, $scope.itemQuery.name);
         };
 
-        function getItemTextures(tags, name){
+        $scope.updateArg = function (argParent, input, oldKey) {
+            console.log(input);
+            var newKey = document.getElementById(input).value;
+            // Work with json to maintain property order
+            var asJson = JSON.stringify(argParent.args);
+            asJson = asJson.replace(oldKey, newKey);
+            argParent.args = JSON.parse(asJson);
+        };
+
+        function getItemTextures(tags, name) {
             var params = {};
-            if(tags != null && tags.length > 0){
+            if (tags != null && tags.length > 0) {
                 params["tags"] = tags;
             }
-            if(name != null && name.length > 0){
+            if (name != null && name.length > 0) {
                 params["name"] = name;
             }
             $http.get("/scenario/service/item", {
-                    params : params
+                    params: params
                 })
-                .then(function success(response){
+                .then(function success(response) {
                         $scope.itemTextures = response.data;
                         console.log("here");
                     },
-                    function failure(response){
-                        if(response.status == 404){
+                    function failure(response) {
+                        if (response.status == 404) {
                             $scope.itemTextures = [];
                         }
                     }
