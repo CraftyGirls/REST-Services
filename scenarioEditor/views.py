@@ -46,6 +46,11 @@ def roomView(request):
 def itemView(request):
     return render(request, 'scenarioEditor/itemView/itemView.html/', {})
 
+
+@login_required(login_url='/scenario/login/')
+def manageView(request):
+    return render(request, 'scenarioEditor/manageView/manageView.html/', {})
+
     
 @login_required(login_url='/scenario/dialogue/')
 def dialogueView(request):

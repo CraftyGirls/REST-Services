@@ -8,6 +8,7 @@ var application = angular.module('scenarioEditor', [
         'scenarioEditor.assetView',
         'scenarioEditor.roomView',
         'scenarioEditor.itemView',
+        'scenarioEditor.manageView',
         'scenarioEditor.version',
         'scenarioServices'
     ])
@@ -154,7 +155,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 },
                 //Failure
                 function(response){
-                    alert("Error occured while saving scenario - " + response);
+                    alert("Error occurred while saving scenario - " + response);
                     blockUi(false);
                 }
             );
