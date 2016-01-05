@@ -45,7 +45,7 @@
 #main {
     float: left;
     padding-left: 25px;
-    min-width: 100;
+    min-width: 50%;
     overflow-y: auto;
 }
 
@@ -85,14 +85,14 @@
     height: 100%;
 }
 
-.padded-top-bottom-10{
-    padding-top:10px;
-    padding-bottom:10px;
+.padded-top-bottom-10 {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-.padded-top-bottom-5{
-    padding-top:5px;
-    padding-bottom:5px;
+.padded-top-bottom-5 {
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .header-title {
@@ -115,55 +115,55 @@
     overflow: hidden;
 }
 
-.fill-width{
+.fill-width {
     width: 100%;
 }
 
-.marg-top-10{
-    margin-top:10px;
+.marg-top-10 {
+    margin-top: 10px;
 }
 
-.marg-bott-10{
-    margin-bottom:10px;
+.marg-bott-10 {
+    margin-bottom: 10px;
 }
 
-.marg-left-10{
-    margin-left:10px;
+.marg-left-10 {
+    margin-left: 10px;
 }
 
-.marg-right-10{
-    margin-right:10px;
+.marg-right-10 {
+    margin-right: 10px;
 }
 
-.hover-fade:hover{
+.hover-fade:hover {
     opacity: 0.5;
 }
 
-.width-95{
-    width:95%;
+.width-95 {
+    width: 95%;
 }
 
-.width-90{
-    width:90%;
+.width-90 {
+    width: 90%;
 }
 
-.width-80{
-    width:80%;
+.width-80 {
+    width: 80%;
 }
 
-.width-70{
-    width:70%;
+.width-70 {
+    width: 70%;
 }
 
-.width-60{
-    width:60%;
+.width-60 {
+    width: 60%;
 }
 
-.width-50{
-    width:50%;
+.width-50 {
+    width: 50%;
 }
 
-.center{
+.center {
     margin-left: auto;
     margin-right: auto;
 }
@@ -244,37 +244,31 @@
 
 /* Convo View */
 .conditions-container {
-    border: 2px solid #ffd7f3;
     padding: 5px;
     margin: 5px;
 }
 
 .triggers-container {
-    border: 2px solid #ffd7f3;
     padding: 5px;
     margin: 5px;
 }
 
 .speaker-container {
-    border: 2px solid #ffd7f3;
     padding: 5px;
     margin: 5px;
 }
 
 .lines-container {
-    border: 2px solid #ffd7f3;
     padding: 5px;
     margin: 5px;
 }
 
 .dialogue-container {
-    border: 2px solid #ffd7f3;
     padding: 5px;
     margin: 5px;
 }
 
 .arg-container {
-    border: 2px solid #ffd7f3;
     padding: 5px;
     margin: 5px;
 }
@@ -300,7 +294,7 @@
 }
 
 .block-ui-text {
-    color:#ffffff;
+    color: #ffffff;
     font-size: 200px;
     margin-left: auto;
     margin-right: auto;

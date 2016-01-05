@@ -19,6 +19,7 @@
         </div>
 
         <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <h3>Dialogues</h3>
             <div class="dialogue-container">
                 <div ng-repeat="dialogue in getCurrentCovnversation().dialogues">
                     <div class="row">
@@ -29,13 +30,15 @@
                         </div>
                     </div>
                     <dialogue></dialogue>
+                    <hr/>
                 </div>
                 <button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
             </div>
+            <hr/>
             <div class="dialogue-container">
                 <h3>Options/Link</h3>
-                <span ng-repeat="option in getCurrentCovnversation().options">
-                    <div class="dialogue-container padded-top-bottom-10">
+                <div ng-repeat="option in getCurrentCovnversation().options">
+                    <div class="content-block padded-top-bottom-10">
                         <span>Conversation:</span>
                         <select name="convo-link" ng-model="option.convoId"
                                 ng-options="convo.id as convo.name for convo in getConvos()"
@@ -47,7 +50,7 @@
                             <input type="text" name="optionLabel" ng-model="option.label"/>
                         </div>
                     </div>
-                </span>
+                </div>
                 <button class="btn btn-primary" ng-click="addOption()">Add Option</button>
             </div>
         </div>

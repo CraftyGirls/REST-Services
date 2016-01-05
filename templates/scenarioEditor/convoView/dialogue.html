@@ -8,59 +8,71 @@
             </option>
         </select>
     </div>
+    <hr/>
     <div class="lines-container">
         <h4>Lines</h4>
-    <span ng-repeat="line in dialogue.lines">
- 	    <div class="line padded-top-bottom-10">
-            <span>Text: </span> <input class="width-50" type="text" name="line-input" value={$line.text$} ng-model="line.text"/>
-            <sweet-delete variable="line" container="dialogue.lines"></sweet-delete>
+        <div class="content-block">
+            <div ng-repeat="line in dialogue.lines">
+                <div class="line padded-top-bottom-10">
+                    <span>Text: </span> <input class="width-50" type="text" name="line-input" value={$line.text$}
+                                               ng-model="line.text"/>
+                    <sweet-delete variable="line" container="dialogue.lines"></sweet-delete>
+                </div>
+            </div>
         </div>
-	</span>
         <button class="btn btn-primary" ng-click="addLine(dialogue)">Add Line</button>
     </div>
+    <hr/>
     <div class="triggers-container">
         <h4>Triggers</h4>
-    <span ng-repeat="trigger in dialogue.triggers">
-        <div class="trigger padded-top-bottom-10">
-            <span>Function = </span>
-            <input type="text" ng-model="trigger.func"/>
-            <sweet-delete variable="trigger" container="dialogue.triggers"></sweet-delete>
-            <div class="arg-container">
-                Arguments =
-                <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
-                    <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key"
-                           ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
-                    <span> = </span><input type="text" ng-model="trigger.args[key]"/>
-                    <sweet-keyed-delete key="key" container="trigger.args"></sweet-keyed-delete>
-                </div>
-                <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
-            </div>
-        </div>
-    </span>
-        <button class="btn btn-primary" ng-click="addTrigger(dialogue)">Add Trigger</button>
-    </div>
-    <div class="conditions-container">
-        <h4>Conditions</h4>
-    <span ng-repeat="condition in dialogue.conditions">
-        <div class="condition padded-top-bottom-10">
-            Function =
-            <input type="text" ng-model="condition.func"/>
-            <sweet-delete variable="condition" container="dialogue.conditions"></sweet-delete>
-            <div class="arg-container">
-                <span>Arguments = </span>
 
-                <div class="arg-container">
-                    <div ng-repeat="(key, val) in condition.args track by $index" class="arg-container">
-                        <input id="condition-arg-key-{$$index$}" type="text" ng-model="key"
-                               ng-change="updateArg(condition, 'condition-arg-key-{$$index$}', '{$key$}')"/>
-                        <span> = </span><input type="text" ng-model="condition.args[key]"/>
-                        <sweet-keyed-delete key="key" container="condition.args"></sweet-keyed-delete>
+        <div class="content-block">
+            <div ng-repeat="trigger in dialogue.triggers">
+                <div class="trigger padded-top-bottom-10">
+                    <span>Function = </span>
+                    <input type="text" ng-model="trigger.func"/>
+                    <sweet-delete variable="trigger" container="dialogue.triggers"></sweet-delete>
+                    <div class="arg-container">
+                        Arguments =
+                        <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
+                            <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key"
+                                   ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
+                            <span> = </span><input type="text" ng-model="trigger.args[key]"/>
+                            <sweet-keyed-delete key="key" container="trigger.args"></sweet-keyed-delete>
+                        </div>
+                        <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
                     </div>
                 </div>
-                <button class="btn btn-primary" ng-click="addConditionArg(condition)">Add Arg</button>
             </div>
         </div>
-    </span>
+        <button class="btn btn-primary" ng-click="addTrigger(dialogue)">Add Trigger</button>
+    </div>
+    <hr/>
+    <div class="conditions-container">
+        <h4>Conditions</h4>
+
+        <div class="content-block">
+            <div ng-repeat="condition in dialogue.conditions">
+                <div class="condition padded-top-bottom-10">
+                    <span>Function = </span>
+                    <input type="text" ng-model="condition.func"/>
+                    <sweet-delete variable="condition" container="dialogue.conditions"></sweet-delete>
+                    <div class="arg-container">
+                        <span>Arguments = </span>
+
+                        <div class="arg-container">
+                            <div ng-repeat="(key, val) in condition.args track by $index" class="arg-container">
+                                <input id="condition-arg-key-{$$index$}" type="text" ng-model="key"
+                                       ng-change="updateArg(condition, 'condition-arg-key-{$$index$}', '{$key$}')"/>
+                                <span> = </span><input type="text" ng-model="condition.args[key]"/>
+                                <sweet-keyed-delete key="key" container="condition.args"></sweet-keyed-delete>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" ng-click="addConditionArg(condition)">Add Arg</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <button class="btn btn-primary" ng-click="addCondition(dialogue)">Add Condition</button>
     </div>
 </div>

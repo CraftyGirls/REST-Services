@@ -67,7 +67,6 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
   };
   
   $scope.updateArg = function(argParent, input, oldKey){
-    console.log(input);
     var newKey = document.getElementById(input).value;
     // Work with json to maintain property order
     var asJson = JSON.stringify(argParent.args);
