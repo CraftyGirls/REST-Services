@@ -133,6 +133,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.messages = [];
 
         $scope.save = function (scenario_id) {
+            blockUi(true);
             $scope.dataObj = {
                 characters: $scope.getChars(),
                 conversations: $scope.getConvos(),
@@ -142,10 +143,21 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
             console.log(angular.toJson($scope.dataObj));
 
-            $http.post('/scenario/save/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
+            $http.post('/scenario/service/update_scenario/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
                 $scope.msg = 'Data saved.';
                 $scope.dlVisible = true;
-            });
+            }).then(
+                //Success
+                function(response){
+                    blockUi(false);
+                    showMessage("Scenario saved successfully", "success");
+                },
+                //Failure
+                function(response){
+                    alert("Error occured while saving scenario - " + response);
+                    blockUi(false);
+                }
+            );
 
             $scope.msg2 = 'Data sent: ' + $scope.jsonData;
         };
@@ -164,28 +176,38 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.$on('blockUi', function (event, data) {
             if(data.length > 0){
-                if(data[0] === true){
-                    $('#ui-blocker').fadeIn();
-                }else {
-                    $('#ui-blocker').fadeOut();
-                }
+                blockUi(data[0]);
             }
         });
 
         $scope.$on('showMessage', function (event, data) {
             if(data.length > 0){
-                var message = {};
-                message.text = data[0];
-                message.severity = "info";
-                if(data.length > 1){
-                    message.severity = data[1];
+                var text = data[0];
+                var sev  = "info";
+                if(data.length > 0){
+                    sev = data[1];
                 }
-                $scope.messages.push(message);
+                showMessage(text, sev);
             }
         });
 
         angular.element(document).ready(function () {
             $scope.loadScript($("#scenario-script").text());
         });
+
+        function blockUi(block){
+          if(block === true){
+                $('#ui-blocker').fadeIn();
+          }else {
+                $('#ui-blocker').fadeOut();
+          }
+        }
+
+        function showMessage(text, severity){
+             var message = {};
+            message.text = text;
+            message.severity = severity;
+            $scope.messages.push(message);
+        }
     }
 ]);

@@ -3,40 +3,56 @@
     <div class="row fill-height">
         <div class="col-md-2 list-view">
             <h3>Items</h3>
+
             <form>
-                <span ng-repeat="item in getItems()">
-                    {$item.id$}
-                    Name: <input type="text" ng-model="item.name" cols="25" rows="3"/><br/>
-                    <button class="btn btn-default" ng-click="editItem(item)">Edit {$item.name$}</button>
-                    <div sweet-delete variable="item" container="getItems()"></div>
-                </span>
-                <button class="btn btn-default" ng-click="addItem()">Add New Item</button>
+                <div ng-repeat="item in getItems()" class="padded-top-bottom-10">
+                    <span>Name: </span><input type="text" ng-model="item.name" title="Name"/>
+                    <span class="glyphicon glyphicon-edit clickable hover-fade" ng-click="editItem(item)"></span>
+                    <sweet-delete variable="item" container="getItems()" confirm="true"></sweet-delete>
+                    <hr/>
+                </div>
+                <button class="btn btn-primary" ng-click="addItem()">Add New Item</button>
             </form>
         </div>
-        <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
-            <div class="dialogue-container">
-                <label>
-                    Name
-                    <input type="text" ng-model="currentItem().name"/>
-                </label>
-                <label>
-                    Description
-                    <textarea ng-model="currentItem().description"></textarea>
-                </label>
-                <label>
-                    Interactable
-                    <input type="checkbox" ng-model="currentItem().interactable"/>
-                </label>
+        <div class="col-md-10 content-block" ng-show="editVisible">
+            <div class="padded-top-bottom-10">
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Name</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="text" ng-model="currentItem().name"/>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Description</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <textarea ng-model="currentItem().description"></textarea>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Interactable</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="checkbox" ng-model="currentItem().interactable"/>
+                    </div>
+                </div>
                 <h4>Effects</h4>
                 <span ng-repeat="trigger in currentItem().effects">
                     <div class="trigger">
                         Function =
                         <input type="text" ng-model="trigger.func"/>
+
                         <div class="arg-container">
                             Arguments =
                             <div ng-repeat="(key, val) in trigger.args track by $index" class="arg-container">
-                                <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key" ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
+                                <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key"
+                                       ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
                                 <span> = </span><input type="text" ng-model="trigger.args[key]"/>
+
                                 <div sweet-keyed-delete key="key" container="trigger.args"></div>
                             </div>
                             <button class="btn btn-primary" ng-click="addArg(trigger)">Add Arg</button>
@@ -46,7 +62,9 @@
                 </span>
                 <img src="{$currentItem().texture.imageUrl$}"/>
                 <button class="btn btn-primary" ng-click="addEffect(currentItem())">Add Effect</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#component-modal" ng-click="editTexture()">Edit Texture</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#component-modal"
+                        ng-click="editTexture()">Edit Texture
+                </button>
             </div>
         </div>
     </div>
@@ -70,7 +88,8 @@
                 </thead>
                 <tr ng-repeat="item in itemTextures">
                     <td>
-                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item)">Select</button>
+                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item)">Select
+                        </button>
                     </td>
                     <td>
                         <span>{$item.name$}</span>

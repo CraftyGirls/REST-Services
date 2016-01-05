@@ -3,44 +3,53 @@
     <div class="row fill-height">
         <div class="col-md-2 list-view">
             <h3>Conversations</h3>
+
             <form>
                 <span ng-repeat="conversation in getConvos()">
                     {$conversation.id$}
-                    Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"/><br/>
-                    <button class="btn btn-default" ng-click="editConvo(conversation)">Edit {{conversation.name}}</button>
-                    <button class="btn btn-danger" ng-confirm-click ng-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
+                    <span>Name: </span><input type="text" ng-model="conversation.name" title="Name"/>
+                    <span class="glyphicon glyphicon-edit clickable hover-fade"
+                          ng-click="editConvo(conversation)"></span>
+                    <sweet-delete variable="conversation" container="getConvos()" confirm="true"></sweet-delete>
+
                     <hr/>
                 </span>
-                <button class="btn btn-default" ng-click="addConvo()">Add new conversation</button>
+                <button class="btn btn-primary" ng-click="addConvo()">Add new conversation</button>
             </form>
         </div>
 
         <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
             <div class="dialogue-container">
-                <span ng-repeat="dialogue in getCurrentCovnversation().dialogues">
-            	   <div dialogue class="dialogue-container"></div>
-                   <div sweet-delete variable="dialogue" container="getCurrentCovnversation().dialogues"></div>
-            	</span>
-            	<button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
-        	</div>
+                <div ng-repeat="dialogue in getCurrentCovnversation().dialogues">
+                    <div class="row">
+                        <h3 class="col col-sm-1">{$dialogue.name$}</h3>
+                        <div class="col col-sm-1" >
+                            <sweet-delete variable="dialogue"
+                                          container="getCurrentCovnversation().dialogues"></sweet-delete>
+                        </div>
+                    </div>
+                    <dialogue></dialogue>
+                </div>
+                <button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
+            </div>
             <div class="dialogue-container">
                 <h3>Options/Link</h3>
                 <span ng-repeat="option in getCurrentCovnversation().options">
-                    <div class="dialogue-container">
+                    <div class="dialogue-container padded-top-bottom-10">
                         <span>Conversation:</span>
-                          <select name="convo-link" ng-model="option.convoId"
-                            ng-options="convo.id as convo.name for convo in getConvos()"
-                            ng-init="option.convoId == -1 ? option.convoId = getConvos()[0].id : option.convoId = option.convoId" >
+                        <select name="convo-link" ng-model="option.convoId"
+                                ng-options="convo.id as convo.name for convo in getConvos()"
+                                ng-init="option.convoId == -1 ? option.convoId = getConvos()[0].id : option.convoId = option.convoId">
                         </select>
-                        <div ng-if="getCurrentCovnversation().options.length > 1">
+                        <sweet-delete variable="option" container="getCurrentCovnversation().options"></sweet-delete>
+                        <div ng-if="getCurrentCovnversation().options.length > 1" class="padded-top-bottom-10">
                             <span>Label : </span>
                             <input type="text" name="optionLabel" ng-model="option.label"/>
                         </div>
-                    </div>  
-                    <div sweet-delete variable="option" container="getCurrentCovnversation().options"></div>
+                    </div>
                 </span>
                 <button class="btn btn-primary" ng-click="addOption()">Add Option</button>
-	        </div>
+            </div>
         </div>
     </div>
 </div>

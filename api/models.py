@@ -14,8 +14,7 @@ class Scenario(models.Model):
     description = models.TextField(blank=False, default='')
     script = models.TextField(blank=False, default='')
     owner = models.ForeignKey(PDUser, related_name='scenarios')
-    rating = models.FloatField(default=0.0)
-    rating_count = models.IntegerField(default=0)
+    jsonUrl = models.CharField(max_length=1024, default="{}")
 
     class Meta:
         ordering = ('created',)

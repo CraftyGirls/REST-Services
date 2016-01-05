@@ -125,13 +125,16 @@ def register_view(request):
 
 @csrf_exempt
 @login_required(login_url='/scenario/login/')
-def save(request, scenario_id):
+def update_scenario_service(request, scenario_id):
     if(request.method == 'POST'):
         if(scenario_id is not None):
             scenario = Scenario.objects.get(id=scenario_id)
             pd_user = PDUser.objects.get(user=request.user)
             if(scenario.owner.id == pd_user.id):
                 scenario.script = request.body
+                file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
+                scenario.jsonUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+                gitlab_utility.update_file("TestComponentProject", file_name, scenario.script, "text")
                 scenario.save()
                 return HttpResponse(request.body)
             else:
@@ -139,6 +142,24 @@ def save(request, scenario_id):
         else:
             return HttpResponse("Bad Request", status=400)
     else:
+        return HttpResponse("Invalid Method", status=405)
+
+
+@login_required(login_url='/scenario/login/')
+def create_scenario_view(request):
+    if (request.method == 'GET'):
+        return render(request, 'scenarioEditor/create/create_scenario.html/', {})
+    elif (request.method == 'POST'):
+        if ('scenario_name' in request.POST):
+            pd_user = PDUser.objects.get(user=request.user)
+            scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
+            file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
+            scenario.jsonUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+            gitlab_utility.create_file("TestComponentProject", file_name, scenario.script, "text")
+            scenario.save()
+            return redirect(edit_scenario_view, scenario.id)
+    else:
+        # Return invalid method response
         return HttpResponse("Invalid Method", status=405)
 
 
@@ -303,21 +324,6 @@ def item_service(request, item_id=None):
         except:
             return HttpResponse("Bad post data - " + request.body, status=400)
     else:
-        return HttpResponse("Invalid Method", status=405)
-
-
-@login_required(login_url='/scenario/login/')
-def create_scenario_view(request):
-    if (request.method == 'GET'):
-        return render(request, 'scenarioEditor/create/create_scenario.html/', {})
-    elif (request.method == 'POST'):
-        if ('scenario_name' in request.POST):
-            pd_user = PDUser.objects.get(user=request.user)
-            scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
-            scenario.save()
-            return redirect(edit_scenario_view, scenario.id)
-    else:
-        # Return invalid method response
         return HttpResponse("Invalid Method", status=405)
         
 

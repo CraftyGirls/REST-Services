@@ -251,7 +251,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             // Create the appropriate data object for an item
                             var itemData = {
                                 name: $scope.asset.name,
-                                description: $scope.assetDescription,
+                                description: $scope.asset.description,
                                 tags: $scope.asset.tags
                                 // Extra item attributes
                             };

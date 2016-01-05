@@ -42,13 +42,6 @@
 
 }
 
-#sidebar {
-    width: 250px;
-    height: 500px;
-    float: left;
-    overflow-y: auto;
-}
-
 #main {
     float: left;
     padding-left: 25px;
