@@ -242,16 +242,15 @@ scenarioServices.service('convoService', function () {
                 convoData.push(Conversation.BuildFromData(convos[i]));
                 currId = Math.max(currId, convos[i].id);
             }
-            currId += 1;
-            console.log(currId);
         },
         addConversation: function () {
-            var id = currId;
-            if (convoData.length > 0) {
-                id = convoData.length + 1;
+            var id = 0;
+            for(var i = 0; i < convoData.length; i++){
+                id = Math.max(id, convoData[i].id);
             }
+            id += 1;
             convoData.push(new Conversation(id, 'Conversation ' + id));
-            currId++;
+
         },
         editConversation: function (convo) {
             currConversation = convo;

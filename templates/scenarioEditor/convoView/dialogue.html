@@ -43,6 +43,7 @@
                         <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
                     </div>
                 </div>
+                <hr/>
             </div>
         </div>
         <button class="btn btn-primary" ng-click="addTrigger(dialogue)">Add Trigger</button>
@@ -50,7 +51,6 @@
     <hr/>
     <div class="conditions-container">
         <h4>Conditions</h4>
-
         <div class="content-block">
             <div ng-repeat="condition in dialogue.conditions">
                 <div class="condition padded-top-bottom-10">
@@ -59,7 +59,6 @@
                     <sweet-delete variable="condition" container="dialogue.conditions"></sweet-delete>
                     <div class="arg-container">
                         <span>Arguments = </span>
-
                         <div class="arg-container">
                             <div ng-repeat="(key, val) in condition.args track by $index" class="arg-container">
                                 <input id="condition-arg-key-{$$index$}" type="text" ng-model="key"
@@ -71,6 +70,7 @@
                         <button class="btn btn-primary" ng-click="addConditionArg(condition)">Add Arg</button>
                     </div>
                 </div>
+                <hr/>
             </div>
         </div>
         <button class="btn btn-primary" ng-click="addCondition(dialogue)">Add Condition</button>
