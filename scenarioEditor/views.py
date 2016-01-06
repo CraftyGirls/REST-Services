@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -10,12 +9,15 @@ from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
 from api.models import PDUser, Scenario, UploadFile, Texture, ComponentSet, Asset, ItemDefinition, Tag, \
-    CharacterComponent
-from scenarioEditor.forms import AssetFileForm, AssetForm, ComponentSetForm, ItemForm
+    CharacterComponent, Trigger, TriggerArgument
+from scenarioEditor.forms import AssetFileForm, AssetForm, ComponentSetForm, ItemForm, TriggerArgumentForm, TriggerForm
 import gitlab_utility
 import uuid
 from django.core import serializers
 import json
+
+APPLICATION_JSON = 'application/json'
+
 
 @login_required(login_url='/scenario/login/')
 def index(request):
@@ -30,18 +32,18 @@ def charView(request):
 @login_required(login_url='/scenario/login/')
 def convoView(request):
     return render(request, 'scenarioEditor/convoView/convoView.html/', {})
-    
+
 
 @login_required(login_url='/scenario/login/')
 def assetView(request):
     return render(request, 'scenarioEditor/assetView/assetView.html/', {})
-    
-    
+
+
 @login_required(login_url='/scenario/login/')
 def roomView(request):
     return render(request, 'scenarioEditor/roomView/roomView.html/', {})
-    
-    
+
+
 @login_required(login_url='/scenario/login/')
 def itemView(request):
     return render(request, 'scenarioEditor/itemView/itemView.html/', {})
@@ -51,11 +53,11 @@ def itemView(request):
 def manageView(request):
     return render(request, 'scenarioEditor/manageView/manageView.html/', {})
 
-    
+
 @login_required(login_url='/scenario/dialogue/')
 def dialogueView(request):
     return render(request, 'scenarioEditor/convoView/dialogue.html/', {})
-    
+
 
 @login_required(login_url='/scenario/login/')
 def user_scenarios_view(request):
@@ -67,7 +69,7 @@ def user_scenarios_view(request):
 @login_required(login_url='/scenario/login/')
 def user_home_view(request):
     return render(request, 'scenarioEditor/profile/home.html/', {})
- 
+
 
 def browse_scenarios_view(request):
     get_params = request.GET
@@ -131,11 +133,11 @@ def register_view(request):
 @csrf_exempt
 @login_required(login_url='/scenario/login/')
 def update_scenario_service(request, scenario_id):
-    if(request.method == 'POST'):
-        if(scenario_id is not None):
+    if (request.method == 'POST'):
+        if (scenario_id is not None):
             scenario = Scenario.objects.get(id=scenario_id)
             pd_user = PDUser.objects.get(user=request.user)
-            if(scenario.owner.id == pd_user.id):
+            if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
                 file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
                 scenario.jsonUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
@@ -175,7 +177,7 @@ def edit_scenario_view(request, scenario_id):
         if scenario is not None:
             if scenario.owner.id != PDUser.objects.get(user=request.user).id:
                 return HttpResponse("Unauthorized")
-            return render(request, 'scenarioEditor/index.html/', {'scenario' : scenario})
+            return render(request, 'scenarioEditor/index.html/', {'scenario': scenario})
     else:
         # Return invalid method response
         return HttpResponse("Invalid Method", status=405)
@@ -183,12 +185,12 @@ def edit_scenario_view(request, scenario_id):
 
 @login_required(login_url='/scenario/login/')
 def component_set_service(request, component_set_id=None):
-    if(request.method == 'GET'):
+    if (request.method == 'GET'):
         try:
-            if component_set_id != None :
+            if component_set_id != None:
                 obj = ComponentSet.objects.get(id=component_set_id)
-                if(obj != None):
-                    data = json.dumps( obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
+                if (obj != None):
+                    data = json.dumps(obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
                     return HttpResponse(data, content_type='application/json')
             else:
                 get_params = request.GET
@@ -220,7 +222,7 @@ def component_set_service(request, component_set_id=None):
                 else:
                     filteredSets = sets.all()
 
-                if(len(filteredSets) > 0):
+                if (len(filteredSets) > 0):
                     cj = []
                     for c in filteredSets:
                         cj.append(c.asDict())
@@ -231,11 +233,11 @@ def component_set_service(request, component_set_id=None):
         except:
             return HttpResponse("Object could not be found", status=404)
 
-    elif(request.method == 'POST'):
+    elif (request.method == 'POST'):
         try:
             in_data = json.loads(request.body)
             compSetForm = ComponentSetForm(data=in_data)
-            if(compSetForm.is_valid()):
+            if (compSetForm.is_valid()):
                 comp_set = ComponentSet()
                 comp_set.name = compSetForm.cleaned_data["name"]
                 comp_set.description = compSetForm.cleaned_data["description"]
@@ -246,16 +248,19 @@ def component_set_service(request, component_set_id=None):
                 jsonObj = json.loads(compSetForm.cleaned_data["joints"])
 
                 gitlab_utility.create_file("TestComponentProject", joints_file_name,
-                                           json.dumps(jsonObj, sort_keys=True, indent=4, separators=(',', ': ')), "text")
+                                           json.dumps(jsonObj, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           "text")
 
-                comp_set.jsonRepresentation = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + joints_file_name
+                comp_set.jsonRepresentation = gitlab_utility.get_project_url(
+                    "TestComponentProject") + "/raw/master/" + joints_file_name
                 comp_set.save()
 
                 for t in compSetForm.cleaned_data["tags"]:
                     tag = Tag(value=t)
                     tag.owner = comp_set
                     tag.save()
-                return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}', content_type='application/json')
+                return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
+                                    content_type='application/json')
             else:
                 return HttpResponse("Invalid request data - " + compSetForm.errors.as_json(), status=400)
         except:
@@ -266,14 +271,14 @@ def component_set_service(request, component_set_id=None):
 
 @login_required(login_url='/scenario/login/')
 def item_service(request, item_id=None):
-    if(request.method == 'GET'):
-        if(item_id != None):
-            #try:
+    if (request.method == 'GET'):
+        if (item_id != None):
+            try:
                 obj = ItemDefinition.objects.get(id=item_id)
-                if(obj != None):
+                if (obj != None):
                     data = json.dumps(obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
                     return HttpResponse(data, content_type='application/json')
-            #except:
+            except:
                 return HttpResponse("Object could not be found", status=404)
         else:
             get_params = request.GET
@@ -302,19 +307,19 @@ def item_service(request, item_id=None):
             else:
                 filteredItems = items.all()
 
-            if(len(filteredItems) > 0):
+            if (len(filteredItems) > 0):
                 cj = []
                 for c in filteredItems:
                     cj.append(c.asDict())
-                data = json.dumps(cj , sort_keys=True, indent=4, separators=(',', ': '))
+                data = json.dumps(cj, sort_keys=True, indent=4, separators=(',', ': '))
                 return HttpResponse(data, content_type='application/json')
             else:
                 return HttpResponse("No objects found for query", status=404)
-    elif(request.method == 'POST'):
+    elif (request.method == 'POST'):
         try:
             in_data = json.loads(request.body)
             itemForm = ItemForm(data=in_data)
-            if(itemForm.is_valid()):
+            if (itemForm.is_valid()):
                 item = ItemDefinition()
                 item.name = itemForm.cleaned_data["name"]
                 item.description = itemForm.cleaned_data["description"]
@@ -330,7 +335,7 @@ def item_service(request, item_id=None):
             return HttpResponse("Bad post data - " + request.body, status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
-        
+
 
 @csrf_exempt
 @login_required(login_url='/scenario/login/')
@@ -386,24 +391,95 @@ def upload_asset(request):
             return HttpResponse(status=200)
 
         else:
-           return HttpResponse("Bad asset request - " + form.errors.as_json(), status=400)
+            return HttpResponse("Bad asset request - " + form.errors.as_json(), status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
 
 
 @login_required(login_url='/scenario/login/')
+def trigger_service(request, trigger_id):
+    if request.method == 'GET':
+        out = []
+        if trigger_id != None:
+            try:
+                outObj = Trigger.objects.get(id=trigger_id)
+                out.append(outObj.asDict())
+            except:
+                return HttpResponse("Object could not be found", status=404)
+        else:
+            outObj = list(Trigger.objects.all())
+            for obj in outObj:
+                out.append(obj.asDict())
+        json_str = json.dumps(list(out), sort_keys=True, indent=4, separators=(',', ': '))
+        return HttpResponse(content=json_str, content_type=APPLICATION_JSON)
+
+    elif request.method == 'POST' or request.method == 'PUT':
+        json_data = json.loads(request.body)
+        trigger_form = TriggerForm(json_data)
+        trigger_args = []
+        if trigger_form.is_valid():
+            for arg in json_data['args']:
+                arg_form = TriggerArgumentForm(arg)
+                if arg_form.is_valid():
+                    trigger_args.append(arg_form)
+                else:
+                    return HttpResponse("Invalid request data - " + arg_form.errors.as_json(), status=400)
+        else:
+            return HttpResponse("Invalid request data - " + trigger_form.errors.as_json(), status=400)
+
+        if request.method == 'PUT':
+            trigger = Trigger(function=trigger_form.cleaned_data['func'],
+                              description=trigger_form.cleaned_data['description']
+                              )
+            trigger.save()
+            for arg in trigger_args:
+                trigger_arg = TriggerArgument(
+                    dataType=arg.cleaned_data['dataType'],
+                    field=arg.cleaned_data['field'],
+                    trigger=trigger
+                )
+                trigger_arg.save()
+        #UPDATE
+        else:
+            trigger = Trigger.objects.get(id=trigger_id)
+            trigger.function = trigger_form.cleaned_data['func']
+            trigger.description = trigger_form.cleaned_data['description']
+            trigger.save()
+
+            for arg in trigger_args:
+                arg_obj = TriggerArgument.objects.get(id = arg.cleaned_data['id'])
+                arg_obj.dataType=arg.cleaned_data['dataType'],
+                arg_obj.field=unicode(arg.cleaned_data['field']),
+                arg_obj.trigger=unicode(trigger)
+                arg_obj.save()
+
+        return HttpResponse("Success", status=200)
+
+    elif request.method == 'DELETE':
+        if trigger_id != None:
+            trigger = Trigger.objects.get(id = trigger_id)
+            args = trigger.getArguments()
+            for arg in args:
+                TriggerArgument.delete(arg)
+            Trigger.delete(trigger)
+            return HttpResponse("Success", status=200)
+        else:
+            return HttpResponse("Must provide trigger id", status=400)
+
+
+@login_required(login_url='/scenario/login/')
 def asset_service(request, asset_id):
-    if(request.method == 'GET'):
-        if(asset_id != None):
+    if (request.method == 'GET'):
+        if (asset_id != None):
             obj = Asset.objects.get(id=asset_id)
-            if(obj != None):
+            if (obj != None):
                 data = serializers.serialize('json', {obj, })
-                return HttpResponse(data, content_type='application/json')
+                return HttpResponse(data, content_type=APPLICATION_JSON)
             else:
                 return HttpResponse("Object could not be found", status=404)
         else:
             return HttpResponse("ID required", status=405)
-    elif(request.method == 'POST'):
+    elif (request.method == 'POST'):
         form = AssetForm(request.POST)
         asset = Asset()
         asset.name = form.name
@@ -411,10 +487,10 @@ def asset_service(request, asset_id):
         asset.assetType = form.assetType
         asset.componentSet = ComponentSet.get(id=form.componentSet)
         asset.save()
-        return HttpResponse('{"status":"created", "id":' + str(asset.id) + '}', content_type='application/json')
+        return HttpResponse('{"status":"created", "id":' + str(asset.id) + '}', content_type=APPLICATION_JSON)
     else:
         return HttpResponse("Invalid Method", status=405)
-        
+
 
 def logout_user_view(request):
     logout(request)

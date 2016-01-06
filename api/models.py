@@ -20,6 +20,14 @@ class Scenario(models.Model):
         ordering = ('created',)
 
 
+class Tag(models.Model):
+    value = models.CharField(max_length=100, blank=False, default='')
+    owner = models.ForeignKey('Taggable', null=True)
+
+    def asDict(self):
+        return {"value": self.value}
+
+
 class Taggable(models.Model):
     def getTags(self):
         return Tag.objects.filter(owner=self.id).all()
@@ -73,8 +81,8 @@ class ComponentSet(Taggable):
             'name': self.name,
             'jsonRepresentation': self.jsonRepresentation,
             'setType': self.setType,
-            'components':compsArr,
-            'tags':tagsArr
+            'components': compsArr,
+            'tags': tagsArr
         }
 
     def asJson(self):
@@ -104,8 +112,9 @@ class Texture(models.Model):
 
     def asDict(self):
         return {
-            'name':self.name,
-            'imageUrl':self.imageUrl
+            'id':self.id,
+            'name': self.name,
+            'imageUrl': self.imageUrl
         }
 
 
@@ -138,11 +147,12 @@ class ItemDefinition(Taggable):
             tagsArr.append(t.asDict())
 
         return {
-            'name':self.name,
-            'description':self.description,
-            'interactable':self.interactable,
+            'id':self.id,
+            'name': self.name,
+            'description': self.description,
+            'interactable': self.interactable,
             'texture': tex,
-            'tags':tagsArr
+            'tags': tagsArr
 
         }
 
@@ -222,6 +232,7 @@ class CharacterComponent(models.Model):
         if self.texture != None:
             tex = self.texture.asDict()
         return {
+            'id':self.id,
             'name': self.name,
             'texture': self.texture.asDict(),
             'componentType': self.componentType
@@ -250,29 +261,6 @@ class FurnitureType(models.Model):
     furnitureComponent = models.ForeignKey(FurnitureComponent, null=True)
 
 
-class Tag(models.Model):
-    value = models.CharField(max_length=100, blank=False, default='')
-    # description = models.TextField(blank=False, default='')
-
-    # Foreign keys to taggable types - look into abstract classes for these
-    # room = models.ForeignKey(Room, null=True)
-    # furnitureType = models.ForeignKey(FurnitureType, null=True)
-    # itemDefinition = models.ForeignKey(ItemDefinition, null=True)
-    # characterComponent = models.ForeignKey(CharacterComponent, null=True)
-    # furnitureComponent = models.ForeignKey(FurnitureComponent, null=True)
-
-    owner = models.ForeignKey(Taggable, null=True)
-
-    def asDict(self):
-        return {"value":self.value}
-
-
-class Trigger(models.Model):
-    name = models.CharField(max_length=100, blank=False, default='')
-    description = models.TextField(blank=False, default='')
-    numArgs = models.IntegerField(default=0)
-
-
 class Dialogue(models.Model):
     conversation = models.ForeignKey(Conversation, null=True)
     speaker = models.ForeignKey(Character, null=True)
@@ -288,19 +276,45 @@ class Line(models.Model):
     dialogue = models.ForeignKey(Dialogue, null=True)
 
 
-class TriggerCall(models.Model):
-    # Look at abstract class for this
-    dialogue = models.ForeignKey(Dialogue, null=True)
-    itemDef = models.ForeignKey(ItemDefinition, null=True)
+class Trigger(models.Model):
+    function = models.CharField(max_length=100, blank=False, default='')
+    description = models.TextField(blank=False, default='')
 
+    def getArguments(self):
+        return TriggerArgument.objects.filter(trigger=self).all()
+
+    def asDict(self):
+        argsQuery = self.getArguments()
+        argsArr = []
+        for arg in argsQuery:
+            argsArr.append(arg.asDict())
+        return {
+            'id':self.id,
+            'func':self.function,
+            'description':self.description,
+            'args':argsArr
+        }
+
+class TriggerArgument(models.Model):
+    DATA_TYPE_CHOICES = [
+        ("INT", 'int'),
+        ("FLOAT", 'float'),
+        ("CHARACTER", 'character'),
+        ("ITEM", 'item'),
+        ("ROOM", 'room'),
+        ("CONVERSATION", 'conversation'),
+    ]
+
+    dataType = models.CharField(default=0, max_length=100, choices=DATA_TYPE_CHOICES)
+    field = models.CharField(default=0, max_length=100)
     trigger = models.ForeignKey(Trigger, null=True)
 
-
-class TriggerArguments(models.Model):
-    value = models.TextField(blank=False, default='')
-    dataType = models.IntegerField(default=0)  # Should there be some sort of type table?
-    index = models.IntegerField(default=0)
-    triggerCall = models.ForeignKey(TriggerCall, null=True)
+    def asDict(self):
+        return {
+            'id':self.id,
+            'dataType':self.dataType,
+            'field':self.field
+        }
 
 
 class ConditionalArguments(models.Model):

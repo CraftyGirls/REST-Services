@@ -183,8 +183,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(default=b'', max_length=100)),
                 ('description', models.TextField(default=b'')),
                 ('script', models.TextField(default=b'')),
-                ('rating', models.FloatField(default=0.0)),
-                ('rating_count', models.IntegerField(default=0)),
+                ('jsonUrl', models.CharField(default=b'{}', max_length=1024)),
                 ('owner', models.ForeignKey(related_name='scenarios', to='api.PDUser')),
             ],
             options={
@@ -235,25 +234,16 @@ class Migration(migrations.Migration):
             name='Trigger',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(default=b'', max_length=100)),
+                ('function', models.CharField(default=b'', max_length=100)),
                 ('description', models.TextField(default=b'')),
-                ('numArgs', models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
-            name='TriggerArguments',
+            name='TriggerArgument',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('value', models.TextField(default=b'')),
-                ('dataType', models.IntegerField(default=0)),
-                ('index', models.IntegerField(default=0)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='TriggerCall',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('dialogue', models.ForeignKey(to='api.Dialogue', null=True)),
+                ('dataType', models.CharField(default=0, max_length=100, choices=[(b'INT', b'int'), (b'FLOAT', b'float'), (b'CHARACTER', b'character'), (b'ITEM', b'item'), (b'ROOM', b'room'), (b'CONVERSATION', b'conversation')])),
+                ('field', models.CharField(default=0, max_length=100)),
                 ('trigger', models.ForeignKey(to='api.Trigger', null=True)),
             ],
         ),
@@ -271,6 +261,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(default=b'', max_length=100)),
                 ('jsonRepresentation', models.TextField(default=b'')),
                 ('fileUrl', models.CharField(default=b'', max_length=512)),
+                ('setType', models.CharField(default=b'', max_length=100, choices=[(b'ARM', b'Arm'), (b'LEG', b'Leg'), (b'HEAD', b'Head'), (b'TORSO', b'Torso'), (b'PELVIS', b'Pelvis')])),
             ],
             bases=('api.taggable',),
         ),
@@ -284,11 +275,6 @@ class Migration(migrations.Migration):
                 ('texture', models.OneToOneField(null=True, to='api.Texture')),
             ],
             bases=('api.taggable',),
-        ),
-        migrations.AddField(
-            model_name='triggerarguments',
-            name='triggerCall',
-            field=models.ForeignKey(to='api.TriggerCall', null=True),
         ),
         migrations.AddField(
             model_name='tag',
@@ -339,11 +325,6 @@ class Migration(migrations.Migration):
             model_name='character',
             name='scenario',
             field=models.ForeignKey(to='api.Scenario', null=True),
-        ),
-        migrations.AddField(
-            model_name='triggercall',
-            name='itemDef',
-            field=models.ForeignKey(to='api.ItemDefinition', null=True),
         ),
         migrations.AddField(
             model_name='item',

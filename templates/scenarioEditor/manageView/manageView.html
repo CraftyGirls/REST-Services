@@ -1,28 +1,127 @@
 <div ng-controller="manageCtrl">
     <div class="content-block">
         <h3>Management</h3>
+
         <div class="content-block">
             <h4>Scenario Properties</h4>
+
             <div class="row padded-top-bottom-10">
-                 <div class="col-sm-1">
-                     <span>Name: </span>
+                <div class="col-sm-1">
+                    <span>Name: </span>
                 </div>
                 <div class="col-sm-1">
-                     <input ng-model="scenario.name" type="text"/>
+                    <input ng-model="scenario.name" type="text"/>
                 </div>
             </div>
-             <div class="row padded-top-bottom-10">
-                 <div class="col-sm-1">
-                     <span>Description :</span>
+            <div class="row padded-top-bottom-10">
+                <div class="col-sm-1">
+                    <span>Description :</span>
                 </div>
                 <div class="col-sm-1">
-                     <textarea ng-model="scenario.description" type="text"/>
+                    <textarea ng-model="scenario.description"></textarea>
                 </div>
             </div>
         </div>
         <hr/>
         <div class="content-block">
-        <h4>Triggers</h4>
+            <h4>Triggers</h4>
+
+            <div>
+                <table class="table table-striped" ng-init="fetchTriggers()">
+                    <thead>
+                    <tr>
+                        <th>Function</th>
+                        <th>Description</th>
+                        <th>Arguments</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="trigger in triggers()">
+                        <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
+                            <span>{$trigger.func$}</span>
+                        </td>
+                        <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
+                            <span>{$trigger.description$}</span>
+                        </td>
+                        <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
+                            <input type="text" ng-model="pendingTrigger.func"/>
+                        </td>
+                        <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
+                            <textarea type="text" ng-model="pendingTrigger.description"></textarea>
+                        </td>
+                        <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Data Type</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="arg in trigger.args">
+                                    <td>{$arg.field$}</td>
+                                    <td>{$arg.dataType$}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Data Type</th>
+                                </tr>
+                                <tr ng-repeat="arg in trigger.args">
+                                    <td><input type="text" ng-model="arg.field"></td>
+                                    <td><select ng-options="label as label for label in dataTypes()"
+                                                ng-model="arg.dataType"
+                                                ng-init="arg.dataType = dataTypes()[0]"
+                                    >
+
+                                    </select></td>
+                                </tr>
+                            </table>
+                            <span class="glyphicon glyphicon-plus clickable hover-fade" ng-click="addArgument()"></span>
+                        </td>
+                        <td>
+                            <span class="glyphicon glyphicon-remove clickable hover-fade"
+                                  ng-click="deleteTrigger(trigger)"></span>
+                        </td>
+                        <td>
+                            <span class="glyphicon glyphicon-edit clickable hover-fade"
+                                  ng-click="editTrigger(trigger)"></span>
+                        </td>
+                    </tr>
+                    <tr ng-show="triggerPending && pendingTrigger.id == -1">
+                        <td><input type="text" ng-model="pendingTrigger.func"/></td>
+                        <td><textarea type="text" ng-model="pendingTrigger.description"></textarea></td>
+                        <td>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Data Type</th>
+                                </tr>
+                                <tr ng-repeat="arg in pendingTrigger.args">
+                                    <td><input type="text" ng-model="arg.field"></td>
+                                    <td><select ng-options="label as label for label in dataTypes()"
+                                                ng-model="arg.dataType"
+                                                ng-init="arg.dataType = dataTypes()[0]"
+                                    >
+
+                                    </select></td>
+                                </tr>
+                            </table>
+                            <span class="glyphicon glyphicon-plus clickable hover-fade" ng-click="addArgument()"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+            <div>
+                <button class="btn btn-primary" ng-click="addTrigger()" ng-show="!triggerPending">Add Trigger</button>
+                <button class="btn btn-primary" ng-click="submitTrigger()" ng-show="triggerPending">Submit Trigger
+                </button>
+            </div>
+        </div>
     </div>
 </div>

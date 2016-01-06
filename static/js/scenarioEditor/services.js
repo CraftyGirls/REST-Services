@@ -164,21 +164,21 @@ Character.BuildFromData = function (data) {
 };
 
 function Item(name, id) {
-    this.name           = name;
-    this.id             = id;
-    this.interactable   = true;
-    this.description    = "";
-    this.texture        = "";
-    this.effects        = [];
+    this.name = name;
+    this.id = id;
+    this.interactable = true;
+    this.description = "";
+    this.texture = "";
+    this.effects = [];
 }
 
 Item.BuildFromData = function (data) {
-    var item            = new Item();
-    item.name           = data.name;
-    item.id             = data.id;
-    item.interactable   = data.interactable;
-    item.description    = data.description;
-    item.texture        = data.texture;
+    var item = new Item();
+    item.name = data.name;
+    item.id = data.id;
+    item.interactable = data.interactable;
+    item.description = data.description;
+    item.texture = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
     }
@@ -222,6 +222,50 @@ Room.BuildFromData = function (data) {
     return room;
 };
 
+
+// Resource Models
+
+var TRIGGER_ARG_DATA_TYPES = [
+    "INT",
+    "FLOAT",
+    "CHARACTER",
+    "ITEM",
+    "ROOM",
+    "CONVERSATION"
+];
+
+function TriggerResource() {
+    this.func        = "";
+    this.description = "";
+    this.id          = -1;
+    this.args        = [];
+}
+
+TriggerResource.BuildFromData = function (data) {
+    var trigger = new TriggerResource();
+    trigger.func        = data.func;
+    trigger.description = data.description;
+    trigger.id          = data.id;
+    for(var i = 0; i < data.args.length; i++){
+        trigger.args.push(TriggerArgumentResource.BuildFromData(data.args[i]));
+    }
+    return trigger;
+};
+
+function TriggerArgumentResource() {
+    this.dataType   = "";
+    this.field      = "";
+    this.id         = -1;
+}
+
+TriggerArgumentResource.BuildFromData = function(data){
+    var arg         = new TriggerArgumentResource();
+    arg.dataType    = data.dataType;
+    arg.field       = data.field;
+    arg.id          = data.id;
+    return arg;
+};
+
 // Services
 
 var scenarioServices = angular.module('scenarioServices', []);
@@ -245,7 +289,7 @@ scenarioServices.service('convoService', function () {
         },
         addConversation: function () {
             var id = 0;
-            for(var i = 0; i < convoData.length; i++){
+            for (var i = 0; i < convoData.length; i++) {
                 id = Math.max(id, convoData[i].id);
             }
             id += 1;
@@ -331,17 +375,17 @@ scenarioServices.service('charService', function () {
         getStatesLength: function (character) {
             return charData[charData.indexOf(character)].states.length;
         },
-        getById : function (id) {
-            for(var i = 0; i < charData.length; i++){
-                if(charData[i].id === id){
+        getById: function (id) {
+            for (var i = 0; i < charData.length; i++) {
+                if (charData[i].id === id) {
                     return charData[i];
                 }
             }
             return null;
         },
-        getIds : function(){
+        getIds: function () {
             ids = [];
-            for(var i = 0; i < charData.length; i++) {
+            for (var i = 0; i < charData.length; i++) {
                 ids.push(charData[i].id);
             }
             return ids;
@@ -378,23 +422,23 @@ scenarioServices.service('itemService', function () {
                 itemData.push(Item.BuildFromData(data[i]));
             }
         },
-        addEffect: function(item){
+        addEffect: function (item) {
             item.effects.push(new Trigger());
         },
-        getCurrentItem: function(){
+        getCurrentItem: function () {
             return currItem;
         },
-        getById : function (id) {
-            for(var i = 0; i < itemData.length; i++){
-                if(itemData[i].id === id){
+        getById: function (id) {
+            for (var i = 0; i < itemData.length; i++) {
+                if (itemData[i].id === id) {
                     return itemData[i];
                 }
             }
             return null;
         },
-        getIds : function(){
+        getIds: function () {
             ids = [];
-            for(var i = 0; i < itemData.length; i++) {
+            for (var i = 0; i < itemData.length; i++) {
                 ids.push(itemData[i].id);
             }
             return ids;
@@ -431,14 +475,86 @@ scenarioServices.service('roomService', function () {
                 roomData.push(Room.BuildFromData(data[i]));
             }
         },
-        getCurrentRoom : function () {
+        getCurrentRoom: function () {
             return currRoom;
         },
-        getRooms : function(){
+        getRooms: function () {
             return roomData;
         },
-        getRoomSizeOptions: function(){
+        getRoomSizeOptions: function () {
             return ROOM_SIZES;
         }
     };
 });
+
+scenarioServices.service('triggerService', ['$http', function ($http) {
+
+    triggers = [];
+
+    function _fetchTriggers() {
+        $http.get('/scenario/service/trigger').then(
+            // Success
+            function (response) {
+                triggers = [];
+                for(var i = 0; i < response.data.length; i++){
+                    triggers.push(TriggerResource.BuildFromData(response.data[i]));
+                }
+            },
+            // Failure
+            function (response) {
+                return null;
+            }
+        )
+    }
+
+    return {
+        triggers: function () {
+            return triggers;
+        },
+        dataTypes: function () {
+            return TRIGGER_ARG_DATA_TYPES;
+        },
+        fetchTriggers: function () {
+            _fetchTriggers();
+        },
+        createTrigger: function (triggerResource) {
+            $http.put('/scenario/service/trigger/', triggerResource).then(
+                // Success
+                function (response) {
+                    _fetchTriggers();
+                    return true;
+                },
+                // Failure
+                function (response) {
+                    return false;
+                }
+            )
+        },
+        updateTrigger: function (triggerResource) {
+            $http.post('/scenario/service/trigger/' + triggerResource.id + "/", triggerResource).then(
+                // Success
+                function (response) {
+                    _fetchTriggers();
+                    return true;
+                },
+                // Failure
+                function (response) {
+                    return false;
+                }
+            )
+        },
+        deleteTrigger: function (triggerResource) {
+            $http.delete('/scenario/service/trigger/' + triggerResource.id + "/").then(
+                // Success
+                function (response) {
+                    _fetchTriggers();
+                    return true;
+                },
+                // Failure
+                function (response) {
+                    return false;
+                }
+            )
+        }
+    }
+}]);
