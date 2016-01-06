@@ -49,6 +49,10 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
 
         $scope.deleteTrigger = function (trigger) {
             triggerService.deleteTrigger(trigger);
+            if($scope.pendingTrigger != null && $scope.pendingTrigger){
+                $scope.pendingTrigger = null;
+                $scope.triggerPending = false;
+            }
         };
 
         $scope.editTrigger = function (trigger) {
