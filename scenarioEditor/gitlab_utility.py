@@ -1,10 +1,12 @@
+import os
+
 import gitlab
 import ConfigParser
 import base64
 
 def get_config():
     configParser = ConfigParser.RawConfigParser()   
-    configFilePath = "gitlab.cnf"
+    configFilePath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'gitlab.cnf')
     configParser.read(configFilePath)
     return (configParser.get('contents', 'url'), configParser.get('contents', 'token'))
 
