@@ -46,25 +46,19 @@
                     <div class="content-block">
                         <div class="row" ng-repeat="trigger in currentItem().effects">
                             <div class="content-block">
-                                <span>Function = </span>
-                                <input type="text" ng-model="trigger.func"/>
+                                <strong>{$trigger.func$}</strong>
                                 <sweet-delete variable="trigger" container="currentItem().effects"></sweet-delete>
                                 <div class="content-block padded-top-bottom-10">
                                     <span>Arguments = </span>
                                     <div ng-repeat="(key, val) in trigger.args track by $index" class="content-block padded-top-bottom-10">
-                                        <input id="trigger-arg-key-{$$index$}" type="text" ng-model="key"
-                                               ng-change="updateArg(trigger, 'trigger-arg-key-{$$index$}', '{$key$}')"/>
-                                        <span> = </span><input type="text" ng-model="trigger.args[key]"/>
-
-                                        <sweet-keyed-delete key="key" container="trigger.args"></sweet-keyed-delete>
+                                        <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="trigger" sweet-type="{$val.type$}"></sweet-trigger-arg>
                                     </div>
-                                    <button class="btn btn-primary" ng-click="addArg(trigger)">Add Arg</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" ng-click="addEffect(currentItem())">Add Effect</button>
+               <sweet-trigger-selector sweet-target="currentItem().effects"></sweet-trigger-selector>
             </div>
             <hr/>
             <div >
@@ -122,7 +116,7 @@
                 </tr>
             </table>
             <hr/>
-            <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
+            <button class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
     </div>
 </div>

@@ -284,6 +284,10 @@
     height: 500px;
 }
 
+.right-justify{
+    text-align: right;
+}
+
 .block-ui {
     width: 100%;
     height: 100%;

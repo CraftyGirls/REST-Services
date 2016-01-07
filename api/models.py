@@ -297,6 +297,7 @@ class Trigger(models.Model):
 
 class TriggerArgument(models.Model):
     DATA_TYPE_CHOICES = [
+        ("STRING", 'string'),
         ("INT", 'int'),
         ("FLOAT", 'float'),
         ("CHARACTER", 'character'),

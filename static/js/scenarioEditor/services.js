@@ -37,6 +37,10 @@ function Trigger() {
         var id = Object.getOwnPropertyNames(this.args).length + 1;
         this.args["key" + id] = "value";
     };
+
+    this.addArg = function(key, type){
+        this.args[key] = {value:null, type:type};
+    }
 }
 
 Trigger.BuildFromData = function (data) {
@@ -226,6 +230,7 @@ Room.BuildFromData = function (data) {
 // Resource Models
 
 var TRIGGER_ARG_DATA_TYPES = [
+    "STRING",
     "INT",
     "FLOAT",
     "CHARACTER",
@@ -491,7 +496,7 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
 
     triggers = [];
 
-    function _fetchTriggers() {
+    function _fetchTriggers(onComplete) {
         $http.get('/scenario/service/trigger').then(
             // Success
             function (response) {
@@ -499,10 +504,15 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                 for(var i = 0; i < response.data.length; i++){
                     triggers.push(TriggerResource.BuildFromData(response.data[i]));
                 }
+                if(onComplete != null){
+                    onComplete();
+                }
             },
             // Failure
             function (response) {
-                return null;
+                 if(onComplete != null){
+                    onComplete();
+                }
             }
         )
     }
@@ -514,19 +524,17 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
         dataTypes: function () {
             return TRIGGER_ARG_DATA_TYPES;
         },
-        fetchTriggers: function () {
-            _fetchTriggers();
+        fetchTriggers: function (onComplete) {
+            _fetchTriggers(onComplete);
         },
         createTrigger: function (triggerResource) {
             $http.put('/scenario/service/trigger/', triggerResource).then(
                 // Success
                 function (response) {
-                    _fetchTriggers();
-                    return true;
+                    _fetchTriggers(null);
                 },
                 // Failure
                 function (response) {
-                    return false;
                 }
             )
         },
@@ -534,12 +542,10 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
             $http.post('/scenario/service/trigger/' + triggerResource.id + "/", triggerResource).then(
                 // Success
                 function (response) {
-                    _fetchTriggers();
-                    return true;
+                    _fetchTriggers(null);
                 },
                 // Failure
                 function (response) {
-                    return false;
                 }
             )
         },
@@ -547,12 +553,10 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
             $http.delete('/scenario/service/trigger/' + triggerResource.id + "/").then(
                 // Success
                 function (response) {
-                    _fetchTriggers();
-                    return true;
+                    _fetchTriggers(null);
                 },
                 // Failure
                 function (response) {
-                    return false;
                 }
             )
         }
