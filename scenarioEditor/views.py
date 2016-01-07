@@ -139,8 +139,7 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
-                file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
-                scenario.jsonUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+                file_name = scenario.jsonUrl.split('master/')[1]
                 gitlab_utility.update_file("TestComponentProject", file_name, scenario.script, "text")
                 scenario.save()
                 return HttpResponse(request.body)
