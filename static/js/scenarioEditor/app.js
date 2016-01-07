@@ -169,8 +169,8 @@ var application = angular.module('scenarioEditor', [
             scope: {
                 target: "=sweetTarget"
             },
-            template: "<select ng-options='trigger as trigger.func for trigger in getTriggers()' ng-model='selected'></select>" +
-            "<span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span>",
+            template: "<div class='row'><div class='col-sm-1'><select ng-options='trigger as trigger.func for trigger in getTriggers()' ng-model='selected'></select></div>" +
+            "<div class='col-sm-1'><span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
             link: function ($scope, iElm, iAttrs, controller) {
 
                 $scope.getTriggers = function () {

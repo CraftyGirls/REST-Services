@@ -24,7 +24,6 @@ Arg.BuildFromData = function (data) {
             arg[key] = data[key];
         }
     }
-
     return arg;
 };
 
@@ -32,11 +31,6 @@ function Trigger() {
 
     this.func = "";
     this.args = new Arg();
-
-    this.addArg = function () {
-        var id = Object.getOwnPropertyNames(this.args).length + 1;
-        this.args["key" + id] = "value";
-    };
 
     this.addArg = function(key, type){
         this.args[key] = {value:null, type:type};
@@ -48,23 +42,6 @@ Trigger.BuildFromData = function (data) {
     trig.func = data.func;
     trig.args = Arg.BuildFromData(data.args);
     return trig;
-};
-
-function Condition() {
-    this.func = "";
-    this.args = new Arg();
-
-    this.addArg = function () {
-        var id = Object.getOwnPropertyNames(this.args).length + 1;
-        this.args["key" + id] = "value";
-    };
-}
-
-Condition.BuildFromData = function (data) {
-    var cond = new Condition();
-    cond.func = data.func;
-    cond.args = Arg.BuildFromData(data.args);
-    return cond;
 };
 
 function Dialogue(name) {
@@ -83,7 +60,7 @@ function Dialogue(name) {
     };
 
     this.addCondition = function () {
-        this.conditions.push(new Condition());
+        this.conditions.push(new Trigger());
     };
 }
 
@@ -99,7 +76,7 @@ Dialogue.BuildFromData = function (data) {
     }
 
     for (var i = 0; i < data.conditions.length; i++) {
-        diag.conditions.push(Condition.BuildFromData(data.conditions[i]));
+        diag.conditions.push(Trigger.BuildFromData(data.conditions[i]));
     }
 
     diag.speaker = data.speaker;
