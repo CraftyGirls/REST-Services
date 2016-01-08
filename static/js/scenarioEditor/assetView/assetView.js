@@ -90,7 +90,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             "Arm": ["Uppper Arm", "Lower Arm", "Hand"],
             "Leg": ["Upper Leg", "Lower Leg", "Foot"],
             "Torso": ["Torso"],
-            "Head": ["Lower Jaw", "Upper Jaw", "Nose", "Left Pupil", "Right Pupil"],
+            "Head": ["Lower Jaw", "Upper Jaw", "Nose", 'Right Eye', 'Left Eye', 'Right Eyebrow', 'Lef Eyebrow', "Left Pupil", "Right Pupil"],
             "Pelvis": ["Pelvis"]
         };
 
@@ -446,14 +446,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     var componentRelationShips = {
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
                         "Leg": "Upper Leg>Lower Leg>Foot>OUT",
-                        "Torso": "Torso>Pelvis,Torso>Neck,Torso>Left Arm,Torso>Right Arm",
-                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Pupil,Upper Jaw>Right Pupil,Upper Jaw>OUT",
+                        "Torso": "Torso>Neck,Torso>Left Arm,Torso>Right Arm",
+                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>Left Eyebrow>Upper Jaw>Right Eyebrow,Upper Jaw>OUT",
                         "Pelvis": "Pelvis>Left Leg,Pelvis>Right Leg"
                     };
 
                     var canvas = new fabric.Canvas('c');
                     canvas.selection = false;
-                    canvas.setHeight(720);
+                    canvas.setHeight(1280);
                     canvas.setWidth(1280);
 
                     var inJointGroup = null;
@@ -488,7 +488,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             canvas.add(imgInstance);
                             componentImages.push(imgInstance);
 
-                            lx += imgInstance.width;
+                            lx += imgInstance.width/4;
                         }
 
                         var rels = componentRelationShips[$scope.componentType.label];

@@ -216,6 +216,10 @@ class CharacterComponent(models.Model):
         ("NOSE", 'Node'),
         ("LEFT PUPIL", 'Left Pupil'),
         ("RIGHT PUPIL", 'Right Pupil'),
+        ("RIGHT EYE", 'Right Eye'),
+        ("LEFT PUPIL", 'Left Eye'),
+        ("RIGHT EYEBROW", 'Right Eyebrow'),
+        ("LEFT EYEBROW", 'Left Eyebrow'),
         ("PELVIS", 'Pelvis'),
     ]
 
