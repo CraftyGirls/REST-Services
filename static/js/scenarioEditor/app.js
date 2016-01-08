@@ -242,33 +242,74 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         $scope.messages = [];
 
         $scope.save = function (scenario_id) {
-            blockUi(true);
-            $scope.dataObj = {
-                characters: $scope.getChars(),
-                conversations: $scope.getConvos(),
-                items: $scope.getItems(),
-                rooms: $scope.getRooms()
-            };
 
-            console.log(angular.toJson($scope.dataObj));
+            var errorMessages = [];
 
-            $http.post('/scenario/service/update_scenario/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
-                $scope.msg = 'Data saved.';
-                $scope.dlVisible = true;
-            }).then(
-                //Success
-                function (response) {
-                    blockUi(false);
-                    showMessage("Scenario saved successfully", "success");
-                },
-                //Failure
-                function (response) {
-                    alert("Error occurred while saving scenario - " + response);
-                    blockUi(false);
+            for (var i = 0; i < $scope.getConvos().length; i++) {
+                var errors = $scope.getConvos()[i].validate();
+                for (var x = 0; x < errors.length; x++) {
+                    errors[x] = "Conversations -> " + errors[x];
                 }
-            );
+                errorMessages = errorMessages.concat(errors);
+            }
 
-            $scope.msg2 = 'Data sent: ' + $scope.jsonData;
+            for (var i = 0; i < $scope.getChars().length; i++) {
+                var errors = $scope.getChars()[i].validate();
+                for (var x = 0; x < errors.length; x++) {
+                    errors[x] = "Characters -> " + errors[x];
+                }
+                errorMessages = errorMessages.concat(errors);
+            }
+
+            for (var i = 0; i < $scope.getItems().length; i++) {
+                var errors = $scope.getItems()[i].validate();
+                for (var x = 0; x < errors.length; x++) {
+                    errors[x] = "Items -> " + errors[x];
+                }
+                errorMessages = errorMessages.concat(errors);
+            }
+
+            for (var i = 0; i < $scope.getRooms().length; i++) {
+                var errors = $scope.getRooms()[i].validate();
+                for (var x = 0; x < errors.length; x++) {
+                    errors[x] = "Rooms -> " + errors[x];
+                }
+                errorMessages = errorMessages.concat(errors);
+            }
+
+            if (errorMessages.length == 0) {
+                blockUi(true);
+                 $scope.dataObj = {
+                 characters: $scope.getChars(),
+                 conversations: $scope.getConvos(),
+                 items: $scope.getItems(),
+                 rooms: $scope.getRooms()
+                 };
+
+                 console.log(angular.toJson($scope.dataObj));
+
+                 $http.post('/scenario/service/update_scenario/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
+                 $scope.msg = 'Data saved.';
+                 $scope.dlVisible = true;
+                 }).then(
+                 //Success
+                 function (response) {
+                 blockUi(false);
+                 showMessage("Scenario saved successfully", "success");
+                 },
+                 //Failure
+                 function (response) {
+                 alert("Error occurred while saving scenario - " + response);
+                 blockUi(false);
+                 }
+                 );
+
+                 $scope.msg2 = 'Data sent: ' + $scope.jsonData;
+            } else {
+                for (var i = 0; i < errorMessages.length; i++) {
+                    showMessage(errorMessages[i], "danger");
+                }
+            }
         };
 
         $scope.clearMessages = function () {
