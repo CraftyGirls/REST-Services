@@ -10,7 +10,7 @@
                     <span>Name: </span>
                 </div>
                 <div class="col-sm-1">
-                    <input ng-model="scenario.name" type="text"/>
+                    <input ng-model="scenario().name" type="text"/>
                 </div>
             </div>
             <div class="row padded-top-bottom-10">
@@ -18,7 +18,7 @@
                     <span>Description :</span>
                 </div>
                 <div class="col-sm-1">
-                    <textarea ng-model="scenario.description"></textarea>
+                    <textarea ng-model="scenario().description"></textarea>
                 </div>
             </div>
         </div>
@@ -75,11 +75,10 @@
                                     <td><input type="text" ng-model="arg.field"></td>
                                     <td><select ng-options="label as label for label in dataTypes()"
                                                 ng-model="arg.dataType"
-                                                ng-init="arg.dataType = dataTypes()[0]"
-                                    >
+                                                ng-init="arg.dataType = dataTypes()[0]">
+                                        </select>
+                                    </td>
                                     <td><sweet-delete variable="arg" container="trigger.args"></sweet-delete></td>
-
-                                    </select></td>
                                 </tr>
                             </table>
                             <span class="glyphicon glyphicon-plus clickable hover-fade" ng-click="addArgument()"></span>

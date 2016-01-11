@@ -153,7 +153,6 @@ class ItemDefinition(Taggable):
             'interactable': self.interactable,
             'texture': tex,
             'tags': tagsArr
-
         }
 
 

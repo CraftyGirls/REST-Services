@@ -750,3 +750,18 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
         }
     }
 }]);
+
+scenarioServices.service('scenarioService', [function () {
+
+    var scenario = {};
+
+    return {
+        setData: function (data) {
+            scenario.name = data.name;
+            scenario.description = data.name;
+        },
+        scenario: function(){
+            return scenario;
+        }
+    }
+}]);

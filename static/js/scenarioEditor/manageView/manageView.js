@@ -9,7 +9,7 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
         });
     }])
 
-    .controller('manageCtrl', ['$scope', '$http', 'triggerService', function ($scope, $http, triggerService) {
+    .controller('manageCtrl', ['$scope', '$http', 'triggerService', 'scenarioService', function ($scope, $http, triggerService, scenarioService) {
 
         $scope.pendingTrigger = null;
         $scope.triggerPending = false;
@@ -29,6 +29,10 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
         $scope.addTrigger = function () {
             $scope.pendingTrigger = new TriggerResource();
             $scope.triggerPending = true;
+        };
+
+        $scope.scenario = function(){
+            return scenarioService.scenario();
         };
 
         $scope.submitTrigger = function () {

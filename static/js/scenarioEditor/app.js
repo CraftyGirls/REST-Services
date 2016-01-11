@@ -200,8 +200,8 @@ var application = angular.module('scenarioEditor', [
 
 var scenarioEditor = angular.module('scenarioEditor');
 
-scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService', 'triggerService',
-    function ($scope, $http, convoService, charService, itemService, roomService, triggerService) {
+scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService', 'triggerService', 'scenarioService',
+    function ($scope, $http, convoService, charService, itemService, roomService, triggerService, scenarioService) {
 
         // ABSTRACTION LAYER
         $scope.getChars = function () {
@@ -241,6 +241,9 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.messages = [];
 
+        $scope.scenarioName = "asdsa";
+        $scope.scenarioDescription = "asdsad";
+
         $scope.save = function (scenario_id) {
 
             var errorMessages = [];
@@ -279,32 +282,34 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
             if (errorMessages.length == 0) {
                 blockUi(true);
-                 $scope.dataObj = {
-                 characters: $scope.getChars(),
-                 conversations: $scope.getConvos(),
-                 items: $scope.getItems(),
-                 rooms: $scope.getRooms()
-                 };
+                $scope.dataObj = {
+                    name: $scope.scenarioName,
+                    description: $scope.scenarioDescription,
+                    characters: $scope.getChars(),
+                    conversations: $scope.getConvos(),
+                    items: $scope.getItems(),
+                    rooms: $scope.getRooms()
+                };
 
-                 console.log(angular.toJson($scope.dataObj));
+                console.log(angular.toJson($scope.dataObj));
 
-                 $http.post('/scenario/service/update_scenario/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
-                 $scope.msg = 'Data saved.';
-                 $scope.dlVisible = true;
-                 }).then(
-                 //Success
-                 function (response) {
-                 blockUi(false);
-                 showMessage("Scenario saved successfully", "success");
-                 },
-                 //Failure
-                 function (response) {
-                 alert("Error occurred while saving scenario - " + response);
-                 blockUi(false);
-                 }
-                 );
+                $http.post('/scenario/service/update_scenario/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
+                    $scope.msg = 'Data saved.';
+                    $scope.dlVisible = true;
+                }).then(
+                    //Success
+                    function (response) {
+                        blockUi(false);
+                        showMessage("Scenario saved successfully", "success");
+                    },
+                    //Failure
+                    function (response) {
+                        alert("Error occurred while saving scenario - " + response);
+                        blockUi(false);
+                    }
+                );
 
-                 $scope.msg2 = 'Data sent: ' + $scope.jsonData;
+                $scope.msg2 = 'Data sent: ' + $scope.jsonData;
             } else {
                 for (var i = 0; i < errorMessages.length; i++) {
                     showMessage(errorMessages[i], "danger");
@@ -322,6 +327,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             charService.setData($scope.dataObj.characters);
             itemService.setData($scope.dataObj.items);
             roomService.setData($scope.dataObj.rooms);
+            scenarioService.setData($scope.dataObj);
         };
 
         $scope.$on('blockUi', function (event, data) {
