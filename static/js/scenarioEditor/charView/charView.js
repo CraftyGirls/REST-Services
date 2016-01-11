@@ -9,7 +9,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         });
     }])
 
-    .controller('CharCtrl', ['$scope', '$http', 'charService', 'convoService', function($scope, $http, charService, convoService) {
+    .controller('CharCtrl', ['$scope', '$http', 'charService', 'convoService', 'itemService', function($scope, $http, charService, convoService, itemService) {
         $scope.editVisible = false;
 
         $scope.currBodyPart = "";
@@ -19,6 +19,8 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         $scope.tagsQuery = null;
 
         $scope.componentSets = [];
+
+        $scope.selectedItem = null;
 
         $scope.getChars = function () {
             return charService.chars();
@@ -78,6 +80,30 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         $scope.selectComponent = function(component){
             charService.getCurrChar().components[$scope.currBodyPart] = component;
             $scope.closeBodyPart();
+        };
+
+        $scope.getUnusedItems = function(){
+            var items = itemService.getUnusedItems();
+            if (items.length > 0) {
+                $scope.selectedItem = items[0].id;
+            }
+            return items;
+        };
+
+        $scope.addSelectedItem = function(){
+            if($scope.selectedItem != null){
+                $scope.getCurrChar().items.push($scope.selectedItem);
+            }
+        };
+
+        $scope.itemsForCurrentChar = function(){
+            var itemObjs = [];
+            if(charService.getCurrChar() != null) {
+                for (var i = 0; i < charService.getCurrChar().items.length; i++) {
+                    itemObjs.push(itemService.getById(charService.getCurrChar().items[i]));
+                }
+            }
+            return itemObjs;
         };
 
         $scope.getComponentImages = function(setType, tags, name){

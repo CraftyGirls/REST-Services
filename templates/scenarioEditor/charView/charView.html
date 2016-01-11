@@ -19,9 +19,10 @@
         <div id="main" ng-show="editVisible">
             <div ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
                 <h3>{$character.name$}</h3>
-                <strong>States</strong>
+
                 <form>
                     <div class="padded-top-bottom-10" ng-repeat="state in getStates(character)">
+                        <strong>States</strong>
                         <div class="row">
                             <div class="col-sm-1">
                                 <span>Name:</span>
@@ -39,7 +40,39 @@
                             </select>
                         </div>
                     </div>
-                    <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
+                     <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
+
+                    <div class="padded-top-bottom-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <span>Items</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row" ng-repeat="item in itemsForCurrentChar()">
+                                    <div>
+                                        <span class="col-sm-2">{$item.name$}</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <sweet-delete variable="item.id"
+                                                      container="character.items"></sweet-delete>
+                                    </div>
+                                </div>
+                                <div class="row padded-top-bottom-5">
+                                    <div class="col-sm-2">
+                                        <select class="input-sm" ng-model="selectedItem"
+                                                ng-options="item.id as item.name for item in getUnusedItems()"
+                                                title="Items">
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary" ng-click="addSelectedItem()">Add Item</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <hr/>
                 <table style="text-align:center;padding:10px;">

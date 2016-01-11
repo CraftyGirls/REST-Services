@@ -95,28 +95,12 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.getUnusedItems = function(){
-            var allIds  = itemService.getIds();
-            var usedIds = [];
-            for(var i = 0; i < roomService.getRooms().length; i++){
-                for(var j = 0; j < roomService.getRooms()[i].items.length; j++){
-                    usedIds.push(roomService.getRooms()[i].items[j]);
-
-                }
-            }
-            for(var x = 0; x < usedIds.length; x++){
-                var idx = allIds.indexOf(usedIds[x]);
-                allIds.splice(idx, 1);
-            }
-            var items = [];
-            for(var c = 0; c < allIds.length; c++){
-                items.push(itemService.getById(allIds[c]));
-            }
-            if(items.length > 0){
+            var items = itemService.getUnusedItems();
+            if (items.length > 0) {
                 $scope.selectedItem = items[0].id;
             }
             return items;
         };
-
 
         $scope.roomSizes = function(){
             return roomService.getRoomSizeOptions();

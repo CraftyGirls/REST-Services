@@ -235,12 +235,12 @@ function State(id, name) {
     this.name = name;
     this.convo = null;
 
-    this.validate = function(){
+    this.validate = function () {
         var errorMessages = [];
-        if(this.name == null || this.name.length <= 0){
+        if (this.name == null || this.name.length <= 0) {
             errorMessages.push("State name must be specified")
         }
-        if(this.convo == null || this.convo.toString().length <= 0){
+        if (this.convo == null || this.convo.toString().length <= 0) {
             errorMessages.push("State must have a valid conversation selected");
         }
         return errorMessages;
@@ -257,6 +257,7 @@ function Character(id, name) {
     this.id = id;
     this.name = name;
     this.states = [];
+    this.items = [];
     this.components = {};
 
     this.addState = function (state) {
@@ -277,12 +278,12 @@ function Character(id, name) {
         } else {
             for (var i = 0; i < this.states.length; i++) {
                 var errors = this.states[i].validate();
-                for(var x = 0; x < errors.length; x++){
+                for (var x = 0; x < errors.length; x++) {
                     errors[x] = this.name + " -> States -> " + this.states[i].name + " -> " + errors[x];
                 }
                 childMessages = childMessages.concat(errors);
             }
-           // @TODO Do we need component validation? - No components should result in a random character
+            // @TODO Do we need component validation? - No components should result in a random character
         }
         errorMessages = errorMessages.concat(childMessages);
         return errorMessages;
@@ -293,6 +294,9 @@ Character.BuildFromData = function (data) {
     var char = new Character(data.id, data.name);
     for (var i = 0; i < data.states.length; i++) {
         char.states.push(data.states[i]);
+    }
+    for (var i = 0; i < data.items.length; i++) {
+        char.items.push(Item.BuildFromData(data.items[i]));
     }
     char.components = data.components;
     return char;
@@ -306,24 +310,24 @@ function Item(name, id) {
     this.texture = "";
     this.effects = [];
 
-    this.validate = function(){
+    this.validate = function () {
         var errorMessages = [];
-        if(this.name == null || this.name.length <= 0){
+        if (this.name == null || this.name.length <= 0) {
             errorMessages.push("Item name must be specified");
         }
-        if(this.description == null || this.description.length <= 0){
+        if (this.description == null || this.description.length <= 0) {
             errorMessages.push(this.name + " is missing a description");
         }
         // @TODO is a texture required?
-        for(var i = 0; i < this.effects.length; i++){
+        for (var i = 0; i < this.effects.length; i++) {
             var errors = this.effects[i].validate();
-            for(var x = 0; x < errors.length; x++){
+            for (var x = 0; x < errors.length; x++) {
                 errors[x] = this.name + " -> Effects -> " + errors[x];
             }
             errorMessages = errorMessages.concat(errors);
         }
         return errorMessages;
-    }
+    };
 }
 
 Item.BuildFromData = function (data) {
@@ -351,14 +355,14 @@ function Room(name, id) {
     this.tags = [];
     this.size = ROOM_SIZES[0];
 
-    this.validate = function(){
+    this.validate = function () {
         var errorMessages = [];
 
-        if(this.name == null || this.name.length <= 0){
+        if (this.name == null || this.name.length <= 0) {
             errorMessages.push("Room must have a name");
         }
 
-        if(this.description == null || this.description.length <= 0){
+        if (this.description == null || this.description.length <= 0) {
             errorMessages.push(this.name + " is missing a description");
         }
 
@@ -551,7 +555,7 @@ scenarioServices.service('charService', function () {
     };
 });
 
-scenarioServices.service('itemService', function () {
+scenarioServices.service('itemService', ['roomService', 'charService', function (roomService, charService) {
     var itemData = [];
     var currItem = null;
 
@@ -562,6 +566,23 @@ scenarioServices.service('itemService', function () {
         }
         id++;
         return id;
+    }
+
+    function _getById(id) {
+        for (var i = 0; i < itemData.length; i++) {
+            if (itemData[i].id === id) {
+                return itemData[i];
+            }
+        }
+        return null;
+    }
+
+    function _getIds() {
+        ids = [];
+        for (var i = 0; i < itemData.length; i++) {
+            ids.push(itemData[i].id);
+        }
+        return ids;
     }
 
     return {
@@ -587,22 +608,36 @@ scenarioServices.service('itemService', function () {
             return currItem;
         },
         getById: function (id) {
-            for (var i = 0; i < itemData.length; i++) {
-                if (itemData[i].id === id) {
-                    return itemData[i];
-                }
-            }
-            return null;
+            return _getById(id);
         },
         getIds: function () {
-            ids = [];
-            for (var i = 0; i < itemData.length; i++) {
-                ids.push(itemData[i].id);
+            return _getIds();
+        },
+        getUnusedItems: function () {
+            var allIds = _getIds();
+            var usedIds = [];
+            for (var i = 0; i < roomService.getRooms().length; i++) {
+                for (var j = 0; j < roomService.getRooms()[i].items.length; j++) {
+                    usedIds.push(roomService.getRooms()[i].items[j]);
+                }
             }
-            return ids;
+            for (var i = 0; i < charService.chars().length; i++) {
+                for (var j = 0; j < charService.chars()[i].items.length; j++) {
+                    usedIds.push(charService.chars()[i].items[j]);
+                }
+            }
+            for (var x = 0; x < usedIds.length; x++) {
+                var idx = allIds.indexOf(usedIds[x]);
+                allIds.splice(idx, 1);
+            }
+            var items = [];
+            for (var c = 0; c < allIds.length; c++) {
+                items.push(_getById(allIds[c]));
+            }
+            return items;
         }
     };
-});
+}]);
 
 scenarioServices.service('roomService', function () {
     var roomData = [];
