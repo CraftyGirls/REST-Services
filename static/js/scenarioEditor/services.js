@@ -495,14 +495,9 @@ scenarioServices.service('convoService', function () {
 });
 
 scenarioServices.service('charService', function () {
-    // The characters
-    var charData = [
-        new Character(0, "Player")
-    ];
 
-    // The id to use for the next character that is created
-    // The value is used then incremented
-    var currId = 1;
+    // The characters
+    var charData = [];
 
     // The character currently being edited
     var currChar = null;
@@ -512,17 +507,22 @@ scenarioServices.service('charService', function () {
             return charData;
         },
         setData: function (chars) {
+            if(charData.length == 0){
+                charData.push(new Character(0, "Player"));
+            }
             for (var i = 0; i < chars.length; i++) {
                 charData.push(Character.BuildFromData(chars[i]));
-                // Find the highest saved ID
-                currId = Math.max(currId, chars[i].id);
             }
-            // Increment it at the end for use when adding a new character
-            currId++;
+
+            console.log(charData);
         },
         addChar: function () {
-            charData.push(new Character(currId, ""));
-            currId++;
+            var id = 0;
+            for (var i = 0; i < charData.length; i++) {
+                id = Math.max(id, charData[i].id);
+            }
+            id += 1;
+            charData.push(new Character(id, "character" + id));
         },
         deleteChar: function (character) {
             charData.splice(charData.indexOf(character), 1);

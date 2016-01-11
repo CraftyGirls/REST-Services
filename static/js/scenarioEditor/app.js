@@ -241,9 +241,6 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.messages = [];
 
-        $scope.scenarioName = "asdsa";
-        $scope.scenarioDescription = "asdsad";
-
         $scope.save = function (scenario_id) {
 
             var errorMessages = [];
