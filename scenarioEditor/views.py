@@ -140,7 +140,7 @@ def update_scenario_service(request, scenario_id):
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
                 file_name = scenario.jsonUrl.split('master/')[1]
-                gitlab_utility.update_file("TestComponentProject", file_name, scenario.script, "text")
+                gitlab_utility.update_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
                 scenario.save()
                 return HttpResponse(request.body)
             else:
@@ -160,8 +160,8 @@ def create_scenario_view(request):
             pd_user = PDUser.objects.get(user=request.user)
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
-            scenario.jsonUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
-            gitlab_utility.create_file("TestComponentProject", file_name, scenario.script, "text")
+            scenario.jsonUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+            gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
             scenario.save()
             return redirect(edit_scenario_view, scenario.id)
     else:
@@ -246,12 +246,12 @@ def component_set_service(request, component_set_id=None):
 
                 jsonObj = json.loads(compSetForm.cleaned_data["joints"])
 
-                gitlab_utility.create_file("TestComponentProject", joints_file_name,
+                gitlab_utility.create_file(gitlab_utility.get_project_name(), joints_file_name,
                                            json.dumps(jsonObj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
 
                 comp_set.jsonRepresentation = gitlab_utility.get_project_url(
-                    "TestComponentProject") + "/raw/master/" + joints_file_name
+                    gitlab_utility.get_project_name()) + "/raw/master/" + joints_file_name
                 comp_set.save()
 
                 for t in compSetForm.cleaned_data["tags"]:
@@ -363,9 +363,9 @@ def upload_asset(request):
                 charComp.name = uuid_str
 
                 file_name = "components/" + file_name
-                tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
+                tex.imageUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + file_name
 
-                gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
+                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(), "base64")
 
                 tex.save()
 
@@ -380,8 +380,8 @@ def upload_asset(request):
 
                 itemDef = ItemDefinition.objects.get(id=long(assetId))
                 file_name = "items/" + file_name
-                tex.imageUrl = gitlab_utility.get_project_url("TestComponentProject") + "/raw/master/" + file_name
-                gitlab_utility.create_file("TestComponentProject", file_name, request.FILES['file'].read(), "base64")
+                tex.imageUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(), "base64")
                 tex.save()
                 itemDef.texture = tex
                 itemDef.save()

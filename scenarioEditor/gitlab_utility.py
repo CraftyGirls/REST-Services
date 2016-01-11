@@ -48,3 +48,10 @@ def get_project_url(project_name):
     for project in git.getprojects():
         if project['name'] == project_name:
             return project["web_url"]
+
+
+def get_project_name():
+    configParser = ConfigParser.RawConfigParser()
+    configFilePath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'gitlab.cnf')
+    configParser.read(configFilePath)
+    return configParser.get('contents', 'project')
