@@ -496,11 +496,13 @@ scenarioServices.service('convoService', function () {
 
 scenarioServices.service('charService', function () {
     // The characters
-    var charData = [];
+    var charData = [
+        new Character(0, "Player")
+    ];
 
     // The id to use for the next character that is created
     // The value is used then incremented
-    var currId = 0;
+    var currId = 1;
 
     // The character currently being edited
     var currChar = null;
