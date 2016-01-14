@@ -37,7 +37,7 @@ Arg.BuildFromData = function (data) {
 
 function Trigger() {
 
-    this.func = "";
+    this.type = "";
     this.args = new Arg();
 
     this.addArg = function (key, type) {
@@ -47,14 +47,14 @@ function Trigger() {
     this.validate = function () {
         var errorMessages = [];
 
-        if (this.func == null || this.func.length <= 0) {
+        if (this.type == null || this.type.length <= 0) {
             errorMessages.push("Trigger must have a valid function name");
         }
 
         var argFields = Object.getOwnPropertyNames(this.args);
         for (var i = 0; i < argFields.length; i++) {
             if (this.args[argFields[i]].value == null || this.args[argFields[i]].value.toString().length <= 0) {
-                errorMessages.push(this.func + " -> " + " Argument '" + argFields[i] + "' does not have a value specified");
+                errorMessages.push(this.type + " -> " + " Argument '" + argFields[i] + "' does not have a value specified");
             }
         }
         return errorMessages;
@@ -63,7 +63,7 @@ function Trigger() {
 
 Trigger.BuildFromData = function (data) {
     var trig = new Trigger();
-    trig.func = data.func;
+    trig.type = data.type;
     trig.args = Arg.BuildFromData(data.args);
     return trig;
 };
@@ -305,7 +305,8 @@ Character.BuildFromData = function (data) {
 function Item(name, id) {
     this.name = name;
     this.id = id;
-    this.interactable = true;
+    this.collectable = true;
+    this.pixelPerfect = true;
     this.description = "";
     this.texture = "";
     this.effects = [];
@@ -334,7 +335,8 @@ Item.BuildFromData = function (data) {
     var item = new Item();
     item.name = data.name;
     item.id = data.id;
-    item.interactable = data.interactable;
+    item.pixelPerfect = data.pixelPerfect;
+    item.collectable = data.collectable;
     item.description = data.description;
     item.texture = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
@@ -397,7 +399,7 @@ var TRIGGER_ARG_DATA_TYPES = [
 ];
 
 function TriggerResource() {
-    this.func = "";
+    this.type = "";
     this.description = "";
     this.id = -1;
     this.args = [];
@@ -405,7 +407,7 @@ function TriggerResource() {
 
 TriggerResource.BuildFromData = function (data) {
     var trigger = new TriggerResource();
-    trigger.func = data.func;
+    trigger.type = data.type;
     trigger.description = data.description;
     trigger.id = data.id;
     for (var i = 0; i < data.args.length; i++) {

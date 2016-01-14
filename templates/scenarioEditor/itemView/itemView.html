@@ -34,10 +34,18 @@
                 </div>
                 <div class="row padded-top-bottom-10">
                     <div class="col-sm-1">
-                        <span>Interactable</span>
+                        <span>Collectable</span>
                     </div>
                     <div class="col-sm-1">
-                        <input type="checkbox" ng-model="currentItem().interactable"/>
+                        <input type="checkbox" ng-model="currentItem().collectable"/>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Pixel Perfect Collision</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="checkbox" ng-model="currentItem().pixelPerfect"/>
                     </div>
                 </div>
                 <hr/>
@@ -46,7 +54,7 @@
                     <div class="content-block">
                         <div class="row" ng-repeat="trigger in currentItem().effects">
                             <div class="content-block">
-                                <strong>{$trigger.func$}</strong>
+                                <strong>{$trigger.type$}</strong>
                                 <sweet-delete variable="trigger" container="currentItem().effects"></sweet-delete>
                                 <div class="content-block padded-top-bottom-10">
                                     <span>Arguments = </span>

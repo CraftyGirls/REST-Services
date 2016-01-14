@@ -38,13 +38,13 @@
                     <tbody>
                     <tr ng-repeat="trigger in triggers()">
                         <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
-                            <span>{$trigger.func$}</span>
+                            <span>{$trigger.type$}</span>
                         </td>
                         <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
                             <span>{$trigger.description$}</span>
                         </td>
                         <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
-                            <input type="text" ng-model="pendingTrigger.func"/>
+                            <input type="text" ng-model="pendingTrigger.type"/>
                         </td>
                         <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
                             <textarea type="text" ng-model="pendingTrigger.description"></textarea>
@@ -93,7 +93,7 @@
                         </td>
                     </tr>
                     <tr ng-show="triggerPending && pendingTrigger.id == -1">
-                        <td><input type="text" ng-model="pendingTrigger.func"/></td>
+                        <td><input type="text" ng-model="pendingTrigger.type"/></td>
                         <td><textarea type="text" ng-model="pendingTrigger.description"></textarea></td>
                         <td>
                             <table class="table table-striped">

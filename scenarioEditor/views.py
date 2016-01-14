@@ -161,7 +161,8 @@ def create_scenario_view(request):
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
             scenario.script = '{"name":"","description":"","characters":[],"conversations":[],"items":[],"rooms":[]}'
-            scenario.jsonUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+            scenario.jsonUrl = gitlab_utility.get_project_url(
+                gitlab_utility.get_project_name()) + "/raw/master/" + file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
             scenario.save()
             return redirect(edit_scenario_view, scenario.id)
@@ -252,7 +253,7 @@ def component_set_service(request, component_set_id=None):
                                            "text")
 
                 comp_set.jsonRepresentation = gitlab_utility.get_project_url(
-                    gitlab_utility.get_project_name()) + "/raw/master/" + joints_file_name
+                        gitlab_utility.get_project_name()) + "/raw/master/" + joints_file_name
                 comp_set.save()
 
                 for t in compSetForm.cleaned_data["tags"]:
@@ -364,9 +365,11 @@ def upload_asset(request):
                 charComp.name = uuid_str
 
                 file_name = "components/" + file_name
-                tex.imageUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                tex.imageUrl = gitlab_utility.get_project_url(
+                    gitlab_utility.get_project_name()) + "/raw/master/" + file_name
 
-                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(), "base64")
+                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(),
+                                           "base64")
 
                 tex.save()
 
@@ -381,8 +384,10 @@ def upload_asset(request):
 
                 itemDef = ItemDefinition.objects.get(id=long(assetId))
                 file_name = "items/" + file_name
-                tex.imageUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + file_name
-                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(), "base64")
+                tex.imageUrl = gitlab_utility.get_project_url(
+                    gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(),
+                                           "base64")
                 tex.save()
                 itemDef.texture = tex
                 itemDef.save()
@@ -400,15 +405,15 @@ def upload_asset(request):
 def trigger_service(request, trigger_id):
     if request.method == 'GET':
         out = []
-        if trigger_id != None:
+        if trigger_id is not None:
             try:
-                outObj = Trigger.objects.get(id=trigger_id)
-                out.append(outObj.asDict())
+                out_obj = Trigger.objects.get(id=trigger_id)
+                out.append(out_obj.asDict())
             except:
                 return HttpResponse("Object could not be found", status=404)
         else:
-            outObj = list(Trigger.objects.all())
-            for obj in outObj:
+            out_obj = list(Trigger.objects.all())
+            for obj in out_obj:
                 out.append(obj.asDict())
         json_str = json.dumps(list(out), sort_keys=True, indent=4, separators=(',', ': '))
         return HttpResponse(content=json_str, content_type=APPLICATION_JSON)
@@ -428,36 +433,36 @@ def trigger_service(request, trigger_id):
             return HttpResponse("Invalid request data - " + trigger_form.errors.as_json(), status=400)
 
         if request.method == 'PUT':
-            trigger = Trigger(function=trigger_form.cleaned_data['func'],
+            trigger = Trigger(type=trigger_form.cleaned_data['type'],
                               description=trigger_form.cleaned_data['description']
                               )
             trigger.save()
             for arg in trigger_args:
                 trigger_arg = TriggerArgument(
-                    dataType=arg.cleaned_data['dataType'],
-                    field=arg.cleaned_data['field'],
-                    trigger=trigger
+                        dataType=arg.cleaned_data['dataType'],
+                        field=arg.cleaned_data['field'],
+                        trigger=trigger
                 )
                 trigger_arg.save()
-        #UPDATE
+        # UPDATE
         else:
             trigger = Trigger.objects.get(id=trigger_id)
-            trigger.function = trigger_form.cleaned_data['func']
+            trigger.type = trigger_form.cleaned_data['type']
             trigger.description = trigger_form.cleaned_data['description']
             trigger.save()
 
             for arg in trigger_args:
-                arg_obj = TriggerArgument.objects.get(id = arg.cleaned_data['id'])
-                arg_obj.dataType=arg.cleaned_data['dataType'],
-                arg_obj.field=unicode(arg.cleaned_data['field']),
-                arg_obj.trigger=unicode(trigger)
+                arg_obj = TriggerArgument.objects.get(id=arg.cleaned_data['id'])
+                arg_obj.dataType = arg.cleaned_data['dataType'],
+                arg_obj.field = unicode(arg.cleaned_data['field']),
+                arg_obj.trigger = unicode(trigger)
                 arg_obj.save()
 
         return HttpResponse("Success", status=200)
 
     elif request.method == 'DELETE':
-        if trigger_id != None:
-            trigger = Trigger.objects.get(id = trigger_id)
+        if trigger_id is not None:
+            trigger = Trigger.objects.get(id=trigger_id)
             args = trigger.getArguments()
             for arg in args:
                 TriggerArgument.delete(arg)

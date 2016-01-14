@@ -169,7 +169,7 @@ var application = angular.module('scenarioEditor', [
             scope: {
                 target: "=sweetTarget"
             },
-            template: "<div class='row'><div class='col-sm-1'><select ng-options='trigger as trigger.func for trigger in getTriggers()' ng-model='selected'></select></div>" +
+            template: "<div class='row'><div class='col-sm-1'><select ng-options='trigger as trigger.type for trigger in getTriggers()' ng-model='selected'></select></div>" +
             "<div class='col-sm-1'><span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
             link: function ($scope, iElm, iAttrs, controller) {
 
@@ -179,7 +179,7 @@ var application = angular.module('scenarioEditor', [
 
                 $scope.addTrigger = function () {
                     var trigger = new Trigger();
-                    trigger.func = $scope.selected.func;
+                    trigger.type = $scope.selected.type;
                     for (var i = 0; i < $scope.selected.args.length; i++) {
                         trigger.addArg($scope.selected.args[i].field, $scope.selected.args[i].dataType);
                     }

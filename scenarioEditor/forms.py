@@ -43,7 +43,7 @@ class ItemForm(forms.Form):
 
 class TriggerForm(forms.Form):
     id = forms.IntegerField()
-    func = forms.CharField(max_length=100)
+    type = forms.CharField(max_length=100)
     description = forms.CharField()
     args = forms.CharField(required=False)
 

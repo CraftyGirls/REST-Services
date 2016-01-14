@@ -30,7 +30,7 @@
         <div class="content-block">
             <div ng-repeat="trigger in dialogue.triggers">
                 <div class="trigger padded-top-bottom-10">
-                    <strong>{$trigger.func$}</strong>
+                    <strong>{$trigger.type$}</strong>
                     <sweet-delete variable="trigger" container="dialogue.triggers"></sweet-delete>
                     <div class="content-block padded-top-bottom-10">
                         <span>Arguments = </span>
@@ -53,7 +53,7 @@
         <div class="content-block">
             <div ng-repeat="condition in dialogue.conditions">
                 <div class="condition padded-top-bottom-10">
-                    <strong>{$condition.func$}</strong>
+                    <strong>{$condition.type$}</strong>
                     <sweet-delete variable="condition" container="dialogue.conditions"></sweet-delete>
                     <div class="content-block padded-top-bottom-10">
                         <span>Arguments = </span>

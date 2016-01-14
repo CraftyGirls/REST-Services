@@ -112,7 +112,7 @@ class Texture(models.Model):
 
     def asDict(self):
         return {
-            'id':self.id,
+            'id': self.id,
             'name': self.name,
             'imageUrl': self.imageUrl
         }
@@ -147,7 +147,7 @@ class ItemDefinition(Taggable):
             tagsArr.append(t.asDict())
 
         return {
-            'id':self.id,
+            'id': self.id,
             'name': self.name,
             'description': self.description,
             'interactable': self.interactable,
@@ -235,7 +235,7 @@ class CharacterComponent(models.Model):
         if self.texture != None:
             tex = self.texture.asDict()
         return {
-            'id':self.id,
+            'id': self.id,
             'name': self.name,
             'texture': self.texture.asDict(),
             'componentType': self.componentType
@@ -280,7 +280,7 @@ class Line(models.Model):
 
 
 class Trigger(models.Model):
-    function = models.CharField(max_length=100, blank=False, default='')
+    type = models.CharField(max_length=100, blank=False, default='')
     description = models.TextField(blank=False, default='')
 
     def getArguments(self):
@@ -292,11 +292,12 @@ class Trigger(models.Model):
         for arg in argsQuery:
             argsArr.append(arg.asDict())
         return {
-            'id':self.id,
-            'func':self.function,
-            'description':self.description,
-            'args':argsArr
+            'id': self.id,
+            'type': self.type,
+            'description': self.description,
+            'args': argsArr
         }
+
 
 class TriggerArgument(models.Model):
     DATA_TYPE_CHOICES = [
@@ -315,9 +316,9 @@ class TriggerArgument(models.Model):
 
     def asDict(self):
         return {
-            'id':self.id,
-            'dataType':self.dataType,
-            'field':self.field
+            'id': self.id,
+            'dataType': self.dataType,
+            'field': self.field
         }
 
 
