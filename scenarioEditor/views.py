@@ -15,6 +15,7 @@ import gitlab_utility
 import uuid
 from django.core import serializers
 import json
+import urllib2
 
 APPLICATION_JSON = 'application/json'
 
@@ -178,6 +179,7 @@ def edit_scenario_view(request, scenario_id):
         if scenario is not None:
             if scenario.owner.id != PDUser.objects.get(user=request.user).id:
                 return HttpResponse("Unauthorized")
+            scenario.script = urllib2.urlopen(scenario.jsonUrl).read()
             return render(request, 'scenarioEditor/index.html/', {'scenario': scenario})
     else:
         # Return invalid method response
