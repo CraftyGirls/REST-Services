@@ -161,7 +161,7 @@ def create_scenario_view(request):
             pd_user = PDUser.objects.get(user=request.user)
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
-            scenario.script = '{"name":"","description":"","characters":[],"conversations":[],"items":[],"rooms":[]}'
+            scenario.script = '{assets:[]}'
             scenario.jsonUrl = gitlab_utility.get_project_url(
                 gitlab_utility.get_project_name()) + "/raw/master/" + file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")

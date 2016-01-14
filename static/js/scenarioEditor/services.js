@@ -183,6 +183,7 @@ function Conversation(id, name) {
     this.name = name;
     this.dialogues = [];
     this.options = [];
+    this.conversation = "conversation";
 
     this.addDialogue = function () {
         this.dialogues.push(new Dialogue("Dialogue " + this.dialogues.length));
@@ -259,6 +260,7 @@ function Character(id, name) {
     this.states = [];
     this.items = [];
     this.components = {};
+    this.type = "character";
 
     this.addState = function (state) {
         var stateId = 0;
@@ -310,6 +312,7 @@ function Item(name, id) {
     this.description = "";
     this.texture = "";
     this.effects = [];
+    this.type = "item";
 
     this.validate = function () {
         var errorMessages = [];
@@ -356,6 +359,7 @@ function Room(name, id) {
     this.items = [];
     this.tags = [];
     this.size = ROOM_SIZES[0];
+    this.type = "room";
 
     this.validate = function () {
         var errorMessages = [];

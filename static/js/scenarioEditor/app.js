@@ -279,16 +279,33 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
             if (errorMessages.length == 0) {
                 blockUi(true);
+
+                var assets = [];
+
+                for (var i = 0; i < $scope.getChars().length; i++) {
+                    assets.push($scope.getChars()[i]);
+                }
+
+                for (var i = 0; i < $scope.getConvos().length; i++) {
+                    assets.push($scope.getConvos()[i]);
+                }
+
+                for (var i = 0; i < $scope.getItems().length; i++) {
+                    assets.push($scope.getItems()[i]);
+                }
+
+                for (var i = 0; i < $scope.getRooms().length; i++) {
+                    assets.push($scope.getRooms()[i]);
+                }
+
                 $scope.dataObj = {
                     name: $scope.scenarioName,
                     description: $scope.scenarioDescription,
-                    characters: $scope.getChars(),
-                    conversations: $scope.getConvos(),
-                    items: $scope.getItems(),
-                    rooms: $scope.getRooms()
+                    assets: assets
                 };
 
                 console.log(angular.toJson($scope.dataObj));
+
 
                 $http.post('/scenario/service/update_scenario/' + scenario_id + '/', angular.toJson($scope.dataObj)).then(function (data) {
                     $scope.msg = 'Data saved.';
@@ -320,10 +337,31 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
 
         $scope.loadScript = function (script) {
             $scope.dataObj = angular.fromJson(script);
-            convoService.setData($scope.dataObj.conversations);
-            charService.setData($scope.dataObj.characters);
-            itemService.setData($scope.dataObj.items);
-            roomService.setData($scope.dataObj.rooms);
+
+            var chars = [];
+            var convos = [];
+            var items = [];
+            var rooms = [];
+
+            for (var i = 0; i < $scope.dataObj.assets.length; i++) {
+                if ($scope.dataObj.assets[i].type == "character") {
+                    chars.push($scope.dataObj.assets[i]);
+                }
+                if ($scope.dataObj.assets[i].type == "item") {
+                    items.push($scope.dataObj.assets[i]);
+                }
+                if ($scope.dataObj.assets[i].type == "conversation") {
+                    convos.push($scope.dataObj.assets[i]);
+                }
+                if ($scope.dataObj.assets[i].type == "room") {
+                    rooms.push($scope.dataObj.assets[i]);
+                }
+            }
+
+            convoService.setData(convos);
+            charService.setData(chars);
+            itemService.setData(items);
+            roomService.setData(rooms);
             scenarioService.setData($scope.dataObj);
         };
 
