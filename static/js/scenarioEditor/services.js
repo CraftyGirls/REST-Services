@@ -920,7 +920,7 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
                     return;
                 }
                 for (var j = 0; j < joints.length; j++) {
-                    if (joints[j].src == jointsSrc) {
+                    if (joints[j].src == jointSrc) {
                         success(joints);
                     }
                 }
