@@ -502,3 +502,17 @@ def asset_service(request, asset_id):
 def logout_user_view(request):
     logout(request)
     return redirect('index')
+
+
+def proxy_service(request):
+    if request.method == "GET":
+        if 'url' in request.GET:
+            url = urllib2.urlopen(request.GET["url"])
+            http_message = url.info()
+            content_type = http_message.type
+            content = url.read()
+            return HttpResponse(content, content_type=content_type)
+        else:
+            return HttpResponse("url param required", status=400)
+    else:
+        return HttpResponse("Invalid Method", status=405)

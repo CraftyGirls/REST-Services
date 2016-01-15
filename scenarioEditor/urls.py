@@ -29,4 +29,5 @@ urlpatterns = patterns('',
                        url(r'^service/trigger(?:/(?P<trigger_id>[0-9]+))?/$', scenarioEditor.views.trigger_service, name='trigger_service'),
                        url(r'^service/asset(?:/(?P<asset_id>[0-9]+))?/$', scenarioEditor.views.asset_service, name='asset_service'),
                        url(r'^service/update_scenario/(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.update_scenario_service, name='update_scenario_service'),
+                       url(r'^service/proxy/', scenarioEditor.views.proxy_service, name='proxy_service'),
                        )

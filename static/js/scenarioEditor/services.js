@@ -220,6 +220,7 @@ function Conversation(id, name) {
 
 }
 
+
 Conversation.BuildFromData = function (data) {
     var convo = new Conversation(data.id, data.name);
     for (var i = 0; i < data.dialogues.length; i++) {
@@ -259,8 +260,42 @@ function Character(id, name) {
     this.name = name;
     this.states = [];
     this.items = [];
-    this.components = {};
     this.type = "character";
+    this.components = {
+        src: "", // Pelvis
+        components: [
+            {
+                src: "", // Torso
+                components: [
+                    {
+                        src: "" // Head
+                    },
+                    {
+                        src: "" // Left Arm
+                    },
+                    {
+                        src: "" // Right Arm
+                    }
+                ]
+            },
+            {
+                src: "" // Left Leg
+            },
+            {
+                src: "" // Right Leg
+            }
+        ]
+    };
+
+    this.COMPONENT_TYPES = {
+        PELVIS: this.components,
+        TORSO: this.components.components[0],
+        HEAD: this.components.components[0].components[0],
+        LEFT_ARM: this.components.components[0].components[1],
+        RIGHT_ARM: this.components.components[0].components[2],
+        LEFT_LEG: this.components.components[1],
+        RIGHT_LEG: this.components.components[2]
+    };
 
     this.addState = function (state) {
         var stateId = 0;
@@ -289,7 +324,7 @@ function Character(id, name) {
         }
         errorMessages = errorMessages.concat(childMessages);
         return errorMessages;
-    }
+    };
 }
 
 Character.BuildFromData = function (data) {
@@ -513,7 +548,7 @@ scenarioServices.service('charService', function () {
             return charData;
         },
         setData: function (chars) {
-            if(charData.length == 0){
+            if (charData.length == 0) {
                 charData.push(new Character(0, "Player"));
             }
             for (var i = 0; i < chars.length; i++) {
@@ -559,6 +594,18 @@ scenarioServices.service('charService', function () {
                 ids.push(charData[i].id);
             }
             return ids;
+        },
+        setComponentSourceForType: function (char, type, src) {
+            char.COMPONENT_TYPES[type].src = src;
+        },
+        getComponentsForType: function (char, type) {
+            var src = char.COMPONENT_TYPES[type].src;
+            // Return http promise
+            return $http.get("/scenario/service/proxy", {
+                params: {
+                    url: src
+                }
+            })
         }
     };
 });
@@ -768,7 +815,7 @@ scenarioServices.service('scenarioService', [function () {
             scenario.name = data.name;
             scenario.description = data.name;
         },
-        scenario: function(){
+        scenario: function () {
             return scenario;
         }
     }
