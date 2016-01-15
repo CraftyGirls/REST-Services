@@ -113,7 +113,7 @@ class Texture(models.Model):
     def asDict(self):
         return {
             'id': self.id,
-            'name': self.name,
+            'src': self.name,
             'imageUrl': self.imageUrl
         }
 

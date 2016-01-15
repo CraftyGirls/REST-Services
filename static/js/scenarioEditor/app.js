@@ -200,8 +200,8 @@ var application = angular.module('scenarioEditor', [
 
 var scenarioEditor = angular.module('scenarioEditor');
 
-scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService', 'triggerService', 'scenarioService',
-    function ($scope, $http, convoService, charService, itemService, roomService, triggerService, scenarioService) {
+scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService', 'triggerService', 'scenarioService', 'textureService',
+    function ($scope, $http, convoService, charService, itemService, roomService, triggerService, scenarioService, textureService) {
 
         // ABSTRACTION LAYER
         $scope.getChars = function () {
@@ -298,6 +298,14 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                     assets.push($scope.getRooms()[i]);
                 }
 
+                for (var i = 0; i < $scope.getRooms().length; i++) {
+                    assets.push($scope.getRooms()[i]);
+                }
+
+                for (var i = 0; i < textureService.textures().length; i++) {
+                    assets.push(textureService.textures()[i]);
+                }
+
                 $scope.dataObj = {
                     name: $scope.scenarioName,
                     description: $scope.scenarioDescription,
@@ -324,6 +332,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 );
 
                 $scope.msg2 = 'Data sent: ' + $scope.jsonData;
+
             } else {
                 for (var i = 0; i < errorMessages.length; i++) {
                     showMessage(errorMessages[i], "danger");

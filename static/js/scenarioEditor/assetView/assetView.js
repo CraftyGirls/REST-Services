@@ -205,12 +205,15 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                         if(valid) {
                             // Setup the appropriate data object for a component set
+
+                            var joints = {textures : [], joints : $scope.joints};
+
                             var compSetData = {
                                 name: $scope.asset.name,
                                 description: $scope.asset.description,
                                 tags: $scope.asset.tags,
                                 setType: $scope.selectedComponentType.label.toUpperCase(),
-                                joints: JSON.stringify($scope.joints)
+                                joints: JSON.stringify(joints)
                             };
 
                             $scope.$emit('blockUi', [true]);

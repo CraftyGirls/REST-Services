@@ -161,7 +161,7 @@ def create_scenario_view(request):
             pd_user = PDUser.objects.get(user=request.user)
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
-            scenario.script = '{assets:[]}'
+            scenario.script = '{"assets":[]}'
             scenario.jsonUrl = gitlab_utility.get_project_url(
                 gitlab_utility.get_project_name()) + "/raw/master/" + file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
@@ -382,6 +382,25 @@ def upload_asset(request):
 
                 charComp.save()
 
+                set_json_str = urllib2.urlopen(parent_set.jsonRepresentation).read()
+                set_json_obj = json.loads(set_json_str)
+
+                if('textures' not in set_json_obj):
+                    set_json_obj['textures'] = []
+
+                set_json_obj['textures'].append({
+                    'id' : tex.id,
+                    'component' : charComp.componentType
+                })
+
+                url_comps = parent_set.jsonRepresentation.split("/")
+                file_name = url_comps[len(url_comps) - 1]
+
+                gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           "/components/" + file_name,
+                                           json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           "text")
+
             elif assetType == Asset.ITEM:
 
                 itemDef = ItemDefinition.objects.get(id=long(assetId))
@@ -516,3 +535,12 @@ def proxy_service(request):
             return HttpResponse("url param required", status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
+
+
+def texture_service(request, texture_id):
+    if(request.method == "GET"):
+        if texture_id is not None:
+            tex_dict = Texture.objects.get(id=texture_id).asDict()
+            return HttpResponse(json.dumps(tex_dict, sort_keys=True, indent=4, separators=(',', ': ')),
+                                content_type=APPLICATION_JSON)
+    return None

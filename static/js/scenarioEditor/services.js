@@ -2,6 +2,14 @@
  * Created by ryan on 2015-09-18.
  */
 
+
+function Texture() {
+    this.id = 0;
+    this.src = "";
+    this.imageUrl = "";
+    this.type = "texture";
+}
+
 function Line() {
     this.text = "";
 
@@ -261,7 +269,7 @@ function Character(id, name) {
     this.states = [];
     this.items = [];
     this.type = "character";
-    this.components = {
+    this.components = [{
         src: "", // Pelvis
         components: [
             {
@@ -285,17 +293,7 @@ function Character(id, name) {
                 src: "" // Right Leg
             }
         ]
-    };
-
-    this.COMPONENT_TYPES = {
-        PELVIS: this.components,
-        TORSO: this.components.components[0],
-        HEAD: this.components.components[0].components[0],
-        LEFT_ARM: this.components.components[0].components[1],
-        RIGHT_ARM: this.components.components[0].components[2],
-        LEFT_LEG: this.components.components[1],
-        RIGHT_LEG: this.components.components[2]
-    };
+    }];
 
     this.addState = function (state) {
         var stateId = 0;
@@ -325,6 +323,33 @@ function Character(id, name) {
         errorMessages = errorMessages.concat(childMessages);
         return errorMessages;
     };
+
+    this.getComponentForType = function (type) {
+        // return this.components;
+        switch (type) {
+            case "PELVIS":
+                return this.components[0];
+
+            case "TORSO":
+                return this.components[0].components[0];
+
+            case "HEAD":
+                return this.components[0].components[0].components[0];
+
+            case "LEFT_ARM":
+                return this.components[0].components[0].components[1];
+
+            case "RIGHT_ARM":
+                return this.components[0].components[0].components[2];
+
+            case "LEFT_LEG":
+                return this.components[0].components[1];
+
+            case "RIGHT_LEG":
+                return this.components[0].components[2];
+        }
+        return null;
+    }
 }
 
 Character.BuildFromData = function (data) {
@@ -470,7 +495,6 @@ TriggerArgumentResource.BuildFromData = function (data) {
 };
 
 // Services
-
 var scenarioServices = angular.module('scenarioServices', []);
 
 scenarioServices.service('convoService', function () {
@@ -535,7 +559,7 @@ scenarioServices.service('convoService', function () {
     };
 });
 
-scenarioServices.service('charService', function () {
+scenarioServices.service('charService', [function () {
 
     // The characters
     var charData = [];
@@ -596,19 +620,12 @@ scenarioServices.service('charService', function () {
             return ids;
         },
         setComponentSourceForType: function (char, type, src) {
-            char.COMPONENT_TYPES[type].src = src;
-        },
-        getComponentsForType: function (char, type) {
-            var src = char.COMPONENT_TYPES[type].src;
-            // Return http promise
-            return $http.get("/scenario/service/proxy", {
-                params: {
-                    url: src
-                }
-            })
+            if(type.length > 0) {
+                char.getComponentForType(type).src = src;
+            }
         }
     };
-});
+}]);
 
 scenarioServices.service('itemService', ['roomService', 'charService', function (roomService, charService) {
     var itemData = [];
@@ -806,7 +823,7 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
     }
 }]);
 
-scenarioServices.service('scenarioService', [function () {
+scenarioServices.service('scenarioService', function () {
 
     var scenario = {};
 
@@ -817,6 +834,114 @@ scenarioServices.service('scenarioService', [function () {
         },
         scenario: function () {
             return scenario;
+        }
+    }
+});
+
+scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) {
+
+    var textures = [];
+
+    function _fetchTextureById(id) {
+        return $q(function (success, failure) {
+            $http.get('/scenario/service/texture/' + id).then(
+                // Success
+                function (response) {
+                    var texture = new Texture();
+                    texture.id = response.data.id;
+                    texture.src = response.data.src;
+                    texture.imageUrl = response.data.imageUrl;
+                    textures.push(texture);
+                    success(texture);
+                },
+                // Failure
+                function (response) {
+                    failure(response);
+                }
+            );
+        });
+    }
+
+    function _getTextureById(id) {
+        console.log(id);
+        return $q(function (success, failure) {
+            for (var i = 0; i < textures.length; i++) {
+                if (textures[i].id == id) {
+                    success(textures[i]);
+                    return;
+                }
+            }
+            _fetchTextureById(id).then(
+                function (texture) {
+                    textures.push(texture);
+                    success(texture);
+                },
+                function (response) {
+                    failure(response);
+                }
+            )
+        });
+    }
+
+    return {
+        textures: function () {
+            return textures;
+        },
+        getTextureById: function (id) {
+            return _getTextureById(id);
+        }
+    };
+}]);
+
+scenarioServices.service('jointService', ['textureService', '$q', '$http', function (textureService, $q, $http) {
+
+    joints = [];
+
+    function _fetchJoints(src) {
+
+    }
+
+    function _getNextId() {
+        var id = 0;
+        for (var i = 0; i < joints.length; i++) {
+            id = Math.max(id, joints[i].id);
+        }
+        return ++id;
+    }
+
+    return {
+        joints: function () {
+            return joints;
+        },
+        getJoint: function (jointSrc) {
+            return $q(function (success, fail) {
+                for (var j = 0; j < joints.length; j++) {
+                    if (joints[j].src == jointsSrc) {
+                        success(joints);
+                    }
+                }
+                console.log("URL " + jointSrc);
+                $http.get('/scenario/service/proxy/', {
+                    params: {
+                        url: jointSrc
+                    }
+                }).then(
+                    function (response) {
+                        var newJoint = {
+                            textures: [],
+                            id: _getNextId()
+                        };
+                        for (var i = 0; i < response.data.textures.length; i++) {
+                            newJoint.textures.push(response.data.textures[i]);
+                        }
+                        joints.push(newJoint);
+                        success(newJoint);
+                    },
+                    function (response) {
+                        fail(response);
+                    }
+                );
+            });
         }
     }
 }]);

@@ -85,8 +85,8 @@
                     <tr>
                         <td></td>
                         <td colspan="2">
-                            <div ng-repeat="c in getCurrChar().components['HEAD'].components">
-                                <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
+                            <div ng-repeat="c in getTexturesForComponent('HEAD')">
+                                <img class="thumbnail" src="{$c.imageUrl$}"/>
                                 <span>{$img.componentType$}</span>
                             </div>
                             <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
@@ -106,8 +106,8 @@
                             </button>
                         </td>
                         <td colspan="2">
-                            <div ng-repeat="c in getCurrChar().components['TORSO'].components">
-                                <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO')">
+                                <img class="thumbnail" src="{$c.imageUrl$}"/>
                                 <span>{$img.componentType$}</span>
                             </div>
                             <button data-toggle="modal" data-target="#component-modal" class="btn btn-default"
