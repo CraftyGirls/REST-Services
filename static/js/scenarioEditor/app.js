@@ -200,8 +200,8 @@ var application = angular.module('scenarioEditor', [
 
 var scenarioEditor = angular.module('scenarioEditor');
 
-scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService', 'triggerService', 'scenarioService', 'textureService',
-    function ($scope, $http, convoService, charService, itemService, roomService, triggerService, scenarioService, textureService) {
+scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'charService', 'itemService', 'roomService', 'triggerService', 'scenarioService', 'textureService', 'jointService',
+    function ($scope, $http, convoService, charService, itemService, roomService, triggerService, scenarioService, textureService, jointService) {
 
         // ABSTRACTION LAYER
         $scope.getChars = function () {
@@ -302,6 +302,35 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                     assets.push($scope.getRooms()[i]);
                 }
 
+                /*
+                var discard = [];
+
+                for (var t = 0; t < textureService.textures().length; t++) {
+                    var found = false;
+                    for (var i = 0; i < itemService.items().length; i++) {
+                        if (itemService.items()[i].texture == textureService.textures()[t].id) {
+                            found = true;
+                        }
+                    }
+                    for (var j = 0; j < jointService.joints().length; j++) {
+                        for (var jt = 0; jt < jointService.joints()[j].textures.length; jt++) {
+                            if (jointService.joints()[j].textures[jt].id == textureService.textures()[t].id) {
+                                found = true;
+                            }
+                        }
+                    }
+                    if (!found) {
+                        discard.push(textureService.textures()[t]);
+                    }
+                }
+                console.log(discard);
+
+
+                for (var i = 0; i < discard.length; i++) {
+                    textureService.setTextures(textureService.textures()
+                        .splice(textureService.textures().indexOf(discard[i]), 1));
+                }
+                */
                 for (var i = 0; i < textureService.textures().length; i++) {
                     assets.push(textureService.textures()[i]);
                 }
@@ -351,6 +380,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             var convos = [];
             var items = [];
             var rooms = [];
+            var textures = [];
 
             for (var i = 0; i < $scope.dataObj.assets.length; i++) {
                 if ($scope.dataObj.assets[i].type == "character") {
@@ -365,13 +395,29 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 if ($scope.dataObj.assets[i].type == "room") {
                     rooms.push($scope.dataObj.assets[i]);
                 }
+                if ($scope.dataObj.assets[i].type == "texture") {
+                    textures.push($scope.dataObj.assets[i]);
+                }
             }
 
             convoService.setData(convos);
             charService.setData(chars);
             itemService.setData(items);
             roomService.setData(rooms);
+            textureService.setTextures(textures);
             scenarioService.setData($scope.dataObj);
+
+            /*
+            for (var i = 0; i < charService.chars().length; i++) {
+                jointService.getJoint(charService.chars()[i].getComponentForType("HEAD").src);
+                jointService.getJoint(charService.chars()[i].getComponentForType("TORSO").src);
+                jointService.getJoint(charService.chars()[i].getComponentForType("LEFT_ARM").src);
+                jointService.getJoint(charService.chars()[i].getComponentForType("RIGHT_ARM").src);
+                jointService.getJoint(charService.chars()[i].getComponentForType("RIGHT_LEG").src);
+                jointService.getJoint(charService.chars()[i].getComponentForType("LEFT_LEG").src);
+                jointService.getJoint(charService.chars()[i].getComponentForType("PELVIS").src);
+            }
+            */
         };
 
         $scope.$on('blockUi', function (event, data) {

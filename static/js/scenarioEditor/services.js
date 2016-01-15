@@ -370,7 +370,7 @@ function Item(name, id) {
     this.collectable = true;
     this.pixelPerfect = true;
     this.description = "";
-    this.texture = "";
+    this.texture = -1;
     this.effects = [];
     this.type = "item";
 
@@ -401,6 +401,7 @@ Item.BuildFromData = function (data) {
     item.pixelPerfect = data.pixelPerfect;
     item.collectable = data.collectable;
     item.description = data.description;
+    console.log(data.texture);
     item.texture = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
@@ -579,7 +580,6 @@ scenarioServices.service('charService', [function () {
                 charData.push(Character.BuildFromData(chars[i]));
             }
 
-            console.log(charData);
         },
         addChar: function () {
             var id = 0;
@@ -851,7 +851,9 @@ scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) 
                     texture.id = response.data.id;
                     texture.src = response.data.src;
                     texture.imageUrl = response.data.imageUrl;
-                    textures.push(texture);
+                    if(textures.indexOf(texture) == -1) {
+                        textures.push(texture);
+                    }
                     success(texture);
                 },
                 // Failure
@@ -863,7 +865,6 @@ scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) 
     }
 
     function _getTextureById(id) {
-        console.log(id);
         return $q(function (success, failure) {
             for (var i = 0; i < textures.length; i++) {
                 if (textures[i].id == id) {
@@ -873,7 +874,6 @@ scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) 
             }
             _fetchTextureById(id).then(
                 function (texture) {
-                    textures.push(texture);
                     success(texture);
                 },
                 function (response) {
@@ -889,17 +889,17 @@ scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) 
         },
         getTextureById: function (id) {
             return _getTextureById(id);
+        },
+        setTextures: function(tex){
+            textures = tex;
         }
+
     };
 }]);
 
 scenarioServices.service('jointService', ['textureService', '$q', '$http', function (textureService, $q, $http) {
 
     joints = [];
-
-    function _fetchJoints(src) {
-
-    }
 
     function _getNextId() {
         var id = 0;
@@ -915,12 +915,15 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
         },
         getJoint: function (jointSrc) {
             return $q(function (success, fail) {
+                if(jointSrc == null || jointSrc == "" || jointSrc == undefined){
+                    fail(null);
+                    return;
+                }
                 for (var j = 0; j < joints.length; j++) {
                     if (joints[j].src == jointsSrc) {
                         success(joints);
                     }
                 }
-                console.log("URL " + jointSrc);
                 $http.get('/scenario/service/proxy/', {
                     params: {
                         url: jointSrc

@@ -9,7 +9,7 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         });
     }])
 
-    .controller('itemCtrl', ['$scope', '$http', 'itemService', function ($scope, $http, itemService) {
+    .controller('itemCtrl', ['$scope', '$http', 'itemService', 'textureService', function ($scope, $http, itemService, textureService) {
         $scope.editVisible = false;
 
         $scope.itemTextures = [];
@@ -17,6 +17,8 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         $scope.itemQuery = {};
         $scope.itemQuery.name = null;
         $scope.itemQuery.tags = null;
+
+        $scope.textureUrl = "";
 
         $scope.getItems = function () {
             return itemService.items();
@@ -29,6 +31,7 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         $scope.editItem = function (item) {
             itemService.editItem(item);
             $scope.editVisible = true;
+            $scope.selectTexture(item.texture);
         };
 
         $scope.currentItem = function () {
@@ -47,8 +50,16 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
             getItemTextures(null, null);
         };
 
-        $scope.selectTexture = function (item) {
-            $scope.currentItem().texture = item.texture;
+        $scope.selectTexture = function (texture) {
+            textureService.getTextureById(texture).then(
+                function(tex){
+                     $scope.textureUrl = tex.imageUrl;
+                     $scope.currentItem().texture = tex.id;
+                },
+                function(response){
+
+                }
+            );
         };
 
         $scope.queryChanged = function () {
@@ -77,7 +88,6 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                 })
                 .then(function success(response) {
                         $scope.itemTextures = response.data;
-                        console.log("here");
                     },
                     function failure(response) {
                         if (response.status == 404) {

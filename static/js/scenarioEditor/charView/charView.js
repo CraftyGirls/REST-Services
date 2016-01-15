@@ -104,7 +104,9 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                         for (var i = 0; i < joint.textures.length; i++) {
                             textureService.getTextureById(joint.textures[i].id).then(
                                 function (texture) {
-                                    $scope.charToImgMap[char.id][component].push(texture);
+                                    try {
+                                        $scope.charToImgMap[char.id][component].push(texture);
+                                    }catch (err){}
                                 },
                                 function (response) {
                                 }
@@ -132,7 +134,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
 
         $scope.getTexturesForComponent = function (char, component) {
             if (char != null) {
-                console.log(char);
                 if (!$scope.charToImgMap.hasOwnProperty(char.id)) {
                     $scope.charToImgMap[char.id] = {
                         HEAD: [],

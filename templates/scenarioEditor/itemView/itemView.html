@@ -78,7 +78,7 @@
                         </button>
                     </div>
                     <div class="col-sm-1">
-                        <img src="{$currentItem().texture.imageUrl$}"/>
+                        <img src="{$textureUrl$}"/>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                 </thead>
                 <tr ng-repeat="item in itemTextures">
                     <td>
-                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item)">Select
+                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item.id)">Select
                         </button>
                     </td>
                     <td>
