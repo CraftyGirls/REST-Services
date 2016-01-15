@@ -573,7 +573,7 @@ scenarioServices.service('charService', [function () {
             return charData;
         },
         setData: function (chars) {
-            if (charData.length == 0) {
+            if (chars.length == 0) {
                 charData.push(new Character(0, "Player"));
             }
             for (var i = 0; i < chars.length; i++) {
