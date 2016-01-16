@@ -450,7 +450,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
                         "Leg": "Upper Leg>Lower Leg>Foot>OUT",
                         "Torso": "Torso>Neck,Torso>Left Arm,Torso>Right Arm",
-                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>Left Eyebrow>Upper Jaw>Right Eyebrow,Upper Jaw>OUT",
+                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>Left Eyebrow,Upper Jaw>Right Eyebrow,Upper Jaw>OUT",
                         "Pelvis": "Pelvis>Left Leg,Pelvis>Right Leg"
                     };
 
