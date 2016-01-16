@@ -298,10 +298,6 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                     assets.push($scope.getRooms()[i]);
                 }
 
-                for (var i = 0; i < $scope.getRooms().length; i++) {
-                    assets.push($scope.getRooms()[i]);
-                }
-
                 /*
                 var discard = [];
 

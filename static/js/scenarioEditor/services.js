@@ -191,7 +191,7 @@ function Conversation(id, name) {
     this.name = name;
     this.dialogues = [];
     this.options = [];
-    this.conversation = "conversation";
+    this.type = "conversation";
 
     this.addDialogue = function () {
         this.dialogues.push(new Dialogue("Dialogue " + this.dialogues.length));
