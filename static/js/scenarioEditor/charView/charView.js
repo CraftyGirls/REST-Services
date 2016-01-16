@@ -155,12 +155,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
             jointService.getJoint(charService.getCurrChar().getComponentForType(component));
         };
 
-        $scope.$watch(
-         'charToImgMap', function(){
-                console.log("HERE");;
-            }
-        );
-
         $scope.getUnusedItems = function () {
             var items = itemService.getUnusedItems();
             if (items.length > 0) {
