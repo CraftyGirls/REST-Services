@@ -544,3 +544,17 @@ def texture_service(request, texture_id):
             return HttpResponse(json.dumps(tex_dict, sort_keys=True, indent=4, separators=(',', ': ')),
                                 content_type=APPLICATION_JSON)
     return None
+
+
+def gitlab_asset(request):
+     if request.method == "GET":
+        if 'asset' in request.GET:
+            url = urllib2.urlopen(gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + request.GET["asset"])
+            http_message = url.info()
+            content_type = http_message.type
+            content = url.read()
+            return HttpResponse(content, content_type=content_type)
+        else:
+            return HttpResponse("url param required", status=400)
+     else:
+        return HttpResponse("Invalid Method", status=405)

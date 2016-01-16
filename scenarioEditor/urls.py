@@ -31,4 +31,5 @@ urlpatterns = patterns('',
                        url(r'^service/update_scenario/(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.update_scenario_service, name='update_scenario_service'),
                        url(r'^service/texture/(?P<texture_id>[0-9]+)/$', scenarioEditor.views.texture_service, name='update_texture_service'),
                        url(r'^service/proxy/', scenarioEditor.views.proxy_service, name='proxy_service'),
+                       url(r'^service/gitlab_asset/', scenarioEditor.views.gitlab_asset, name='gihub_service'),
                        )

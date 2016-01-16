@@ -621,7 +621,8 @@ scenarioServices.service('charService', [function () {
         },
         setComponentSourceForType: function (char, type, src) {
             if(type.length > 0) {
-                char.getComponentForType(type).src = src;
+                var s = src.split("master/");
+                char.getComponentForType(type).src = s.length > 0 ? s[1] : s[0];
             }
         }
     };
@@ -924,9 +925,11 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
                         success(joints);
                     }
                 }
-                $http.get('/scenario/service/proxy/', {
+                var path = jointSrc.split("/master");
+                path = path.length > 1 ? path[1] : path[0];
+                $http.get('/scenario/service/gitlab_asset/', {
                     params: {
-                        url: jointSrc
+                        asset: path
                     }
                 }).then(
                     function (response) {

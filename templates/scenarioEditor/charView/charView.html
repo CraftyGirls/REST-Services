@@ -85,7 +85,7 @@
                     <tr>
                         <td></td>
                         <td colspan="2">
-                            <div ng-repeat="c in getTexturesForComponent('HEAD')">
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD')">
                                 <img class="thumbnail" src="{$c.imageUrl$}"/>
                                 <span>{$img.componentType$}</span>
                             </div>
@@ -97,9 +97,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <div ng-repeat="c in getCurrChar().components['LEFT_ARM'].components">
-                                <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
-                                <span>{$img.componentType$}</span>
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM')">
+                                <img class="thumbnail" src="{$c.imageUrl$}"/>
                             </div>
                             <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
                                     ng-click="editBodyPart('LEFT_ARM')">LEFT ARM
@@ -108,16 +107,14 @@
                         <td colspan="2">
                             <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO')">
                                 <img class="thumbnail" src="{$c.imageUrl$}"/>
-                                <span>{$img.componentType$}</span>
                             </div>
                             <button data-toggle="modal" data-target="#component-modal" class="btn btn-default"
                                     ng-click="editBodyPart('TORSO')">TORSO
                             </button>
                         </td>
                         <td>
-                            <div ng-repeat="c in getCurrChar().components['RIGHT_ARM'].components">
-                                <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
-                                <span>{$img.componentType$}</span>
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM')">
+                                <img class="thumbnail" src="{$c.imageUrl$}"/>
                             </div>
                             <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
                                     ng-click="editBodyPart('RIGHT_ARM')">RIGHT ARM
@@ -127,9 +124,8 @@
                     <tr>
                         <td></td>
                         <td colspan="2">
-                            <div ng-repeat="c in getCurrChar().components['PELVIS'].components">
-                                <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
-                                <span>{$img.componentType$}</span>
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS')">
+                                <img class="thumbnail" src="{$c.imageUrl$}"/>
                             </div>
                             <button data-toggle="modal" data-target="#component-modal" class="btn btn-default"
                                     ng-click="editBodyPart('PELVIS')">PELVIS
@@ -140,18 +136,16 @@
                     <tr>
                         <td></td>
                         <td>
-                            <div ng-repeat="c in getCurrChar().components['LEFT_LEG'].components">
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG')">
                                 <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
-                                <span>{$img.componentType$}</span>
                             </div>
                             <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
                                     ng-click="editBodyPart('LEFT_LEG')">LEFT LEG
                             </button>
                         </td>
                         <td>
-                            <div ng-repeat="c in getCurrChar().components['RIGHT_LEG'].components">
-                                <img class="thumbnail" src="{$c.texture.imageUrl$}"/>
-                                <span>{$img.componentType$}</span>
+                            <div ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG')">
+                                <img class="thumbnail" src="{$c.imageUrl$}"/>
                             </div>
                             <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
                                     ng-click="editBodyPart('RIGHT_LEG')">RIGHT LEG

@@ -152,7 +152,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.getTextureUrlsForComponent = function (component) {
-            console.log("HERE");
             jointService.getJoint(charService.getCurrChar().getComponentForType(component));
         };
 
