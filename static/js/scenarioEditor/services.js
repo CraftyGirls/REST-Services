@@ -357,9 +357,7 @@ Character.BuildFromData = function (data) {
     for (var i = 0; i < data.states.length; i++) {
         char.states.push(data.states[i]);
     }
-    for (var i = 0; i < data.items.length; i++) {
-        char.items.push(Item.BuildFromData(data.items[i]));
-    }
+    char.items = data.items;
     char.components = data.components;
     return char;
 };
