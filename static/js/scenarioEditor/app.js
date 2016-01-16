@@ -298,39 +298,6 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                     assets.push($scope.getRooms()[i]);
                 }
 
-                /*
-                var discard = [];
-
-                for (var t = 0; t < textureService.textures().length; t++) {
-                    var found = false;
-                    for (var i = 0; i < itemService.items().length; i++) {
-                        if (itemService.items()[i].texture == textureService.textures()[t].id) {
-                            found = true;
-                        }
-                    }
-                    for (var j = 0; j < jointService.joints().length; j++) {
-                        for (var jt = 0; jt < jointService.joints()[j].textures.length; jt++) {
-                            if (jointService.joints()[j].textures[jt].id == textureService.textures()[t].id) {
-                                found = true;
-                            }
-                        }
-                    }
-                    if (!found) {
-                        discard.push(textureService.textures()[t]);
-                    }
-                }
-                console.log(discard);
-
-
-                for (var i = 0; i < discard.length; i++) {
-                    textureService.setTextures(textureService.textures()
-                        .splice(textureService.textures().indexOf(discard[i]), 1));
-                }
-                */
-                for (var i = 0; i < textureService.textures().length; i++) {
-                    assets.push(textureService.textures()[i]);
-                }
-
                 $scope.dataObj = {
                     name: $scope.scenarioName,
                     description: $scope.scenarioDescription,
@@ -391,16 +358,12 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 if ($scope.dataObj.assets[i].type == "room") {
                     rooms.push($scope.dataObj.assets[i]);
                 }
-                if ($scope.dataObj.assets[i].type == "texture") {
-                    textures.push($scope.dataObj.assets[i]);
-                }
             }
 
             convoService.setData(convos);
             charService.setData(chars);
             itemService.setData(items);
             roomService.setData(rooms);
-            textureService.setTextures(textures);
             scenarioService.setData($scope.dataObj);
 
             /*

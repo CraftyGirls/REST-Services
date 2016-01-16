@@ -352,7 +352,6 @@ def upload_asset(request):
             tex = Texture()
             uuid_str = str(uuid.uuid4())
             file_name = uuid_str + ".png"
-            tex.name = file_name
 
             additionalData = None
 
@@ -362,6 +361,9 @@ def upload_asset(request):
                 pass
 
             if assetType == Asset.CHARACTER_COMPONENT:
+
+                tex.name = "components/" + file_name
+
                 charComp = CharacterComponent()
                 charComp.componentType = additionalData["componentType"]
                 charComp.name = uuid_str
@@ -370,9 +372,12 @@ def upload_asset(request):
                 tex.imageUrl = gitlab_utility.get_project_url(
                     gitlab_utility.get_project_name()) + "/raw/master/" + file_name
 
-                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(),
+                gitlab_utility.create_file(gitlab_utility.get_project_name(),
+                                           file_name,
+                                           request.FILES['file'].read(),
                                            "base64")
 
+                tex.type = Texture.CHARACTER_COMPONENT
                 tex.save()
 
                 charComp.texture = tex
@@ -401,17 +406,50 @@ def upload_asset(request):
                                            json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
 
+                comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
+                assets = {'assets': []}
+
+                for tex in comp_textures:
+                    d = tex.asDict()
+                    d.pop("imageUrl", None)
+                    d['type'] = 'texture'
+                    assets['assets'].append(d)
+
+                gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           "component-textures.json",
+                                           json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           "text")
+
             elif assetType == Asset.ITEM:
 
-                itemDef = ItemDefinition.objects.get(id=long(assetId))
+                tex.name = "items/" + file_name
+
+                item_def = ItemDefinition.objects.get(id=long(assetId))
                 file_name = "items/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url(
                     gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+
                 gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(),
                                            "base64")
+                tex.type = Texture.ITEM
                 tex.save()
-                itemDef.texture = tex
-                itemDef.save()
+                item_def.texture = tex
+                item_def.save()
+
+                item_textures = Texture.objects.filter(type=Texture.ITEM).all()
+                assets = {'assets': []}
+
+                for tex in item_textures:
+                    d = tex.asDict()
+                    d.pop("imageUrl", None)
+                    d['type'] = 'texture'
+                    assets['assets'].append(d)
+
+                gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           "item-textures.json",
+                                           json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           "text")
+
             elif assetType == Asset.MESH:
                 pass
             return HttpResponse(status=200)

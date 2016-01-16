@@ -107,8 +107,15 @@ class Asset(models.Model):
 
 
 class Texture(models.Model):
+    CHARACTER_COMPONENT = "CHARACTER COMPONENT"
+    ITEM = "ITEM"
+    TYPE_CHOICES = [
+        (CHARACTER_COMPONENT, 'Character Component'),
+        (ITEM, 'Item')
+    ]
     name = models.CharField(max_length=100, blank=False, default='')
     imageUrl = models.TextField(blank=False, default='')
+    type = models.CharField(max_length=255, choices=TYPE_CHOICES, default='')
 
     def asDict(self):
         return {

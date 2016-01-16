@@ -21,12 +21,12 @@
         <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
             <h2>Dialogues</h2>
             <div class="dialogue-container">
-                <div ng-repeat="dialogue in getCurrentCovnversation().dialogues">
+                <div ng-repeat="dialogue in getCurrentCovnversation().dialogue">
                     <div class="row">
                         <div class="col-sm-4" >
                              <h3 class="">{$dialogue.name$}</h3>
                             <sweet-delete variable="dialogue"
-                                          container="getCurrentCovnversation().dialogues"></sweet-delete>
+                                          container="getCurrentCovnversation().dialogue"></sweet-delete>
                         </div>
                     </div>
                     <dialogue></dialogue>

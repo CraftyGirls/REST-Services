@@ -22,7 +22,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
   };
   
   $scope.addLine = function (dialogue) {
-    convoService.addLine(dialogue)
+    dialogue.text.push("");
   };
 
   $scope.editConvo = function (convo) {
