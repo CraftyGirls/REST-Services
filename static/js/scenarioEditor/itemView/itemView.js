@@ -31,7 +31,10 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         $scope.editItem = function (item) {
             itemService.editItem(item);
             $scope.editVisible = true;
-            $scope.selectTexture(item.texture);
+            $scope.textureUrl = "";
+            if (item.texture != -1) {
+                $scope.selectTexture(item.texture, item);
+            }
         };
 
         $scope.currentItem = function () {
@@ -50,13 +53,14 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
             getItemTextures(null, null);
         };
 
-        $scope.selectTexture = function (texture) {
+        $scope.selectTexture = function (texture, item) {
+            console.log(texture);
             textureService.getTextureById(texture).then(
-                function(tex){
-                     $scope.textureUrl = tex.imageUrl;
-                     $scope.currentItem().texture = tex.id;
+                function (tex) {
+                    $scope.textureUrl = tex.imageUrl;
+                    item.texture = tex.id;
                 },
-                function(response){
+                function (response) {
 
                 }
             );

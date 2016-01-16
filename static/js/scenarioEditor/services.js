@@ -303,8 +303,8 @@ function Character(id, name) {
         }
         stateId++;
         if (this.id > 0){
-        this.states.push(new State(stateId, this.states.length == 0 ? "DefaultState" : "state" + stateId));
-            if (this.id > 0 && this.states.length == 1) {
+            this.states.push(new State(stateId, this.states.length == 0 ? "DefaultState" : "state" + stateId));
+            if (this.states.length == 1) {
                 this.defaultState = stateId;
             }
         }
@@ -357,13 +357,18 @@ function Character(id, name) {
         return null;
     };
 
-    this.addState()
+    // Create deafault state
+    this.addState();
 }
 
 Character.BuildFromData = function (data) {
     var char = new Character(data.id, data.name);
+    char.states = [];
     for (var i = 0; i < data.states.length; i++) {
-        char.states.push(data.states[i]);
+        char.states.push(State.BuildFromData(data.states[i]));
+    }
+    if(char.states.length == 0){
+        char.addState();
     }
     char.items = data.items;
     char.components = data.components;
