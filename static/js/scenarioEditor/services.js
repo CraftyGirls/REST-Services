@@ -269,6 +269,7 @@ function Character(id, name) {
     this.states = [];
     this.items = [];
     this.type = "character";
+    this.defaultState = -1;
     this.components = [{
         src: "", // Pelvis
         components: [
@@ -301,7 +302,10 @@ function Character(id, name) {
             stateId = Math.max(stateId, this.states[i].id);
         }
         stateId++;
-        this.states.push(new State(stateId, ""));
+        this.states.push(new State(stateId, "state" + stateId));
+        if(this.states.length == 1){
+				this.defaultState = stateId;
+        }
     };
 
     this.validate = function () {
@@ -359,6 +363,7 @@ Character.BuildFromData = function (data) {
     }
     char.items = data.items;
     char.components = data.components;
+    char.defaultState = data.defaultState;
     return char;
 };
 
@@ -419,6 +424,7 @@ function Room(name, id) {
     this.tags = [];
     this.size = ROOM_SIZES[0];
     this.type = "room";
+    this.locked = false;
 
     this.validate = function () {
         var errorMessages = [];
@@ -445,6 +451,7 @@ Room.BuildFromData = function (data) {
     room.characters = data.characters;
     room.tags = data.tags;
     room.size = data.size;
+    room.locked = data.locked;
     return room;
 };
 
