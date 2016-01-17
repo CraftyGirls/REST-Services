@@ -385,6 +385,34 @@ def upload_asset(request):
                 set_json_str = urllib2.urlopen(parent_set.jsonRepresentation).read()
                 set_json_obj = json.loads(set_json_str)
 
+                joints = set_json_obj["joints"]
+                if charComp.componentType.upper()     == 'UPPER ARM' \
+                    or charComp.componentType.upper() == 'LOWER JAW' \
+                    or charComp.componentType.upper() == 'TORSO' \
+                    or charComp.componentType.upper() == 'UPPER LEG' \
+                    or charComp.componentType.upper() == 'PELVIS':
+                    joints["texture"] = tex.id
+                elif charComp.componentType.upper() == 'LOWER ARM' \
+                        or charComp.componentType.upper() == 'LOWER LEG'\
+                        or charComp.componentType.upper() == 'UPPER JAW':
+                    joints["components"][0]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'HAND' \
+                        or charComp.componentType.upper() == 'NOSE' \
+                        or charComp.componentType.upper() == 'FOOT':
+                    joints["components"][0]["components"][0]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'LEFT EYEBROW' :
+                    joints["components"][0]["components"][1]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'RIGHT EYEBROW' :
+                    joints["components"][0]["components"][2]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'LEFT EYE' :
+                    joints["components"][0]["components"][3]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'RIGHT EYE' :
+                    joints["components"][0]["components"][4]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'RIGHT PUPIL' :
+                    joints["components"][0]["components"][4]['components'][0]["texture"] = tex.id
+                elif charComp.componentType.upper() == 'LEFT PUPIL' :
+                    joints["components"][0]["components"][3]['components'][0]["texture"] = tex.id
+
                 if('textures' not in set_json_obj):
                     set_json_obj['textures'] = []
 
@@ -400,7 +428,7 @@ def upload_asset(request):
                                            "/components/" + file_name,
                                            json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
-
+                
             elif assetType == Asset.ITEM:
 
                 itemDef = ItemDefinition.objects.get(id=long(assetId))

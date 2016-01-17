@@ -87,7 +87,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         }];
 
         $scope.componentPartsByType = {
-            "Arm": ["Uppper Arm", "Lower Arm", "Hand"],
+            "Arm": ["Upper Arm", "Lower Arm", "Hand"],
             "Leg": ["Upper Leg", "Lower Leg", "Foot"],
             "Torso": ["Torso"],
             "Head": ["Lower Jaw", "Upper Jaw", "Nose", 'Right Eye', 'Left Eye', 'Right Eyebrow', 'Lef Eyebrow', "Left Pupil", "Right Pupil"],
@@ -185,7 +185,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         var valid = true;
                         var errors = [];
 
-                        if($scope.selectedComponentType.id  == -1){
+                        if ($scope.selectedComponentType.id == -1) {
                             errors.push('A valid component type must be selected');
                             valid = false;
                         }
@@ -198,15 +198,15 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             }
                         }
 
-                        if(Object.getOwnPropertyNames($scope.joints).length == 0){
+                        if (Object.getOwnPropertyNames($scope.joints).length == 0) {
                             errors.push('Joints must be specified');
                             valid = false;
                         }
 
-                        if(valid) {
+                        if (valid) {
                             // Setup the appropriate data object for a component set
 
-                            var joints = {textures : [], joints : $scope.joints};
+                            var joints = {textures: [], joints: $scope.joints};
 
                             var compSetData = {
                                 name: $scope.asset.name,
@@ -239,8 +239,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     $scope.$emit('blockUi', [false]);
                                 }
                             );
-                        }else{
-                            for(var i = 0; i <errors.length; i++) {
+                        } else {
+                            for (var i = 0; i < errors.length; i++) {
                                 $scope.$emit('showMessage', [errors[i], 'danger']);
                             }
                         }
@@ -450,8 +450,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
                         "Leg": "Upper Leg>Lower Leg>Foot>OUT",
                         "Torso": "Torso>Neck,Torso>Left Arm,Torso>Right Arm",
-                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>Left Eyebrow>Upper Jaw>Right Eyebrow,Upper Jaw>OUT",
-                        "Pelvis": "Pelvis>Left Leg,Pelvis>Right Leg"
+                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eyebrow>Upper Jaw>Right Eyebrow,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>OUT",
+                        "Pelvis": "Pelvis>OUT,Pelvis>Right Leg,Pelvis>Left Leg"
                     };
 
                     var canvas = new fabric.Canvas('c');
@@ -491,7 +491,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             canvas.add(imgInstance);
                             componentImages.push(imgInstance);
 
-                            lx += imgInstance.width/4;
+                            lx += imgInstance.width / 4;
                         }
 
                         var rels = componentRelationShips[$scope.componentType.label];
@@ -579,9 +579,163 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 }
                             }
                         }
-                        $scope.joints = rels;
+
+                        var converted = {};
+
+                        var compType = $scope.componentType.label.toUpperCase();
+
+                        switch (compType) {
+                            case "ARM":
+                                converted = {
+                                    id: "Upper Arm",
+                                    texture: "",
+                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    out: [[rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY"],
+                                    components: [
+                                        {
+                                            id: "Lower Arm",
+                                            texture: "",
+                                            in: [rels[2]['percentages']['x'], rels[2]['percentages']['y']],
+                                            out: [[rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"],
+                                            components: [
+                                                {
+                                                    id: "Lower Arm",
+                                                    texture: "",
+                                                    in: [rels[4]['percentages']['x'], rels[4]['percentages']['y']],
+                                                    out: [[rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY"]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                };
+                                break;
+
+                            case "LEG":
+                                converted = {
+                                    id: "Upper Leg",
+                                    texture: "",
+                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    out: [[rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY"],
+                                    components: [
+                                        {
+                                            id: "Lower Leg",
+                                            texture: "",
+                                            in: [rels[2]['percentages']['x'], rels[2]['percentages']['y']],
+                                            out: [[rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"],
+                                            components: [
+                                                {
+                                                    id: "Foot",
+                                                    texture: "",
+                                                    in: [rels[4]['percentages']['x'], rels[4]['percentages']['y']],
+                                                    out: [[rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY"]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                };
+                                break;
+
+                            case "TORSO":
+                                converted = {
+                                    id: "Neck",
+                                    texture: "",
+                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    out: [
+                                        [rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY",
+                                        [rels[2]['percentages']['x'], rels[2]['percentages']['y']], "ANY",
+                                        [rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"]
+                                };
+                                break;
+
+                            case "PELVIS":
+                                converted = {
+                                    id: "OUT",
+                                    texture: "",
+                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    out: [
+                                        [rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY",
+                                        [rels[2]['percentages']['x'], rels[2]['percentages']['y']], "ANY",
+                                        [rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"]
+                                };
+                                break;
+
+                            case "HEAD":
+                                converted = {
+                                    id: "Lower Jaw",
+                                    texture: "",
+                                    in:  [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    out: [[rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY"],
+                                    components: [
+                                        {
+                                            id: "Upper Jaw",
+                                            texture: "",
+                                            in: [rels[2]['percentages']['x'], rels[2]['percentages']['y']],
+                                            out: [
+                                                [rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY",
+                                                [rels[4]['percentages']['x'], rels[4]['percentages']['y']], "ANY",
+                                                [rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY",
+                                                [rels[6]['percentages']['x'], rels[6]['percentages']['y']], "ANY",
+                                                [rels[7]['percentages']['x'], rels[7]['percentages']['y']], "ANY"
+                                            ],
+                                            components: [
+                                                {
+                                                    id: "Nose",
+                                                    texture: "",
+                                                    in  : [rels[3]['percentages']['x'], rels[3]['percentages']['y']],
+                                                    out : [[rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"]
+                                                },
+                                                {
+                                                    id: "Left Eyebrow",
+                                                    texture: "",
+                                                    in  : [rels[4]['percentages']['x'], rels[4]['percentages']['y']],
+                                                    out : [[rels[4]['percentages']['x'], rels[4]['percentages']['y']], "ANY"]
+                                                },
+                                                {
+                                                    id: "Right Eyebrow",
+                                                    texture: "",
+                                                    in  : [rels[5]['percentages']['x'], rels[5]['percentages']['y']],
+                                                    out : [[rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY"]
+                                                },
+                                                {
+                                                    id: "Left Eye",
+                                                    texture: "",
+                                                    in  : [rels[6]['percentages']['x'], rels[6]['percentages']['y']],
+                                                    out : [[rels[6]['percentages']['x'], rels[6]['percentages']['y']], "ANY"],
+                                                    components : [
+                                                        {
+                                                            id: "Left Pupil",
+                                                            texture: "",
+                                                            in  : [rels[8]['percentages']['x'], rels[8]['percentages']['y']],
+                                                            out : [[rels[8]['percentages']['x'], rels[8]['percentages']['y']], "ANY"]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    id: "Right Eye",
+                                                    texture: "",
+                                                    in  : [rels[7]['percentages']['x'], rels[7]['percentages']['y']],
+                                                    out : [[rels[7]['percentages']['x'], rels[7]['percentages']['y']], "ANY"],
+                                                    components : [
+                                                        {
+                                                            id: "Right Pupil",
+                                                            texture: "",
+                                                            in  : [rels[9]['percentages']['x'], rels[9]['percentages']['y']],
+                                                            out : [[rels[9]['percentages']['x'], rels[9]['percentages']['y']], "ANY"]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                };
+                                break;
+                        }
+
+                        $scope.joints = converted;
+
                         // Since we're in a watch we need to run an apply
                         $scope.$apply();
+
                         return rels
                     }
 
