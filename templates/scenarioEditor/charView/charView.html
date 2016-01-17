@@ -44,6 +44,17 @@
                                 </select>
                             </div>
                         </div>
+                         <div class="padded-top-bottom-10" ng-if="getStates(character).length > 1">
+                            <strong>Default State</strong>
+
+                            <div class="padded-top-bottom-10 row">
+                                <span>Active Conversation: </span>
+                                <select ng-model="character.defaultState"
+                                        ng-options="state.id as state.name for state in character.states"
+                                        ng-init="character.defaultState = character.states[0].id">
+                                </select>
+                            </div>
+                        </div>
                         <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
 
                         <div class="padded-top-bottom-10">

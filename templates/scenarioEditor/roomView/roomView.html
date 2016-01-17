@@ -38,6 +38,24 @@
                     </div>
                     <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
+                            <span>Locked</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" class="input-sm" ng-model="currentRoom().locked"
+                                      title="locked"/>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Furniture Tags</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="text" class="input-sm" ng-model="currentRoom().furnitureTypes"
+                                      title="tags"/>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
                             <span>Size</span>
                         </div>
                         <div class="col-lg-2">

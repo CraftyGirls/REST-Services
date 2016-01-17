@@ -104,7 +104,8 @@
                 </thead>
                 <tr ng-repeat="item in itemTextures">
                     <td>
-                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item.id)">Select
+                        {$item.id$}
+                        <button class="btn btn-primary" data-dismiss="modal" ng-click="selectTexture(item.texture.id, currentItem())">Select
                         </button>
                     </td>
                     <td>

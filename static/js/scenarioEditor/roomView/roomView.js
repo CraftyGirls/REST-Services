@@ -56,11 +56,10 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
 
         $scope.getUnusedCharacters = function(){
             var allIds  = charService.getIds();
-            var usedIds = [];
+            var usedIds = [0];
             for(var i = 0; i < roomService.getRooms().length; i++){
                 for(var j = 0; j < roomService.getRooms()[i].characters.length; j++){
                     usedIds.push(roomService.getRooms()[i].characters[j]);
-
                 }
             }
             for(var x = 0; x < usedIds.length; x++){
@@ -71,7 +70,7 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
             for(var c = 0; c < allIds.length; c++){
                 chars.push(charService.getById(allIds[c]));
             }
-            if(chars.length > 0){
+            if($scope.selectedChar == null && chars.length > 0){
                 $scope.selectedChar = chars[0].id;
             }
             return chars;

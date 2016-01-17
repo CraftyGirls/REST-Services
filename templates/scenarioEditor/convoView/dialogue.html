@@ -10,14 +10,14 @@
     </div>
     <hr/>
     <div class="lines-container">
-        <h4>Lines</h4>
+        <h4>Text</h4>
 
         <div class="content-block">
-            <div ng-repeat="line in dialogue.lines">
+            <div ng-repeat="line in dialogue.text track by $index">
                 <div class="line padded-top-bottom-10">
-                    <span>Text: </span> <input class="width-50" type="text" name="line-input" value={$line.text$}
-                                               ng-model="line.text"/>
-                    <sweet-delete variable="line" container="dialogue.lines"></sweet-delete>
+                    <span>Text: </span> <input class="width-50" type="text" name="line-input"
+                                               ng-model="dialogue.text[$index]"/>
+                    <sweet-delete variable="line" container="dialogue.text"></sweet-delete>
                 </div>
             </div>
         </div>

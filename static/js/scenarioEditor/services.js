@@ -77,14 +77,14 @@ Trigger.BuildFromData = function (data) {
 };
 
 function Dialogue(name) {
-    this.lines = [];
+    this.text = [];
     this.triggers = [];
     this.conditions = [];
     this.speaker = "";
     this.name = name;
 
     this.addLine = function () {
-        this.lines.push(new Line());
+        this.text.push("");
     };
 
     this.addTrigger = function () {
@@ -108,10 +108,10 @@ function Dialogue(name) {
 
         var childErrors = [];
 
-        for (var i = 0; i < this.lines.length; i++) {
-            var errors = this.lines[i].validate();
-            for (var x = 0; x < errors.length; x++) {
-                errors[x] = " Lines -> Line[" + x + "] -> " + errors[x];
+        for (var i = 0; i < this.text.length; i++) {
+            errors = [];
+            if (this.text[i] == null || this.text[i].length <= 0) {
+                errors.push(" Text -> Text[" + i + "] -> Text does not have text specified");
             }
             childErrors = childErrors.concat(errors);
         }
@@ -145,8 +145,8 @@ function Dialogue(name) {
 Dialogue.BuildFromData = function (data) {
     var diag = new Dialogue();
 
-    for (var i = 0; i < data.lines.length; i++) {
-        diag.lines.push(Line.BuildFromData(data.lines[i]));
+    for (var i = 0; i < data.text.length; i++) {
+        diag.text.push(data.text[i]);
     }
 
     for (var i = 0; i < data.triggers.length; i++) {
@@ -189,12 +189,12 @@ Option.BuildFromData = function (data) {
 function Conversation(id, name) {
     this.id = id;
     this.name = name;
-    this.dialogues = [];
+    this.dialogue = [];
     this.options = [];
-    this.conversation = "conversation";
+    this.type = "conversation";
 
     this.addDialogue = function () {
-        this.dialogues.push(new Dialogue("Dialogue " + this.dialogues.length));
+        this.dialogue.push(new Dialogue("Dialogue " + this.dialogue.length));
     };
 
     this.addOption = function (convoId, label) {
@@ -209,8 +209,8 @@ function Conversation(id, name) {
             errorMessages.push("Conversation does not have a name specified")
         }
 
-        for (var i = 0; i < this.dialogues.length; i++) {
-            childMessages = childMessages.concat(this.dialogues[i].validate());
+        for (var i = 0; i < this.dialogue.length; i++) {
+            childMessages = childMessages.concat(this.dialogue[i].validate());
         }
 
         for (var i = 0; i < this.options.length; i++) {
@@ -231,8 +231,8 @@ function Conversation(id, name) {
 
 Conversation.BuildFromData = function (data) {
     var convo = new Conversation(data.id, data.name);
-    for (var i = 0; i < data.dialogues.length; i++) {
-        convo.dialogues.push(Dialogue.BuildFromData(data.dialogues[i]));
+    for (var i = 0; i < data.dialogue.length; i++) {
+        convo.dialogue.push(Dialogue.BuildFromData(data.dialogue[i]));
     }
     for (var i = 0; i < data.options.length; i++) {
         convo.addOption(data.options[i].convoId, data.options[i].label);
@@ -269,6 +269,7 @@ function Character(id, name) {
     this.states = [];
     this.items = [];
     this.type = "character";
+    this.defaultState = -1;
     this.components = [{
         src: "", // Pelvis
         components: [
@@ -301,7 +302,12 @@ function Character(id, name) {
             stateId = Math.max(stateId, this.states[i].id);
         }
         stateId++;
-        this.states.push(new State(stateId, ""));
+        if (this.id > 0){
+            this.states.push(new State(stateId, this.states.length == 0 ? "DefaultState" : "state" + stateId));
+            if (this.states.length == 1) {
+                this.defaultState = stateId;
+            }
+        }
     };
 
     this.validate = function () {
@@ -349,18 +355,24 @@ function Character(id, name) {
                 return this.components[0].components[2];
         }
         return null;
-    }
+    };
+
+    // Create deafault state
+    this.addState();
 }
 
 Character.BuildFromData = function (data) {
     var char = new Character(data.id, data.name);
+    char.states = [];
     for (var i = 0; i < data.states.length; i++) {
-        char.states.push(data.states[i]);
+        char.states.push(State.BuildFromData(data.states[i]));
     }
-    for (var i = 0; i < data.items.length; i++) {
-        char.items.push(Item.BuildFromData(data.items[i]));
+    if(char.states.length == 0){
+        char.addState();
     }
+    char.items = data.items;
     char.components = data.components;
+    char.defaultState = data.defaultState;
     return char;
 };
 
@@ -421,6 +433,7 @@ function Room(name, id) {
     this.tags = [];
     this.size = ROOM_SIZES[0];
     this.type = "room";
+    this.locked = false;
 
     this.validate = function () {
         var errorMessages = [];
@@ -447,6 +460,7 @@ Room.BuildFromData = function (data) {
     room.characters = data.characters;
     room.tags = data.tags;
     room.size = data.size;
+    room.locked = data.locked;
     return room;
 };
 
@@ -620,7 +634,7 @@ scenarioServices.service('charService', [function () {
             return ids;
         },
         setComponentSourceForType: function (char, type, src) {
-            if(type.length > 0) {
+            if (type.length > 0) {
                 var s = src.split("master/");
                 char.getComponentForType(type).src = s.length > 0 ? s[1] : s[0];
             }
@@ -852,7 +866,7 @@ scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) 
                     texture.id = response.data.id;
                     texture.src = response.data.src;
                     texture.imageUrl = response.data.imageUrl;
-                    if(textures.indexOf(texture) == -1) {
+                    if (textures.indexOf(texture) == -1) {
                         textures.push(texture);
                     }
                     success(texture);
@@ -891,7 +905,7 @@ scenarioServices.service('textureService', ['$http', '$q', function ($http, $q) 
         getTextureById: function (id) {
             return _getTextureById(id);
         },
-        setTextures: function(tex){
+        setTextures: function (tex) {
             textures = tex;
         }
 
@@ -916,7 +930,7 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
         },
         getJoint: function (jointSrc) {
             return $q(function (success, fail) {
-                if(jointSrc == null || jointSrc == "" || jointSrc == undefined){
+                if (jointSrc == null || jointSrc == "" || jointSrc == undefined) {
                     fail(null);
                     return;
                 }

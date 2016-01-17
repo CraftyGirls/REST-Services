@@ -47,6 +47,7 @@ class TriggerForm(forms.Form):
     description = forms.CharField()
     args = forms.CharField(required=False)
 
+
 class TriggerArgumentForm(forms.Form):
     id = forms.IntegerField()
     dataType = forms.ChoiceField(choices=TriggerArgument.DATA_TYPE_CHOICES)
