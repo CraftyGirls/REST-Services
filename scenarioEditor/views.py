@@ -438,8 +438,6 @@ def upload_asset(request):
                 comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
                 assets = {'assets': []}
 
-
-
                 for tex in comp_textures:
                     d = tex.asDict()
                     d.pop("imageUrl", None)

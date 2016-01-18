@@ -90,7 +90,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             "Arm": ["Upper Arm", "Lower Arm", "Hand"],
             "Leg": ["Upper Leg", "Lower Leg", "Foot"],
             "Torso": ["Torso"],
-            "Head": ["Lower Jaw", "Upper Jaw", "Nose", 'Right Eye', 'Left Eye', 'Right Eyebrow', 'Lef Eyebrow', "Left Pupil", "Right Pupil"],
+            "Head": ["Lower Jaw", "Upper Jaw", "Nose", 'Right Eye', 'Left Eye', 'Right Eyebrow', 'Left Eyebrow', "Left Pupil", "Right Pupil"],
             "Pelvis": ["Pelvis"]
         };
 
@@ -589,20 +589,20 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 converted = {
                                     id: "Upper Arm",
                                     texture: "",
-                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
-                                    out: [[rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY"],
+                                    in: [rels[0]['percentages']['x'].toFixed(6).toFixed(6), rels[0]['percentages']['y'].toFixed(6).toFixed(6)],
+                                    out: [[rels[1]['percentages']['x'].toFixed(6), rels[1]['percentages']['y'].toFixed(6), "ANY"]],
                                     components: [
                                         {
                                             id: "Lower Arm",
                                             texture: "",
-                                            in: [rels[2]['percentages']['x'], rels[2]['percentages']['y']],
-                                            out: [[rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"],
+                                            in: [rels[2]['percentages']['x'].toFixed(6), rels[2]['percentages']['y'].toFixed(6)],
+                                            out: [[rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6), "ANY"]],
                                             components: [
                                                 {
                                                     id: "Lower Arm",
                                                     texture: "",
-                                                    in: [rels[4]['percentages']['x'], rels[4]['percentages']['y']],
-                                                    out: [[rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY"]
+                                                    in: [rels[4]['percentages']['x'].toFixed(6), rels[4]['percentages']['y'].toFixed(6)],
+                                                    out: [[rels[5]['percentages']['x'].toFixed(6), rels[5]['percentages']['y'].toFixed(6), "ANY"]]
                                                 }
                                             ]
                                         }
@@ -614,20 +614,20 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 converted = {
                                     id: "Upper Leg",
                                     texture: "",
-                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
-                                    out: [[rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY"],
+                                    in: [rels[0]['percentages']['x'].toFixed(6), rels[0]['percentages']['y'].toFixed(6)],
+                                    out: [[rels[1]['percentages']['x'].toFixed(6), rels[1]['percentages']['y'].toFixed(6), "ANY"]],
                                     components: [
                                         {
                                             id: "Lower Leg",
                                             texture: "",
-                                            in: [rels[2]['percentages']['x'], rels[2]['percentages']['y']],
-                                            out: [[rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"],
+                                            in: [rels[2]['percentages']['x'].toFixed(6), rels[2]['percentages']['y'].toFixed(6)],
+                                            out: [[rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6),"ANY"]],
                                             components: [
                                                 {
                                                     id: "Foot",
                                                     texture: "",
-                                                    in: [rels[4]['percentages']['x'], rels[4]['percentages']['y']],
-                                                    out: [[rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY"]
+                                                    in: [rels[4]['percentages']['x'].toFixed(6), rels[4]['percentages']['y'].toFixed(6)],
+                                                    out: [[rels[5]['percentages']['x'].toFixed(6), rels[5]['percentages']['y'].toFixed(6), "ANY"]]
                                                 }
                                             ]
                                         }
@@ -639,11 +639,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 converted = {
                                     id: "Neck",
                                     texture: "",
-                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    in: [rels[0]['percentages']['x'].toFixed(6), rels[0]['percentages']['y'].toFixed(6)],
                                     out: [
-                                        [rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY",
-                                        [rels[2]['percentages']['x'], rels[2]['percentages']['y']], "ANY",
-                                        [rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"]
+                                        [rels[1]['percentages']['x'].toFixed(6), rels[1]['percentages']['y'].toFixed(6), "ANY"],
+                                        [rels[2]['percentages']['x'].toFixed(6), rels[2]['percentages']['y'].toFixed(6), "ANY"],
+                                        [rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6), "ANY"]]
                                 };
                                 break;
 
@@ -651,11 +651,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 converted = {
                                     id: "OUT",
                                     texture: "",
-                                    in: [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
+                                    in: [rels[0]['percentages']['x'].toFixed(6), rels[0]['percentages']['y'].toFixed(6)],
                                     out: [
-                                        [rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY",
-                                        [rels[2]['percentages']['x'], rels[2]['percentages']['y']], "ANY",
-                                        [rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"]
+                                        [rels[1]['percentages']['x'].toFixed(6), rels[1]['percentages']['y'].toFixed(6), "ANY"],
+                                        [rels[2]['percentages']['x'].toFixed(6), rels[2]['percentages']['y'].toFixed(6), "ANY"],
+                                        [rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6), "ANY"]]
                                 };
                                 break;
 
@@ -663,64 +663,64 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 converted = {
                                     id: "Lower Jaw",
                                     texture: "",
-                                    in:  [rels[0]['percentages']['x'], rels[0]['percentages']['y']],
-                                    out: [[rels[1]['percentages']['x'], rels[1]['percentages']['y']], "ANY"],
+                                    in:  [rels[0]['percentages']['x'].toFixed(6), rels[0]['percentages']['y'].toFixed(6)],
+                                    out: [[rels[1]['percentages']['x'].toFixed(6), rels[1]['percentages']['y'].toFixed(6), "ANY"]],
                                     components: [
                                         {
                                             id: "Upper Jaw",
                                             texture: "",
-                                            in: [rels[2]['percentages']['x'], rels[2]['percentages']['y']],
+                                            in: [rels[2]['percentages']['x'].toFixed(6), rels[2]['percentages']['y'].toFixed(6)],
                                             out: [
-                                                [rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY",
-                                                [rels[4]['percentages']['x'], rels[4]['percentages']['y']], "ANY",
-                                                [rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY",
-                                                [rels[6]['percentages']['x'], rels[6]['percentages']['y']], "ANY",
-                                                [rels[7]['percentages']['x'], rels[7]['percentages']['y']], "ANY"
+                                                [rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6), "ANY"],
+                                                [rels[4]['percentages']['x'].toFixed(6), rels[4]['percentages']['y'].toFixed(6), "ANY"],
+                                                [rels[5]['percentages']['x'].toFixed(6), rels[5]['percentages']['y'].toFixed(6), "ANY"],
+                                                [rels[6]['percentages']['x'].toFixed(6), rels[6]['percentages']['y'].toFixed(6), "ANY"],
+                                                [rels[7]['percentages']['x'].toFixed(6), rels[7]['percentages']['y'].toFixed(6), "ANY"]
                                             ],
                                             components: [
                                                 {
                                                     id: "Nose",
                                                     texture: "",
-                                                    in  : [rels[3]['percentages']['x'], rels[3]['percentages']['y']],
-                                                    out : [[rels[3]['percentages']['x'], rels[3]['percentages']['y']], "ANY"]
+                                                    in  : [rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6)],
+                                                    out : [[rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6), "ANY"]]
                                                 },
                                                 {
                                                     id: "Left Eyebrow",
                                                     texture: "",
-                                                    in  : [rels[4]['percentages']['x'], rels[4]['percentages']['y']],
-                                                    out : [[rels[4]['percentages']['x'], rels[4]['percentages']['y']], "ANY"]
+                                                    in  : [rels[4]['percentages']['x'].toFixed(6), rels[4]['percentages']['y'].toFixed(6)],
+                                                    out : [[rels[4]['percentages']['x'].toFixed(6), rels[4]['percentages']['y'].toFixed(6), "ANY"]]
                                                 },
                                                 {
                                                     id: "Right Eyebrow",
                                                     texture: "",
-                                                    in  : [rels[5]['percentages']['x'], rels[5]['percentages']['y']],
-                                                    out : [[rels[5]['percentages']['x'], rels[5]['percentages']['y']], "ANY"]
+                                                    in  : [rels[5]['percentages']['x'].toFixed(6), rels[5]['percentages']['y'].toFixed(6)],
+                                                    out : [[rels[5]['percentages']['x'].toFixed(6), rels[5]['percentages']['y'].toFixed(6), "ANY"]]
                                                 },
                                                 {
                                                     id: "Left Eye",
                                                     texture: "",
-                                                    in  : [rels[6]['percentages']['x'], rels[6]['percentages']['y']],
-                                                    out : [[rels[6]['percentages']['x'], rels[6]['percentages']['y']], "ANY"],
+                                                    in  : [rels[6]['percentages']['x'].toFixed(6), rels[6]['percentages']['y'].toFixed(6)],
+                                                    out : [[rels[6]['percentages']['x'].toFixed(6), rels[6]['percentages']['y'].toFixed(6), "ANY"]],
                                                     components : [
                                                         {
                                                             id: "Left Pupil",
                                                             texture: "",
-                                                            in  : [rels[8]['percentages']['x'], rels[8]['percentages']['y']],
-                                                            out : [[rels[8]['percentages']['x'], rels[8]['percentages']['y']], "ANY"]
+                                                            in  : [rels[8]['percentages']['x'].toFixed(6), rels[8]['percentages']['y'].toFixed(6)],
+                                                            out : [[rels[8]['percentages']['x'].toFixed(6), rels[8]['percentages']['y'].toFixed(6), "ANY"]]
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     id: "Right Eye",
                                                     texture: "",
-                                                    in  : [rels[7]['percentages']['x'], rels[7]['percentages']['y']],
-                                                    out : [[rels[7]['percentages']['x'], rels[7]['percentages']['y']], "ANY"],
+                                                    in  : [rels[7]['percentages']['x'].toFixed(6), rels[7]['percentages']['y'].toFixed(6)],
+                                                    out : [[rels[7]['percentages']['x'].toFixed(6), rels[7]['percentages']['y'].toFixed(6), "ANY"]],
                                                     components : [
                                                         {
                                                             id: "Right Pupil",
                                                             texture: "",
-                                                            in  : [rels[9]['percentages']['x'], rels[9]['percentages']['y']],
-                                                            out : [[rels[9]['percentages']['x'], rels[9]['percentages']['y']], "ANY"]
+                                                            in  : [rels[9]['percentages']['x'].toFixed(6), rels[9]['percentages']['y'].toFixed(6)],
+                                                            out : [[rels[9]['percentages']['x'].toFixed(6), rels[9]['percentages']['y'].toFixed(6), "ANY"]]
                                                         }
                                                     ]
                                                 }
