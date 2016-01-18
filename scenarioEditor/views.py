@@ -383,6 +383,7 @@ def upload_asset(request):
                 charComp.texture = tex
 
                 parent_set = ComponentSet.objects.get(pk=long(assetId))
+
                 charComp.componentSet = parent_set
 
                 charComp.save()
