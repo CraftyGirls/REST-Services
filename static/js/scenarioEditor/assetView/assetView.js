@@ -555,7 +555,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 var comps = sets[x].split(">");
                                 for (var i = 0; i < comps.length - 1;) {
                                     var compName = comps[i + s];
-                                    console.log($scope.components);
                                     var imgIdx = $scope.components.indexOf(compName);
                                     var jointName = comps[i] + " - " + comps[i + 1];
                                     var jointIdx = outJointLabels.indexOf(jointName) + s;
@@ -589,7 +588,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 converted = {
                                     id: "Upper Arm",
                                     texture: "",
-                                    in: [rels[0]['percentages']['x'].toFixed(6).toFixed(6), rels[0]['percentages']['y'].toFixed(6).toFixed(6)],
+                                    in: [rels[0]['percentages']['x'].toFixed(6), rels[0]['percentages']['y'].toFixed(6)],
                                     out: [[rels[1]['percentages']['x'].toFixed(6), rels[1]['percentages']['y'].toFixed(6), "ANY"]],
                                     components: [
                                         {
@@ -599,7 +598,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                             out: [[rels[3]['percentages']['x'].toFixed(6), rels[3]['percentages']['y'].toFixed(6), "ANY"]],
                                             components: [
                                                 {
-                                                    id: "Lower Arm",
+                                                    id: "Hand",
                                                     texture: "",
                                                     in: [rels[4]['percentages']['x'].toFixed(6), rels[4]['percentages']['y'].toFixed(6)],
                                                     out: [[rels[5]['percentages']['x'].toFixed(6), rels[5]['percentages']['y'].toFixed(6), "ANY"]]
