@@ -17,6 +17,8 @@ function Tags(){
 }
 
 Tags.BuildFromData = function (data) {
+
+    console.log(data);
     var tag = new Tags();
     tag.not = data.not;
     tag.required = data.required;
@@ -286,6 +288,7 @@ function Character(id, name) {
     this.type = "character";
     this.defaultState = -1;
     this.components = [{
+        tags: new Tags(),
         src: "", // Pelvis
         components: [
             {
@@ -397,14 +400,14 @@ Character.BuildFromData = function (data) {
     char.items = data.items;
     char.components = data.components;
     char.defaultState = data.defaultState;
-
-    char.getComponentForType("PELVIS").tags = Tags.BuildFromData(data.components[0]);
-    char.getComponentForType("TORSO").tags = Tags.BuildFromData(data.components[0].components[0]);
-    char.getComponentForType("HEAD").tags = Tags.BuildFromData(data.components[0].components[0].components[0]);
-    char.getComponentForType("LEFT_ARM").tags = Tags.BuildFromData(data.components[0].components[0].components[1]);
-    char.getComponentForType("RIGHT_ARM").tags = Tags.BuildFromData(data.components[0].components[0].components[2]);
-    char.getComponentForType("LEFT_LEG").tags = Tags.BuildFromData(data.components[0].components[1]);
-    char.getComponentForType("RIGHT_LEG").tags = Tags.BuildFromData(data.components[0].components[2]);
+console.log(data.components[0]);
+    char.getComponentForType("PELVIS").tags = Tags.BuildFromData(data.components[0].tags);
+    char.getComponentForType("TORSO").tags = Tags.BuildFromData(data.components[0].components[0].tags);
+    char.getComponentForType("HEAD").tags = Tags.BuildFromData(data.components[0].components[0].components[0].tags);
+    char.getComponentForType("LEFT_ARM").tags = Tags.BuildFromData(data.components[0].components[0].components[1].tags);
+    char.getComponentForType("RIGHT_ARM").tags = Tags.BuildFromData(data.components[0].components[0].components[2].tags);
+    char.getComponentForType("LEFT_LEG").tags = Tags.BuildFromData(data.components[0].components[1].tags);
+    char.getComponentForType("RIGHT_LEG").tags = Tags.BuildFromData(data.components[0].components[2].tags);
 
     return char;
 };
