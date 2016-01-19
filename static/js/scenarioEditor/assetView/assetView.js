@@ -496,7 +496,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             if ($scope.components[componentImages.length - 1].toLowerCase().indexOf('left') != -1) {
                                 var filter = new fabric.Image.filters.Tint({
                                     color: '#ff0000',
-                                    opacity: 0.5
+                                    opacity: 0.8
                                 });
                                 imgInstance.filters.push(filter);
                                 imgInstance.applyFilters(canvas.renderAll.bind(canvas));
@@ -504,7 +504,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             else if ($scope.components[componentImages.length - 1].toLowerCase().indexOf('right') != -1) {
                                 var filter = new fabric.Image.filters.Tint({
                                     color: '#0000ff',
-                                    opacity: 0.5
+                                    opacity: 0.8
                                 });
                                 imgInstance.filters.push(filter);
                                 imgInstance.applyFilters(canvas.renderAll.bind(canvas));
