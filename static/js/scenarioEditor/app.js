@@ -203,7 +203,9 @@ var application = angular.module('scenarioEditor', [
             scope: {
                 target: "=sweetTarget"
             },
-            template: "<div>" +
+            replace:true,
+            template:
+            "<div>" +
             "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Excluded</strong></div></div>" +
             "<div class='row' ng-repeat='tag in target.not track by $index'>" +
             "<div class='col-sm-2'>" +
@@ -211,7 +213,7 @@ var application = angular.module('scenarioEditor', [
             "</div>" +
             "<div class='col-sm-1'><sweet-delete variable='target.not[$index]' container='target.not'></sweet-delete></div>" +
             "</div>" +
-            "<div class='row'><div class='col-sm-2'><input type='text' ng-model='pendingNot'/></div><div class='col-sm-1'><span ng-click='addNot()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
+            "<div class='row'><div class='col-sm-11'><input type='text' ng-model='pendingNot'/></div><div class='col-sm-1'><span ng-click='addNot()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
             "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Required</strong></div></div>" +
             "<div class='row' ng-repeat='tag in target.required track by $index'>" +
             "<div class='col-sm-2'>" +
@@ -219,7 +221,7 @@ var application = angular.module('scenarioEditor', [
             "</div>" +
             "<div class='col-sm-1'><sweet-delete variable='target.required[$index]' container='target.required'></sweet-delete></div>" +
             "</div>" +
-            "<div class='row'><div class='col-sm-2'><input type='text' ng-model='pendingRequired'/></div><div class='col-sm-1'><span ng-click='addRequired()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
+            "<div class='row'><div class='col-sm-11'><input type='text' ng-model='pendingRequired'/></div><div class='col-sm-1'><span ng-click='addRequired()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
             "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Preferred</strong></div></div>" +
             "<div class='row' ng-repeat='tag in target.preferred track by $index'>" +
             "<div class='col-sm-2'>" +
@@ -227,7 +229,7 @@ var application = angular.module('scenarioEditor', [
             "</div>" +
             "<div class='col-sm-1'><sweet-delete variable='target.preferred[$index]' container='target.preferred'></sweet-delete></div>" +
             "</div>" +
-            "<div class='row'><div class='col-sm-2'><input type='text' ng-model='pendingPreferred'/></div><div class='col-sm-1'><span ng-click='addPreferred()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
+            "<div class='row'><div class='col-sm-11'><input type='text' ng-model='pendingPreferred'/></div><div class='col-sm-1'><span ng-click='addPreferred()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
             "</div>",
             link: function ($scope, iElm, iAttrs, controller) {
                 $scope.pendingNot = "";

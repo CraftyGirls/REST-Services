@@ -289,23 +289,29 @@ function Character(id, name) {
         src: "", // Pelvis
         components: [
             {
+                tags : new Tags(),
                 src: "", // Torso
                 components: [
                     {
+                        tags : new Tags(),
                         src: "" // Head
                     },
                     {
+                        tags : new Tags(),
                         src: "" // Left Arm
                     },
                     {
+                        tags : new Tags(),
                         src: "" // Right Arm
                     }
                 ]
             },
             {
+                tags : new Tags(),
                 src: "" // Left Leg
             },
             {
+                tags : new Tags(),
                 src: "" // Right Leg
             }
         ]
@@ -379,15 +385,27 @@ function Character(id, name) {
 Character.BuildFromData = function (data) {
     var char = new Character(data.id, data.name);
     char.states = [];
+
     for (var i = 0; i < data.states.length; i++) {
         char.states.push(State.BuildFromData(data.states[i]));
     }
+
     if(char.states.length == 0){
         char.addState();
     }
+
     char.items = data.items;
     char.components = data.components;
     char.defaultState = data.defaultState;
+
+    char.getComponentForType("PELVIS").tags = Tags.BuildFromData(data.components[0]);
+    char.getComponentForType("TORSO").tags = Tags.BuildFromData(data.components[0].components[0]);
+    char.getComponentForType("HEAD").tags = Tags.BuildFromData(data.components[0].components[0].components[0]);
+    char.getComponentForType("LEFT_ARM").tags = Tags.BuildFromData(data.components[0].components[0].components[1]);
+    char.getComponentForType("RIGHT_ARM").tags = Tags.BuildFromData(data.components[0].components[0].components[2]);
+    char.getComponentForType("LEFT_LEG").tags = Tags.BuildFromData(data.components[0].components[1]);
+    char.getComponentForType("RIGHT_LEG").tags = Tags.BuildFromData(data.components[0].components[2]);
+
     return char;
 };
 
@@ -428,7 +446,6 @@ Item.BuildFromData = function (data) {
     item.pixelPerfect = data.pixelPerfect;
     item.collectable = data.collectable;
     item.description = data.description;
-    console.log(data.texture);
     item.texture = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
@@ -448,6 +465,7 @@ function Room(name, id) {
     this.size = ROOM_SIZES[0];
     this.type = "room";
     this.locked = false;
+    this.items = [];
 
     this.validate = function () {
         var errorMessages = [];
@@ -952,8 +970,8 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
                         success(joints);
                     }
                 }
+                console.log(jointSrc);
                 var path = jointSrc.split("/master");
-                path = path.length > 1 ? path[1] : path[0];
                 path = path.length > 1 ? path[1] : path[0];
                 $http.get('/scenario/service/gitlab_asset/', {
                     params: {
