@@ -169,6 +169,7 @@ var application = angular.module('scenarioEditor', [
             scope: {
                 target: "=sweetTarget"
             },
+            transculde: true,
             template: "<div class='row'><div class='col-sm-1'><select ng-options='trigger as trigger.type for trigger in getTriggers()' ng-model='selected'></select></div>" +
             "<div class='col-sm-1'><span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
             link: function ($scope, iElm, iAttrs, controller) {
@@ -196,7 +197,76 @@ var application = angular.module('scenarioEditor', [
                 });
             }
         }
+    }])
+    .directive('sweetTags', [function () {
+        return {
+            scope: {
+                target: "=sweetTarget"
+            },
+            template: "<div>" +
+            "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Excluded</strong></div></div>" +
+            "<div class='row' ng-repeat='tag in target.not track by $index'>" +
+            "<div class='col-sm-2'>" +
+            "<span>{$target.not[$index]$}<span/>" +
+            "</div>" +
+            "<div class='col-sm-1'><sweet-delete variable='target.not[$index]' container='target.not'></sweet-delete></div>" +
+            "</div>" +
+            "<div class='row'><div class='col-sm-2'><input type='text' ng-model='pendingNot'/></div><div class='col-sm-1'><span ng-click='addNot()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
+            "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Required</strong></div></div>" +
+            "<div class='row' ng-repeat='tag in target.required track by $index'>" +
+            "<div class='col-sm-2'>" +
+            "<span>{$target.required[$index]$}<span/>" +
+            "</div>" +
+            "<div class='col-sm-1'><sweet-delete variable='target.required[$index]' container='target.required'></sweet-delete></div>" +
+            "</div>" +
+            "<div class='row'><div class='col-sm-2'><input type='text' ng-model='pendingRequired'/></div><div class='col-sm-1'><span ng-click='addRequired()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
+            "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Preferred</strong></div></div>" +
+            "<div class='row' ng-repeat='tag in target.preferred track by $index'>" +
+            "<div class='col-sm-2'>" +
+            "<span>{$target.preferred[$index]$}<span/>" +
+            "</div>" +
+            "<div class='col-sm-1'><sweet-delete variable='target.preferred[$index]' container='target.preferred'></sweet-delete></div>" +
+            "</div>" +
+            "<div class='row'><div class='col-sm-2'><input type='text' ng-model='pendingPreferred'/></div><div class='col-sm-1'><span ng-click='addPreferred()' class='glyphicon glyphicon-plus clickable hover-fade'></span></div></div>" +
+            "</div>",
+            link: function ($scope, iElm, iAttrs, controller) {
+                $scope.pendingNot = "";
+                $scope.pendingPreferred = "";
+                $scope.pendingRequired = "";
+
+                $scope.addNot = function () {
+                    if ($scope.pendingNot != "" && !exists($scope.pendingNot)) {
+                        $scope.target.not.push($scope.pendingNot);
+                        $scope.pendingNot = "";
+                    }
+                };
+
+                $scope.addPreferred = function () {
+                    if ($scope.pendingPreferred != "" && !exists($scope.pendingPreferred)) {
+                        $scope.target.preferred.push($scope.pendingPreferred);
+                        $scope.pendingPreferred = "";
+                    }
+                };
+
+                $scope.addRequired = function () {
+                    if ($scope.pendingRequired != "" && !exists($scope.pendingRequired)) {
+                        $scope.target.required.push($scope.pendingRequired);
+                        $scope.pendingRequired = "";
+                    }
+                };
+
+                function exists(val){
+                    console.log($scope.target);
+                    return(
+                           $scope.target.required.indexOf(val) != -1
+                        || $scope.target.preferred.indexOf(val) != -1
+                        || $scope.target.not.indexOf(val) != -1
+                    )
+                }
+            }
+        }
     }]);
+
 
 var scenarioEditor = angular.module('scenarioEditor');
 
@@ -367,16 +437,16 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             scenarioService.setData($scope.dataObj);
 
             /*
-            for (var i = 0; i < charService.chars().length; i++) {
-                jointService.getJoint(charService.chars()[i].getComponentForType("HEAD").src);
-                jointService.getJoint(charService.chars()[i].getComponentForType("TORSO").src);
-                jointService.getJoint(charService.chars()[i].getComponentForType("LEFT_ARM").src);
-                jointService.getJoint(charService.chars()[i].getComponentForType("RIGHT_ARM").src);
-                jointService.getJoint(charService.chars()[i].getComponentForType("RIGHT_LEG").src);
-                jointService.getJoint(charService.chars()[i].getComponentForType("LEFT_LEG").src);
-                jointService.getJoint(charService.chars()[i].getComponentForType("PELVIS").src);
-            }
-            */
+             for (var i = 0; i < charService.chars().length; i++) {
+             jointService.getJoint(charService.chars()[i].getComponentForType("HEAD").src);
+             jointService.getJoint(charService.chars()[i].getComponentForType("TORSO").src);
+             jointService.getJoint(charService.chars()[i].getComponentForType("LEFT_ARM").src);
+             jointService.getJoint(charService.chars()[i].getComponentForType("RIGHT_ARM").src);
+             jointService.getJoint(charService.chars()[i].getComponentForType("RIGHT_LEG").src);
+             jointService.getJoint(charService.chars()[i].getComponentForType("LEFT_LEG").src);
+             jointService.getJoint(charService.chars()[i].getComponentForType("PELVIS").src);
+             }
+             */
         };
 
         $scope.$on('blockUi', function (event, data) {

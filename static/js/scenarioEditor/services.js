@@ -10,6 +10,21 @@ function Texture() {
     this.type = "texture";
 }
 
+function Tags(){
+    this.not = [];
+    this.required = [];
+    this.preferred = [];
+}
+
+Tags.BuildFromData = function (data) {
+    var tag = new Tags();
+    tag.not = data.not;
+    tag.required = data.required;
+    tag.preferred = data.preferred;
+    return tag;
+};
+
+
 function Line() {
     this.text = "";
 
@@ -421,7 +436,7 @@ Item.BuildFromData = function (data) {
     return item;
 };
 
-const ROOM_SIZES = ["Small", "Medium", "Large"];
+const ROOM_SIZES = ["SMALL", "MEDIUM", "LARGE"];
 
 function Room(name, id) {
     this.name = name;
@@ -429,8 +444,7 @@ function Room(name, id) {
     this.description = "";
     this.furnitureTypes = [];
     this.characters = [];
-    this.items = [];
-    this.tags = [];
+    this.tags = new Tags();
     this.size = ROOM_SIZES[0];
     this.type = "room";
     this.locked = false;
@@ -458,15 +472,14 @@ Room.BuildFromData = function (data) {
     room.furnitureTypes = data.furnitureTypes;
     room.items = data.items;
     room.characters = data.characters;
-    room.tags = data.tags;
     room.size = data.size;
     room.locked = data.locked;
+    room.tags = Tags.BuildFromData(data.tags);
     return room;
 };
 
 
 // Resource Models
-
 var TRIGGER_ARG_DATA_TYPES = [
     "STRING",
     "INT",
@@ -748,7 +761,7 @@ scenarioServices.service('roomService', function () {
             roomData.push(new Room("Room" + id, id));
         },
         editRoom: function (room) {
-            currRoom = room;
+            currRoom = roomData.indexOf(room);
         },
         setData: function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -756,7 +769,7 @@ scenarioServices.service('roomService', function () {
             }
         },
         getCurrentRoom: function () {
-            return currRoom;
+            return roomData[currRoom];
         },
         getRooms: function () {
             return roomData;
