@@ -19,6 +19,7 @@
         </div>
 
         <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <h2>{$getCurrentCovnversation().name$}</h2>
             <h2>Dialogues</h2>
             <div class="dialogue-container">
                 <div ng-repeat="dialogue in getCurrentCovnversation().dialogue">
