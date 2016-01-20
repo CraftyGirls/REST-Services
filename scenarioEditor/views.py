@@ -106,6 +106,9 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                pd_user = PDUser.objects.get(user=user)
+                pd_user.gitlab_branch = username
+                gitlab_utility.create_branch_if_not_exists(username)
                 return redirect('index')
             else:
                 # Return a 'disabled account' error message
@@ -123,7 +126,9 @@ def register_view(request):
         password = request.POST['password']
         user = User.objects.create_user(username=username, password=password)
         pd_user = PDUser(user=user)
+        pd_user.gitlab_branch = username
         pd_user.save()
+        gitlab_utility.create_branch_if_not_exists(username)
         user_auth = authenticate(username=username, password=password)
         login(request, user_auth)
         return redirect('index')
@@ -140,8 +145,8 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
-                file_name = scenario.jsonUrl.split('master/')[1]
-                gitlab_utility.update_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
+                file_name = scenario.jsonUrl.split(PDUser.branch_for_user(request.user) + '/')[1]
+                gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user), file_name, scenario.script, "text")
                 scenario.save()
                 return HttpResponse(request.body)
             else:
@@ -163,8 +168,8 @@ def create_scenario_view(request):
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
             scenario.script = '{"assets":[]}'
             scenario.jsonUrl = gitlab_utility.get_project_url(
-                    gitlab_utility.get_project_name()) + "/raw/master/" + file_name
-            gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
+                    gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + file_name
+            gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user), file_name, scenario.script, "text")
             scenario.save()
             return redirect(edit_scenario_view, scenario.id)
     else:
@@ -250,12 +255,14 @@ def component_set_service(request, component_set_id=None):
 
                 json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
-                gitlab_utility.create_file(gitlab_utility.get_project_name(), joints_file_name,
+                gitlab_utility.create_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
+                                           joints_file_name,
                                            json.dumps(json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
 
                 comp_set.jsonRepresentation = gitlab_utility.get_project_url(
-                        gitlab_utility.get_project_name()) + "/raw/master/" + joints_file_name
+                        gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + joints_file_name
                 comp_set.save()
 
                 for t in comp_set_form.cleaned_data["tags"]:
@@ -370,9 +377,10 @@ def upload_asset(request):
 
                 file_name = "components/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url(
-                        gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                        gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + file_name
 
                 gitlab_utility.create_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
                                            file_name,
                                            request.FILES['file'].read(),
                                            "base64")
@@ -395,9 +403,11 @@ def upload_asset(request):
                 item_def = ItemDefinition.objects.get(id=long(asset_id))
                 file_name = "items/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url(
-                        gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                        gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + file_name
 
-                gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(),
+                gitlab_utility.create_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
+                                           file_name, request.FILES['file'].read(),
                                            "base64")
                 tex.type = Texture.ITEM
                 tex.save()
@@ -414,6 +424,7 @@ def upload_asset(request):
                     assets['assets'].append(d)
 
                 gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
                                            "item-textures.json",
                                            json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
@@ -553,6 +564,7 @@ def post_process_component_set_service(request):
                 file_name = url_comps[len(url_comps) - 1]
 
                 gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
                                            "/components/" + file_name,
                                            json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
@@ -567,6 +579,7 @@ def post_process_component_set_service(request):
                     assets['assets'].append(d)
 
                 gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
                                            "component-textures.json",
                                            json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
@@ -636,7 +649,7 @@ def gitlab_asset(request):
     if request.method == "GET":
         if 'asset' in request.GET:
             url = urllib2.urlopen(
-                    gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + request.GET[
+                    gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + request.GET[
                         "asset"])
             http_message = url.info()
             content_type = http_message.type

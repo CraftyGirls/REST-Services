@@ -27,20 +27,20 @@ def get_project_id_by_name(project_name):
     return proj_id
     
     
-def create_file(project_name, file, file_contents, encoding):
+def create_file(project_name, branch, file, file_contents, encoding):
     git = login()
     proj_id = get_project_id_by_name(project_name)
     if encoding == "base64":
         file_contents = base64.b64encode(file_contents)
-    return git.createfile(proj_id, file, "master", file_contents, "Content Created", encoding)
+    return git.createfile(proj_id, file, branch, file_contents, "Content Created", encoding)
     
     
-def update_file(project_name, file, file_contents, encoding):
+def update_file(project_name, branch, file, file_contents, encoding):
     git = login()
     proj_id = get_project_id_by_name(project_name)
     if encoding == "base64":
         file_contents = base64.b64encode(file_contents)
-    return git.updatefile(proj_id, file, "master", file_contents, "Content Updated", encoding)
+    return git.updatefile(proj_id, file, branch, file_contents, "Content Updated", encoding)
     
 
 def get_project_url(project_name):
@@ -55,3 +55,10 @@ def get_project_name():
     configFilePath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'gitlab.cnf')
     configParser.read(configFilePath)
     return configParser.get('contents', 'project')
+
+
+def create_branch_if_not_exists(name):
+     git = login()
+     branches = git.getbranches(get_project_id_by_name(get_project_name()))
+     if name not in branches:
+         git.createbranch(get_project_id_by_name(get_project_name()), name, "master")
