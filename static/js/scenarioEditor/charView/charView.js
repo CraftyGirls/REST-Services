@@ -90,7 +90,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.selectComponent = function (component) {
-            $scope.updateTexture(charService.getCurrChar(), component.setType, component.jsonRepresentation);
+            $scope.updateTexture(charService.getCurrChar(), $scope.currBodyPart, component.jsonRepresentation);
         };
 
         $scope.updateTexture = function(char, component, jsonUrl){
@@ -105,8 +105,11 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                             textureService.getTextureById(joint.textures[i].id).then(
                                 function (texture) {
                                     try {
+                                        console.log(component);
                                         $scope.charToImgMap[char.id][component].push(texture);
-                                    }catch (err){}
+                                    }catch (err){
+                                        console.log(err);
+                                    }
                                 },
                                 function (response) {
                                 }
@@ -219,7 +222,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
 
         $scope.clearComponent = function(component){
             charService.getCurrChar().getComponentForType(component).src = "";
-            $scope.charToImgMap[charService.getCurrChar()][component] = [];
+            $scope.charToImgMap[charService.getCurrChar().id][component] = [];
         }
     }]);
 

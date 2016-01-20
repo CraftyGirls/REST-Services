@@ -96,14 +96,16 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-3">
-                            <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
-                                    ng-click="editBodyPart('HEAD')">HEAD
+                            <strong>Head</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getTexturesForComponent(getCurrChar(), 'HEAD').length == 0" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('HEAD')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('HEAD')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                             <span>{$img.componentType$}</span>
                         </div>
@@ -114,14 +116,16 @@
                     <hr/>
                     <div class="row">
                         <div class="col-sm-3">
-                            <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
-                                    ng-click="editBodyPart('LEFT_ARM')">LEFT ARM
+                            <strong>Left Arm</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getTexturesForComponent(getCurrChar(), 'LEFT_ARM').length == 0" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('LEFT_ARM')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('LEFT_ARM')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                         </div>
 
@@ -133,14 +137,16 @@
                     <hr/>
                     <div class="row">
                         <div class="col-sm-3">
-                            <button data-toggle="modal" data-target="#component-modal" class="btn btn-default"
-                                    ng-click="editBodyPart('TORSO')">TORSO
+                            <strong>Torso</strong>
+                            <br/>
+                            <button data-toggle="modal" ng-show="getTexturesForComponent(getCurrChar(), 'TORSO').length == 0" data-target="#component-modal" class="btn btn-default"
+                                    ng-click="editBodyPart('TORSO')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('TORSO')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO')">
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('TORSO').src == ''">
@@ -151,14 +157,16 @@
                     <hr/>
                     <div class="row">
                         <div class="col-sm-3">
-                            <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
-                                    ng-click="editBodyPart('RIGHT_ARM')">RIGHT ARM
+                            <strong>Right Arm</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getTexturesForComponent(getCurrChar(), 'RIGHT_ARM').length == 0" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('RIGHT_ARM')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('RIGHT_ARM')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_ARM').src == ''">
@@ -169,14 +177,16 @@
                     <hr/>
                     <div class="row">
                         <div class="col-sm-3">
-                            <button data-toggle="modal" data-target="#component-modal" class="btn btn-default"
-                                    ng-click="editBodyPart('PELVIS')">PELVIS
+                            <strong>Pelvis</strong>
+                            <br/>
+                            <button data-toggle="modal" ng-show="getTexturesForComponent(getCurrChar(), 'PELVIS').length == 0" data-target="#component-modal" class="btn btn-default"
+                                    ng-click="editBodyPart('PELVIS')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('PELVIS')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS')">
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('PELVIS').src == ''">
@@ -187,14 +197,16 @@
                     <hr/>
                     <div class="row">
                         <div class="col-sm-3">
-                            <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
-                                    ng-click="editBodyPart('LEFT_LEG')">LEFT LEG
+                            <strong>Left Leg</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getTexturesForComponent(getCurrChar(), 'LEFT_LEG').length == 0" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('LEFT_LEG')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('LEFT_LEG')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_LEG').src == ''">
@@ -204,14 +216,16 @@
                     <hr/>
                     <div class="row">
                         <div class="col-sm-3">
-                            <button class="btn btn-default" data-toggle="modal" data-target="#component-modal"
-                                    ng-click="editBodyPart('RIGHT_LEG')">RIGHT LEG
+                            <strong>Right Leg</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getTexturesForComponent(getCurrChar(), 'RIGHT_LEG').length == 0" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('RIGHT_LEG')">Pick Texture
                             </button>
                             <button class="btn btn-danger" ng-click="clearComponent('RIGHT_LEG')">
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src != ''" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG')">
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG')">
                             <img class="thumbnail" src="{$c.imageUrl$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src == ''">
