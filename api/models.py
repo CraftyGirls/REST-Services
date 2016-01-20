@@ -6,11 +6,11 @@ import json
 class PDUser(models.Model):
     user = models.OneToOneField(User, unique=True)
     avatar = models.ImageField(upload_to='profile_images', blank=True)
-    gitlab_branch = models.CharField(max_length=256, default='')
+    gitlab_branch = models.CharField(max_length=256, blank=True)
 
     @staticmethod
     def branch_for_user(user):
-        return PDUser.objects.get(user=user)
+        return PDUser.objects.get(user=user.id).gitlab_branch
 
 
 class Scenario(models.Model):

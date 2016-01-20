@@ -106,8 +106,9 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                pd_user = PDUser.objects.get(user=user)
+                pd_user = PDUser.objects.get(user=user.id)
                 pd_user.gitlab_branch = username
+                pd_user.save()
                 gitlab_utility.create_branch_if_not_exists(username)
                 return redirect('index')
             else:
@@ -125,7 +126,7 @@ def register_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = User.objects.create_user(username=username, password=password)
-        pd_user = PDUser(user=user)
+        pd_user = PDUser(user=user.id)
         pd_user.gitlab_branch = username
         pd_user.save()
         gitlab_utility.create_branch_if_not_exists(username)
