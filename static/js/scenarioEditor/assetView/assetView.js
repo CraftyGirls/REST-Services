@@ -302,11 +302,21 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.$on('dropzoneComplete', function (event, data) {
             dropzonesProcessed++;
             if (dropzonesProcessed == $scope.dropzones.length) {
-                // Successfully uploaded all of the files
-                $scope.$apply();
-                $scope.$emit('showMessage', ['Asset created successfully', 'success']);
-                $route.reload();
-                $scope.$emit('blockUi', [false]);
+                $http.post(
+                    '/scenario/service/post_process_component_set/',
+                    {id:$scope.assetId}
+                ).then(
+                    function (response) {
+                        // Successfully uploaded all of the files
+                        $scope.$emit('showMessage', ['Asset created successfully', 'success']);
+                        $route.reload();
+                        $scope.$emit('blockUi', [false]);
+                        $scope.$apply();
+                    },
+                    function (response){
+                       $scope.$emit('showMessage', ['Error Post Processing Component Set', 'danger']);
+                    }
+                );
             } else {
                 // Use the dropzonesProcessed as the idx since we process the first one outside
                 // of this function

@@ -163,7 +163,7 @@ def create_scenario_view(request):
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
             scenario.script = '{"assets":[]}'
             scenario.jsonUrl = gitlab_utility.get_project_url(
-                gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                    gitlab_utility.get_project_name()) + "/raw/master/" + file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, scenario.script, "text")
             scenario.save()
             return redirect(edit_scenario_view, scenario.id)
@@ -236,36 +236,36 @@ def component_set_service(request, component_set_id=None):
         except:
             return HttpResponse("Object could not be found", status=404)
 
-    elif (request.method == 'POST'):
+    elif request.method == 'POST':
         try:
             in_data = json.loads(request.body)
-            compSetForm = ComponentSetForm(data=in_data)
-            if (compSetForm.is_valid()):
+            comp_set_form = ComponentSetForm(data=in_data)
+            if comp_set_form.is_valid():
                 comp_set = ComponentSet()
-                comp_set.name = compSetForm.cleaned_data["name"]
-                comp_set.description = compSetForm.cleaned_data["description"]
-                comp_set.setType = compSetForm.cleaned_data["setType"]
+                comp_set.name = comp_set_form.cleaned_data["name"]
+                comp_set.description = comp_set_form.cleaned_data["description"]
+                comp_set.setType = comp_set_form.cleaned_data["setType"]
 
                 joints_file_name = "components/" + str(uuid.uuid4()) + ".json"
 
-                jsonObj = json.loads(compSetForm.cleaned_data["joints"])
+                json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
                 gitlab_utility.create_file(gitlab_utility.get_project_name(), joints_file_name,
-                                           json.dumps(jsonObj, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           json.dumps(json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
 
                 comp_set.jsonRepresentation = gitlab_utility.get_project_url(
                         gitlab_utility.get_project_name()) + "/raw/master/" + joints_file_name
                 comp_set.save()
 
-                for t in compSetForm.cleaned_data["tags"]:
+                for t in comp_set_form.cleaned_data["tags"]:
                     tag = Tag(value=t)
                     tag.owner = comp_set
                     tag.save()
                 return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
                                     content_type='application/json')
             else:
-                return HttpResponse("Invalid request data - " + compSetForm.errors.as_json(), status=400)
+                return HttpResponse("Invalid request data - " + comp_set_form.errors.as_json(), status=400)
         except:
             return HttpResponse("Bad post data - " + request.body, status=400)
     else:
@@ -274,11 +274,11 @@ def component_set_service(request, component_set_id=None):
 
 @login_required(login_url='/scenario/login/')
 def item_service(request, item_id=None):
-    if (request.method == 'GET'):
-        if (item_id != None):
+    if request.method == 'GET':
+        if item_id is not None:
             try:
                 obj = ItemDefinition.objects.get(id=item_id)
-                if (obj != None):
+                if obj is not None:
                     data = json.dumps(obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
                     return HttpResponse(data, content_type='application/json')
             except:
@@ -346,31 +346,31 @@ def upload_asset(request):
     if request.method == 'POST':
         form = AssetFileForm(request.POST, request.FILES)
         if form.is_valid():
-            assetType = form.cleaned_data["assetType"]
-            assetId = form.cleaned_data["assetId"]
+            asset_type = form.cleaned_data["assetType"]
+            asset_id = form.cleaned_data["assetId"]
 
             tex = Texture()
             uuid_str = str(uuid.uuid4())
             file_name = uuid_str + ".png"
 
-            additionalData = None
+            additional_data = None
 
             try:
-                additionalData = json.loads(form.cleaned_data["additionalData"])
+                additional_data = json.loads(form.cleaned_data["additionalData"])
             except:
                 pass
 
-            if assetType == Asset.CHARACTER_COMPONENT:
+            if asset_type == Asset.CHARACTER_COMPONENT:
 
                 tex.name = "components/" + file_name
 
-                charComp = CharacterComponent()
-                charComp.componentType = additionalData["componentType"]
-                charComp.name = uuid_str
+                char_comp = CharacterComponent()
+                char_comp.componentType = additional_data["componentType"]
+                char_comp.name = uuid_str
 
                 file_name = "components/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url(
-                    gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                        gitlab_utility.get_project_name()) + "/raw/master/" + file_name
 
                 gitlab_utility.create_file(gitlab_utility.get_project_name(),
                                            file_name,
@@ -380,83 +380,22 @@ def upload_asset(request):
                 tex.type = Texture.CHARACTER_COMPONENT
                 tex.save()
 
-                charComp.texture = tex
+                char_comp.texture = tex
 
-                parent_set = ComponentSet.objects.get(pk=long(assetId))
+                parent_set = ComponentSet.objects.get(pk=long(asset_id))
 
-                charComp.componentSet = parent_set
+                char_comp.componentSet = parent_set
 
-                charComp.save()
+                char_comp.save()
 
-                set_json_str = urllib2.urlopen(parent_set.jsonRepresentation).read()
-                set_json_obj = json.loads(set_json_str)
-
-                joints = set_json_obj["joints"]
-                if charComp.componentType.upper()     == 'UPPER ARM' \
-                    or charComp.componentType.upper() == 'LOWER JAW' \
-                    or charComp.componentType.upper() == 'TORSO' \
-                    or charComp.componentType.upper() == 'UPPER LEG' \
-                    or charComp.componentType.upper() == 'PELVIS':
-                    joints["texture"] = tex.id
-                elif charComp.componentType.upper() == 'LOWER ARM' \
-                        or charComp.componentType.upper() == 'LOWER LEG'\
-                        or charComp.componentType.upper() == 'UPPER JAW':
-                    joints["components"][0]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'HAND' \
-                        or charComp.componentType.upper() == 'NOSE' \
-                        or charComp.componentType.upper() == 'FOOT':
-                    joints["components"][0]["components"][0]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'LEFT EYEBROW' :
-                    joints["components"][0]["components"][1]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'RIGHT EYEBROW' :
-                    joints["components"][0]["components"][2]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'LEFT EYE' :
-                    joints["components"][0]["components"][3]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'RIGHT EYE' :
-                    joints["components"][0]["components"][4]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'RIGHT PUPIL' :
-                    joints["components"][0]["components"][4]['components'][0]["texture"] = tex.id
-                elif charComp.componentType.upper() == 'LEFT PUPIL' :
-                    joints["components"][0]["components"][3]['components'][0]["texture"] = tex.id
-
-                if('textures' not in set_json_obj):
-                    set_json_obj['textures'] = []
-
-                set_json_obj['textures'].append({
-                    'id' : tex.id,
-                    'component' : charComp.componentType
-                })
-
-                url_comps = parent_set.jsonRepresentation.split("/")
-                file_name = url_comps[len(url_comps) - 1]
-
-                gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                                           "/components/" + file_name,
-                                           json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
-                                           "text")
-
-                comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
-                assets = {'assets': []}
-
-                for tex in comp_textures:
-                    d = tex.asDict()
-                    d.pop("imageUrl", None)
-                    d['type'] = 'texture'
-                    assets['assets'].append(d)
-
-                gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                                           "component-textures.json",
-                                           json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
-                                           "text")
-
-            elif assetType == Asset.ITEM:
+            elif asset_type == Asset.ITEM:
 
                 tex.name = "items/" + file_name
 
-                item_def = ItemDefinition.objects.get(id=long(assetId))
+                item_def = ItemDefinition.objects.get(id=long(asset_id))
                 file_name = "items/" + file_name
                 tex.imageUrl = gitlab_utility.get_project_url(
-                    gitlab_utility.get_project_name()) + "/raw/master/" + file_name
+                        gitlab_utility.get_project_name()) + "/raw/master/" + file_name
 
                 gitlab_utility.create_file(gitlab_utility.get_project_name(), file_name, request.FILES['file'].read(),
                                            "base64")
@@ -479,7 +418,7 @@ def upload_asset(request):
                                            json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
 
-            elif assetType == Asset.MESH:
+            elif asset_type == Asset.MESH:
                 pass
             return HttpResponse(status=200)
 
@@ -561,18 +500,98 @@ def trigger_service(request, trigger_id):
 
 
 @login_required(login_url='/scenario/login/')
+def post_process_component_set_service(request):
+    if request.method == 'POST':
+        in_data = json.loads(request.body)
+        if 'id' in in_data:
+            parent_set = ComponentSet.objects.get(pk=long(in_data['id']))
+            if parent_set is not None:
+
+                set_json_str = urllib2.urlopen(parent_set.jsonRepresentation).read()
+                set_json_obj = json.loads(set_json_str)
+
+                joints = set_json_obj["joints"]
+
+                for charComp in parent_set.get_components():
+                    tex = charComp.texture
+                    if charComp.componentType.upper() == 'UPPER ARM' \
+                            or charComp.componentType.upper() == 'LOWER JAW' \
+                            or charComp.componentType.upper() == 'TORSO' \
+                            or charComp.componentType.upper() == 'UPPER LEG' \
+                            or charComp.componentType.upper() == 'PELVIS':
+                        joints["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'LOWER ARM' \
+                            or charComp.componentType.upper() == 'LOWER LEG' \
+                            or charComp.componentType.upper() == 'UPPER JAW':
+                        joints["components"][0]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'HAND' \
+                            or charComp.componentType.upper() == 'NOSE' \
+                            or charComp.componentType.upper() == 'FOOT':
+                        joints["components"][0]["components"][0]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'LEFT EYEBROW':
+                        joints["components"][0]["components"][1]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'RIGHT EYEBROW':
+                        joints["components"][0]["components"][2]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'LEFT EYE':
+                        joints["components"][0]["components"][3]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'RIGHT EYE':
+                        joints["components"][0]["components"][4]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'RIGHT PUPIL':
+                        joints["components"][0]["components"][4]['components'][0]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'LEFT PUPIL':
+                        joints["components"][0]["components"][3]['components'][0]["texture"] = tex.id
+
+                    if 'textures' not in set_json_obj:
+                        set_json_obj['textures'] = []
+
+                    set_json_obj['textures'].append({
+                        'id': tex.id,
+                        'component': charComp.componentType
+                    })
+
+                url_comps = parent_set.jsonRepresentation.split("/")
+                file_name = url_comps[len(url_comps) - 1]
+
+                gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           "/components/" + file_name,
+                                           json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           "text")
+
+                comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
+                assets = {'assets': []}
+
+                for tex in comp_textures:
+                    d = tex.asDict()
+                    d.pop("imageUrl", None)
+                    d['type'] = 'texture'
+                    assets['assets'].append(d)
+
+                gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           "component-textures.json",
+                                           json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                                           "text")
+                return HttpResponse('Success', status=200)
+            else:
+                return HttpResponse("Component set not found", status=404)
+        else:
+            return HttpResponse('id param is required', status=400)
+    else:
+        return HttpResponse("Invalid Method", status=405)
+
+
+@login_required(login_url='/scenario/login/')
 def asset_service(request, asset_id):
-    if (request.method == 'GET'):
-        if (asset_id != None):
+    if request.method == 'GET':
+        if asset_id is not None:
             obj = Asset.objects.get(id=asset_id)
-            if (obj != None):
+            if obj is not None:
                 data = serializers.serialize('json', {obj, })
                 return HttpResponse(data, content_type=APPLICATION_JSON)
             else:
                 return HttpResponse("Object could not be found", status=404)
         else:
             return HttpResponse("ID required", status=405)
-    elif (request.method == 'POST'):
+    elif request.method == 'POST':
         form = AssetForm(request.POST)
         asset = Asset()
         asset.name = form.name
@@ -605,7 +624,7 @@ def proxy_service(request):
 
 
 def texture_service(request, texture_id):
-    if(request.method == "GET"):
+    if request.method == "GET":
         if texture_id is not None:
             tex_dict = Texture.objects.get(id=texture_id).asDict()
             return HttpResponse(json.dumps(tex_dict, sort_keys=True, indent=4, separators=(',', ': ')),
@@ -614,14 +633,16 @@ def texture_service(request, texture_id):
 
 
 def gitlab_asset(request):
-     if request.method == "GET":
+    if request.method == "GET":
         if 'asset' in request.GET:
-            url = urllib2.urlopen(gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + request.GET["asset"])
+            url = urllib2.urlopen(
+                    gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/master/" + request.GET[
+                        "asset"])
             http_message = url.info()
             content_type = http_message.type
             content = url.read()
             return HttpResponse(content, content_type=content_type)
         else:
             return HttpResponse("url param required", status=400)
-     else:
+    else:
         return HttpResponse("Invalid Method", status=405)

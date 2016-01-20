@@ -60,8 +60,8 @@ class ComponentSet(Taggable):
     fileUrl = models.CharField(default='', max_length=512)
     setType = models.CharField(default='', max_length=100, choices=TYPE_CHOICES)
 
-    def getComponents(self):
-        return list(Component.objects.filter(componentSet=self))
+    def get_components(self):
+        return list(CharacterComponent.objects.filter(componentSet=self))
 
     def asDict(self):
 
