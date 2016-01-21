@@ -105,7 +105,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                             textureService.getTextureById(joint.textures[i].id).then(
                                 function (texture) {
                                     try {
-                                        texture.imageUrl = "/scenario/service/gitlab_asset?asset=" + texture.imageUrl;
                                         $scope.charToImgMap[char.id][component].push(texture);
                                     }catch (err){
                                         console.log(err);
