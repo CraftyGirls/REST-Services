@@ -208,7 +208,6 @@ var application = angular.module('scenarioEditor', [
                     var trigger = new Trigger();
                     trigger.type = $scope.selected.type;
                     for (var i = 0; i < $scope.selected.args.length; i++) {
-                        console.log($scope.selected.args[i]);
                         trigger.addArg($scope.selected.args[i].field, $scope.selected.args[i].dataType,  $scope.selected.args[i].dependsOn) ;
                     }
                     $scope.target.push(trigger);
@@ -285,7 +284,6 @@ var application = angular.module('scenarioEditor', [
                 };
 
                 function exists(val){
-                    console.log($scope.target);
                     return(
                            $scope.target.required.indexOf(val) != -1
                         || $scope.target.preferred.indexOf(val) != -1

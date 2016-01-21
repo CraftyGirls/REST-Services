@@ -80,7 +80,7 @@
                                         </select>
                                         <td>
                                         <select ng-if="showDependsOn(arg)"
-                                                ng-options="option.field for option in getDependsOnOptions(arg, pendingTrigger)"
+                                                ng-options="option.field as option.field for option in getDependsOnOptions(arg, pendingTrigger)"
                                                 ng-model="arg.dependsOn"></select>
                                         </td>
                                     </td>
