@@ -889,7 +889,7 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
             var found = false;
             for (var i = 0; i < triggers.length; i++) {
                 if(triggers[i].id == localTrigger.id){
-                    found = false
+                    found = true;
                 }
             }
             if(!found){
