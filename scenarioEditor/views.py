@@ -488,11 +488,29 @@ def trigger_service(request, trigger_id):
             trigger.description = trigger_form.cleaned_data['description']
             trigger.save()
 
+            delArgs = []
+            for arg in trigger.getArguments():
+                found = False
+                for a in trigger_args:
+                    if a.cleaned_data['id'] == arg.id:
+                        found = True
+                        break
+                if found == False:
+                    delArgs.append(arg)
+
+            for arg in delArgs:
+                arg.delete()
+
             for arg in trigger_args:
-                arg_obj = TriggerArgument.objects.get(id=arg.cleaned_data['id'])
+                arg_obj = None
+                try:
+                    arg_obj = TriggerArgument.objects.get(id=long(arg.cleaned_data['id']))
+                except:
+                    arg_obj = TriggerArgument()
                 arg_obj.dataType = arg.cleaned_data['dataType'],
-                arg_obj.field = unicode(arg.cleaned_data['field']),
-                arg_obj.trigger = unicode(trigger)
+                arg_obj.field = unicode(arg.cleaned_data['field'])
+                arg_obj.trigger = trigger
+                arg_obj.dataType = arg_obj.dataType[0]
                 arg_obj.save()
 
         return HttpResponse("Success", status=200)

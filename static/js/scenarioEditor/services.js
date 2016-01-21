@@ -10,7 +10,7 @@ function Texture() {
     this.type = "texture";
 }
 
-function Tags(){
+function Tags() {
     this.not = [];
     this.required = [];
     this.preferred = [];
@@ -18,7 +18,6 @@ function Tags(){
 
 Tags.BuildFromData = function (data) {
 
-    console.log(data);
     var tag = new Tags();
     tag.not = data.not;
     tag.required = data.required;
@@ -64,6 +63,7 @@ function Trigger() {
 
     this.type = "";
     this.args = new Arg();
+    this.id = -1;
 
     this.addArg = function (key, type) {
         this.args[key] = {value: null, type: type};
@@ -90,6 +90,9 @@ Trigger.BuildFromData = function (data) {
     var trig = new Trigger();
     trig.type = data.type;
     trig.args = Arg.BuildFromData(data.args);
+    if (data.hasOwnProperty('id')) {
+        trig.id = data.id;
+    }
     return trig;
 };
 
@@ -292,29 +295,29 @@ function Character(id, name) {
         src: "", // Pelvis
         components: [
             {
-                tags : new Tags(),
+                tags: new Tags(),
                 src: "", // Torso
                 components: [
                     {
-                        tags : new Tags(),
+                        tags: new Tags(),
                         src: "" // Head
                     },
                     {
-                        tags : new Tags(),
+                        tags: new Tags(),
                         src: "" // Left Arm
                     },
                     {
-                        tags : new Tags(),
+                        tags: new Tags(),
                         src: "" // Right Arm
                     }
                 ]
             },
             {
-                tags : new Tags(),
+                tags: new Tags(),
                 src: "" // Left Leg
             },
             {
-                tags : new Tags(),
+                tags: new Tags(),
                 src: "" // Right Leg
             }
         ]
@@ -326,7 +329,7 @@ function Character(id, name) {
             stateId = Math.max(stateId, this.states[i].id);
         }
         stateId++;
-        if (this.id > 0){
+        if (this.id > 0) {
             this.states.push(new State(stateId, this.states.length == 0 ? "DefaultState" : "state" + stateId));
             if (this.states.length == 1) {
                 this.defaultState = stateId;
@@ -393,14 +396,13 @@ Character.BuildFromData = function (data) {
         char.states.push(State.BuildFromData(data.states[i]));
     }
 
-    if(char.states.length == 0){
+    if (char.states.length == 0) {
         char.addState();
     }
 
     char.items = data.items;
     char.components = data.components;
     char.defaultState = data.defaultState;
-console.log(data.components[0]);
     char.getComponentForType("PELVIS").tags = Tags.BuildFromData(data.components[0].tags);
     char.getComponentForType("TORSO").tags = Tags.BuildFromData(data.components[0].components[0].tags);
     char.getComponentForType("HEAD").tags = Tags.BuildFromData(data.components[0].components[0].components[0].tags);
@@ -439,6 +441,13 @@ function Item(name, id) {
             }
             errorMessages = errorMessages.concat(errors);
         }
+        for (var i = 0; i < this.pickupEffects.length; i++) {
+            var errors = this.pickupEffects[i].validate();
+            for (var x = 0; x < errors.length; x++) {
+                errors[x] = this.name + " -> Pickup Effects -> " + errors[x];
+            }
+            errorMessages = errorMessages.concat(errors);
+        }
         return errorMessages;
     };
 }
@@ -454,8 +463,8 @@ Item.BuildFromData = function (data) {
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
     }
-    if(data.hasOwnProperty("pickupEffects")){
-        for(var i = 0; i < data.pickupEffects.length; i++){
+    if (data.hasOwnProperty("pickupEffects")) {
+        for (var i = 0; i < data.pickupEffects.length; i++) {
             item.pickupEffects.push(Trigger.BuildFromData(data.pickupEffects[i]));
         }
     }
@@ -874,6 +883,76 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                 function (response) {
                 }
             )
+        },
+        validateLocalTrigger: function (localTrigger, ownerContainer) {
+            var errors = [];
+            var found = false;
+            for (var i = 0; i < triggers.length; i++) {
+                if(triggers[i].id == localTrigger.id){
+                    found = false
+                }
+            }
+            if(!found){
+                errors.push("Effect " + localTrigger.type + " no longer exists. The effect has been removed");
+                ownerContainer.splice(ownerContainer.indexOf(localTrigger), 1);
+                return errors;
+            }
+            for (var i = 0; i < triggers.length; i++) {
+                if (triggers[i].id == localTrigger.id) {
+                    for (var j = 0; j < triggers[i].args.length; j++) {
+                        var key = triggers[i].args[j].field;
+                        if (!localTrigger.args.hasOwnProperty(key)) {
+                            console.log(key);
+                            errors.push("Effect " + localTrigger.type + " is missing argument " + key +
+                                ". Please update this effect");
+                            localTrigger.args[key] = new Arg();
+                            localTrigger.args[key]['value'] = null;
+                            localTrigger.args[key]['type'] = triggers[i].args[j].dataType;
+                        } else {
+                            console.log("HERE");
+                            if (localTrigger.args[key].type != triggers[i].args[j].dataType) {
+                                errors.push("The data type of field " + key + " has been altered for effect "
+                                    + localTrigger.type + ". Please update the value of this argument");
+                                localTrigger.args[key].value = null;
+                            }
+                        }
+                    }
+                }
+                triggerIArgs = {};
+                for (var i = 0; i < triggers.length; i++) {
+                    if (triggers[i].id == localTrigger.id) {
+                        triggerIArgs = {};
+                        for (var j = 0; j < triggers[i].args.length; j++) {
+                            triggerIArgs[triggers[i].args[j].field] = "";
+                        }
+                    }
+                }
+                for (key in localTrigger.args) {
+                    if (!triggerIArgs.hasOwnProperty(key)) {
+                        errors.push("Effect " + localTrigger.type + " has additional incorrect field " + key +
+                            ". An attempt has been made to resolve this error. Please verify this correction");
+                        delete localTrigger.args[key];
+                    }
+                }
+            }
+            return errors;
+        },
+        assignIdByName: function (trigger) {
+            var d = function () {
+                for (var i = 0; i < triggers.length; i++) {
+                    if (triggers[i].type == trigger.type) {
+                        trigger.id = triggers[i].id;
+                        break;
+                    }
+                }
+            };
+            if (triggers.length == 0) {
+                _fetchTriggers(function () {
+                    d();
+                });
+            } else {
+                d();
+            }
         }
     }
 }]);
@@ -979,7 +1058,6 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
                         success(joints);
                     }
                 }
-                console.log(jointSrc);
                 var path = jointSrc.split("/master");
                 path = path.length > 1 ? path[1] : path[0];
                 $http.get('/scenario/service/gitlab_asset/', {

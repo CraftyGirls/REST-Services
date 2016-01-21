@@ -14,8 +14,8 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
         $scope.pendingTrigger = null;
         $scope.triggerPending = false;
 
-        $scope.fetchTriggers = function(){
-          triggerService.fetchTriggers();
+        $scope.fetchTriggers = function () {
+            triggerService.fetchTriggers();
         };
 
         $scope.triggers = function () {
@@ -31,14 +31,20 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
             $scope.triggerPending = true;
         };
 
-        $scope.scenario = function(){
+        $scope.scenario = function () {
             return scenarioService.scenario();
         };
 
         $scope.submitTrigger = function () {
-            if($scope.pendingTrigger.id == -1){
+            if ($scope.pendingTrigger.id == -1) {
+                for (var i = 0; i < triggerService.triggers().length; i++) {
+                    if ($scope.pendingTrigger.type == triggerService.triggers()[i].type) {
+                        $scope.$emit('showMessage', ['Trigger Name Must Be Unique', 'danger']);
+                        return;
+                    }
+                }
                 triggerService.createTrigger($scope.pendingTrigger);
-            }else {
+            } else {
                 triggerService.updateTrigger($scope.pendingTrigger);
             }
             $scope.triggerPending = false;
@@ -53,7 +59,7 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
 
         $scope.deleteTrigger = function (trigger) {
             triggerService.deleteTrigger(trigger);
-            if($scope.pendingTrigger != null && $scope.pendingTrigger){
+            if ($scope.pendingTrigger != null && $scope.pendingTrigger) {
                 $scope.pendingTrigger = null;
                 $scope.triggerPending = false;
             }

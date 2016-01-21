@@ -9,7 +9,7 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         });
     }])
 
-    .controller('itemCtrl', ['$scope', '$http', 'itemService', 'textureService', function ($scope, $http, itemService, textureService) {
+    .controller('itemCtrl', ['$scope', '$http', 'itemService', 'textureService', 'triggerService', function ($scope, $http, itemService, textureService, triggerService) {
         $scope.editVisible = false;
 
         $scope.itemTextures = [];
@@ -91,8 +91,8 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                 })
                 .then(function success(response) {
                         var correctedData = response.data;
-                        for(var j = 0; j < correctedData.length; j++) {
-                            if(correctedData[j].texture != null) {
+                        for (var j = 0; j < correctedData.length; j++) {
+                            if (correctedData[j].texture != null) {
                                 var url = correctedData[j].texture.imageUrl;
                                 url = '/scenario/service/gitlab_asset?asset=' + url;
                                 correctedData[j].texture.imageUrl = url;
@@ -108,4 +108,35 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                 );
         }
 
+        function validateTriggers() {
+            triggerService.fetchTriggers(function (){
+                var errors = [];
+                for (var i = 0; i < itemService.items().length; i++) {
+                    for (var j = 0; j < itemService.items()[i].effects.length; j++) {
+                        if (itemService.items()[i].effects[j].id == -1) {
+                            triggerService.assignIdByName(itemService.items()[i].effects[j]);
+                        }
+                        var messages = triggerService.validateLocalTrigger(itemService.items()[i].effects[j], itemService.items()[i].effects);
+                        for(var x = 0; x < messages.length; x++){
+                            messages[x] = itemService.items()[i].name + " -> Pickup Effects -> " + messages[x];
+                        }
+                        errors = errors.concat(messages);
+                    }
+                    for (var k = 0; k < itemService.items()[i].pickupEffects.length; k++) {
+                        if (itemService.items()[i].pickupEffects[k].id == -1) {
+                            triggerService.assignIdByName(itemService.items()[i].pickupEffects[k]);
+                        }
+                        var messages = triggerService.validateLocalTrigger(itemService.items()[i].pickupEffects[k], itemService.items()[i].pickupEffects);
+                        for(var x = 0; x < messages.length; x++){
+                            messages[x] = itemService.items()[i].name + " -> Pickup Effects -> " + messages[x];
+                        }
+                        errors =  errors.concat(messages);
+                    }
+                }
+                for(var i = 0; i < errors.length; i++){
+                    $scope.$emit('showMessage', [errors[i], 'danger']);
+                }
+            });
+        }
+        validateTriggers();
     }]);

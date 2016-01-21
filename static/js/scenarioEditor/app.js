@@ -127,6 +127,7 @@ var application = angular.module('scenarioEditor', [
                     }
 
                     var input = "";
+
                     switch ($scope.type) {
                         case 'STRING':
                             input = '<input type="text" ng-model="trigger.args.' + $scope.field + '.value"/>';
