@@ -54,10 +54,9 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.selectTexture = function (texture, item) {
-            console.log(texture);
             textureService.getTextureById(texture).then(
                 function (tex) {
-                    $scope.textureUrl = tex.imageUrl;
+                    $scope.textureUrl = "/scenario/service/gitlab_asset?asset=" + tex.imageUrl;
                     item.texture = tex.id;
                 },
                 function (response) {
@@ -91,7 +90,15 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                     params: params
                 })
                 .then(function success(response) {
-                        $scope.itemTextures = response.data;
+                        var correctedData = response.data;
+                        for(var j = 0; j < correctedData.length; j++) {
+                            if(correctedData[j].texture != null) {
+                                var url = correctedData[j].texture.imageUrl;
+                                url = '/scenario/service/gitlab_asset?asset=' + url;
+                                correctedData[j].texture.imageUrl = url;
+                            }
+                        }
+                        $scope.itemTextures = correctedData;
                     },
                     function failure(response) {
                         if (response.status == 404) {

@@ -402,8 +402,7 @@ def upload_asset(request):
 
                 item_def = ItemDefinition.objects.get(id=long(asset_id))
                 file_name = "items/" + file_name
-                tex.imageUrl = gitlab_utility.get_project_url(
-                        gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + file_name
+                tex.imageUrl = file_name
 
                 gitlab_utility.create_file(gitlab_utility.get_project_name(),
                                            PDUser.branch_for_user(user=request.user),
@@ -518,7 +517,9 @@ def post_process_component_set_service(request):
             parent_set = ComponentSet.objects.get(pk=long(in_data['id']))
             if parent_set is not None:
 
-                set_json_str = urllib2.urlopen(parent_set.jsonRepresentation).read()
+                set_json_str = urllib2.urlopen(
+                    gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + parent_set.jsonRepresentation
+                ).read()
                 set_json_obj = json.loads(set_json_str)
 
                 joints = set_json_obj["joints"]
