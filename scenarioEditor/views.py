@@ -478,6 +478,7 @@ def trigger_service(request, trigger_id):
                 trigger_arg = TriggerArgument(
                         dataType=arg.cleaned_data['dataType'],
                         field=arg.cleaned_data['field'],
+                        dependsOn=arg.cleaned_data['dependsOn'],
                         trigger=trigger
                 )
                 trigger_arg.save()
@@ -510,6 +511,7 @@ def trigger_service(request, trigger_id):
                 arg_obj.dataType = arg.cleaned_data['dataType'],
                 arg_obj.field = unicode(arg.cleaned_data['field'])
                 arg_obj.trigger = trigger
+                arg_obj.dependsOn = arg.cleaned_data['dependsOn']
                 arg_obj.dataType = arg_obj.dataType[0]
                 arg_obj.save()
 

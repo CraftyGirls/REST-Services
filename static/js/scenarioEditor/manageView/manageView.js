@@ -9,7 +9,7 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
         });
     }])
 
-    .controller('manageCtrl', ['$scope', '$http', 'triggerService', 'scenarioService', function ($scope, $http, triggerService, scenarioService) {
+    .controller('manageCtrl', ['$scope', '$http', 'triggerService', 'scenarioService', 'charService', function ($scope, $http, triggerService, scenarioService, charService) {
 
         $scope.pendingTrigger = null;
         $scope.triggerPending = false;
@@ -68,5 +68,22 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
         $scope.editTrigger = function (trigger) {
             $scope.pendingTrigger = trigger;
             $scope.triggerPending = true;
+        };
+
+        $scope.getDependsOnOptions = function(arg, trigger){
+            var options = [];
+            if(arg.dataType == "CHARACTER_STATE"){
+                for(var i = 0; i < trigger.args.length; i++){
+                    if(trigger.args[i].dataType == "CHARACTER"){
+                        options.push(trigger.args[i]);
+                    }
+                }
+            }
+            return options;
+        };
+
+        $scope.showDependsOn = function(arg){
+            return arg.dataType == "CHARACTER_STATE";
+
         }
     }]);

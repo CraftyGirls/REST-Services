@@ -320,17 +320,20 @@ class TriggerArgument(models.Model):
         ("ITEM", 'item'),
         ("ROOM", 'room'),
         ("CONVERSATION", 'conversation'),
+        ("CHARACTER_STATE", 'character_state'),
     ]
 
     dataType = models.CharField(default=0, max_length=100, choices=DATA_TYPE_CHOICES)
     field = models.CharField(default=0, max_length=100)
     trigger = models.ForeignKey(Trigger, null=True)
+    dependsOn = models.CharField(max_length=255, default="NONE")
 
     def asDict(self):
         return {
             'id': self.id,
             'dataType': self.dataType,
-            'field': self.field
+            'field': self.field,
+            'dependsOn':self.dependsOn
         }
 
 

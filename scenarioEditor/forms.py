@@ -52,3 +52,4 @@ class TriggerArgumentForm(forms.Form):
     id = forms.IntegerField()
     dataType = forms.ChoiceField(choices=TriggerArgument.DATA_TYPE_CHOICES)
     field = forms.CharField(max_length=100)
+    dependsOn = forms.CharField(max_length=255)

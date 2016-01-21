@@ -100,7 +100,8 @@ var application = angular.module('scenarioEditor', [
                 scope: {
                     type: "@sweetType",
                     trigger: "=sweetTrigger",
-                    field: "@sweetField"
+                    field: "@sweetField",
+                    dependsOn:"@sweetDependsOn"
                 },
                 transclude: true,
                 template: '<div class="row"><div class="col-sm-1 right-justify"><span>{$field$} = </span></div></div>',
@@ -120,6 +121,22 @@ var application = angular.module('scenarioEditor', [
 
                     $scope.getConvos = function () {
                         return convoService.conversations();
+                    };
+
+                    $scope.getStates = function(id){
+                        return charService.getById(id).states;
+                    };
+
+                    $scope.getDependsOnOptions = function(){
+                        if($scope.trigger.args[$scope.field].type == 'CHARACTER_STATE'){
+                            var charId = $scope.trigger.args[$scope.trigger.args[$scope.field].dependsOn].value;
+                            console.log(charId);
+                            var char = charService.getById(charId);
+                            if(char != null){
+                                return char.states;
+                            }
+                        }
+                        return [];
                     };
 
                     if (!$scope.trigger.args.hasOwnProperty($scope.field)) {
@@ -159,19 +176,23 @@ var application = angular.module('scenarioEditor', [
                                 '<option selected value="">Select Convo</option>' +
                                 '</select>';
                             break;
+                        case 'CHARACTER_STATE':
+                            input = '<select ng-options="state.id as state.name for state in getDependsOnOptions()" ng-model="trigger.args.' + $scope.field + '.value">' +
+                                '<option selected value="">Select State</option>' +
+                                '</select>';
                     }
                     $(iElm).find(".row").append($compile("<div class='col-sm-1'>" + input + "</div>")($scope));
                 }
             }
         }
     ])
-    .directive('sweetTriggerSelector', ['$compile', 'triggerService', function ($compile, triggerService) {
+    .directive('sweetTriggerSelector', ['$compile', 'triggerService', 'charService', function ($compile, triggerService, charService) {
         return {
             scope: {
                 target: "=sweetTarget"
             },
             transculde: true,
-            template: "<div class='row'><div class='col-sm-1'><select ng-options='trigger as trigger.type for trigger in getTriggers()' ng-model='selected'></select></div>" +
+            template: "<div class='row'><div class='col-sm-1'><select ng-change='typeChanged()' ng-options='trigger as trigger.type for trigger in getTriggers()' ng-model='selected'></select></div>" +
             "<div class='col-sm-1'><span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
             link: function ($scope, iElm, iAttrs, controller) {
 
@@ -179,11 +200,16 @@ var application = angular.module('scenarioEditor', [
                     return triggerService.triggers();
                 };
 
+                $scope.getChars = function(){
+                    return charService.chars();
+                };
+
                 $scope.addTrigger = function () {
                     var trigger = new Trigger();
                     trigger.type = $scope.selected.type;
                     for (var i = 0; i < $scope.selected.args.length; i++) {
-                        trigger.addArg($scope.selected.args[i].field, $scope.selected.args[i].dataType);
+                        console.log($scope.selected.args[i]);
+                        trigger.addArg($scope.selected.args[i].field, $scope.selected.args[i].dataType,  $scope.selected.args[i].dependsOn) ;
                     }
                     $scope.target.push(trigger);
                 };

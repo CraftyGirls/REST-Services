@@ -53,6 +53,9 @@ Arg.BuildFromData = function (data) {
     // data object to determine what they are
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
+            if(!data[key].hasOwnProperty('dependsOn')){
+                data[key]['dependsOn'] = "NONE";
+            }
             arg[key] = data[key];
         }
     }
@@ -65,8 +68,8 @@ function Trigger() {
     this.args = new Arg();
     this.id = -1;
 
-    this.addArg = function (key, type) {
-        this.args[key] = {value: null, type: type};
+    this.addArg = function (key, type, dependsOn) {
+        this.args[key] = {value: null, type: type, dependsOn:dependsOn};
     };
 
     this.validate = function () {
@@ -523,7 +526,8 @@ var TRIGGER_ARG_DATA_TYPES = [
     "CHARACTER",
     "ITEM",
     "ROOM",
-    "CONVERSATION"
+    "CONVERSATION",
+    "CHARACTER_STATE"
 ];
 
 function TriggerResource() {
@@ -541,6 +545,7 @@ TriggerResource.BuildFromData = function (data) {
     for (var i = 0; i < data.args.length; i++) {
         trigger.args.push(TriggerArgumentResource.BuildFromData(data.args[i]));
     }
+
     return trigger;
 };
 
@@ -548,6 +553,7 @@ function TriggerArgumentResource() {
     this.dataType = "";
     this.field = "";
     this.id = -1;
+    this.dependsOn = "NONE";
 }
 
 TriggerArgumentResource.BuildFromData = function (data) {
@@ -555,6 +561,7 @@ TriggerArgumentResource.BuildFromData = function (data) {
     arg.dataType = data.dataType;
     arg.field = data.field;
     arg.id = data.id;
+    arg.dependsOn = data.dependsOn;
     return arg;
 };
 
@@ -902,14 +909,12 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                     for (var j = 0; j < triggers[i].args.length; j++) {
                         var key = triggers[i].args[j].field;
                         if (!localTrigger.args.hasOwnProperty(key)) {
-                            console.log(key);
                             errors.push("Effect " + localTrigger.type + " is missing argument " + key +
                                 ". Please update this effect");
                             localTrigger.args[key] = new Arg();
                             localTrigger.args[key]['value'] = null;
                             localTrigger.args[key]['type'] = triggers[i].args[j].dataType;
                         } else {
-                            console.log("HERE");
                             if (localTrigger.args[key].type != triggers[i].args[j].dataType) {
                                 errors.push("The data type of field " + key + " has been altered for effect "
                                     + localTrigger.type + ". Please update the value of this argument");

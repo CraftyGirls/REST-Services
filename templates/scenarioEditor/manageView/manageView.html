@@ -70,13 +70,19 @@
                                 <tr>
                                     <th>Key</th>
                                     <th>Data Type</th>
+                                    <th>Depends On</th>
                                 </tr>
                                 <tr ng-repeat="arg in trigger.args">
                                     <td><input type="text" ng-model="arg.field"></td>
                                     <td><select ng-options="label as label for label in dataTypes()"
                                                 ng-model="arg.dataType"
-                                                ng-init="arg.dataType = dataTypes()[0]">
+                                                >
                                         </select>
+                                        <td>
+                                        <select ng-if="showDependsOn(arg)"
+                                                ng-options="option.field for option in getDependsOnOptions(arg, pendingTrigger)"
+                                                ng-model="arg.dependsOn"></select>
+                                        </td>
                                     </td>
                                     <td><sweet-delete variable="arg" container="trigger.args"></sweet-delete></td>
                                 </tr>
@@ -92,7 +98,7 @@
                                   ng-click="editTrigger(trigger)"></span>
                         </td>
                     </tr>
-                    <tr ng-show="triggerPending && pendingTrigger.id == -1">
+                    <tr id="pending-trigger" ng-show="triggerPending && pendingTrigger.id == -1">
                         <td><input type="text" ng-model="pendingTrigger.type"/></td>
                         <td><textarea type="text" ng-model="pendingTrigger.description"></textarea></td>
                         <td>
@@ -100,16 +106,19 @@
                                 <tr>
                                     <th>Key</th>
                                     <th>Data Type</th>
+                                    <th>Depends On</th>
                                 </tr>
                                 <tr ng-repeat="arg in pendingTrigger.args">
                                     <td><input type="text" ng-model="arg.field"></td>
                                     <td><select ng-options="label as label for label in dataTypes()"
                                                 ng-model="arg.dataType"
-                                                ng-init="arg.dataType = dataTypes()[0]"
-                                    >
+                                                ng-init="arg.dataType = dataTypes()[0]"></select></td>
+                                    <td>
+                                        <select ng-if="showDependsOn(arg)"
+                                                ng-options="option.field as option.field for option in getDependsOnOptions(arg, pendingTrigger)"
+                                                ng-model="arg.dependsOn"></select>
+                                    </td>
                                     <td><sweet-delete variable="arg" container="pendingTrigger.args"></sweet-delete></td>
-
-                                    </select></td>
                                 </tr>
                             </table>
                             <span class="glyphicon glyphicon-plus clickable hover-fade" ng-click="addArgument()"></span>
