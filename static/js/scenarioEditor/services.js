@@ -420,6 +420,7 @@ function Item(name, id) {
     this.description = "";
     this.texture = -1;
     this.effects = [];
+    this.pickupEffects = [];
     this.type = "item";
 
     this.validate = function () {
@@ -452,6 +453,11 @@ Item.BuildFromData = function (data) {
     item.texture = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
+    }
+    if(data.hasOwnProperty("pickupEffects")){
+        for(var i = 0; i < data.pickupEffects.length; i++){
+            item.pickupEffects.push(Trigger.BuildFromData(data.pickupEffects[i]));
+        }
     }
     return item;
 };
