@@ -146,7 +146,7 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
-                file_name = scenario.jsonUrl.split(PDUser.branch_for_user(request.user) + '/')[1]
+                file_name = scenario.jsonUrl
                 gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user), file_name, scenario.script, "text")
                 scenario.save()
                 return HttpResponse(request.body)
@@ -168,8 +168,7 @@ def create_scenario_view(request):
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
             scenario.script = '{"assets":[]}'
-            scenario.jsonUrl = gitlab_utility.get_project_url(
-                    gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + file_name
+            scenario.jsonUrl = file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user), file_name, scenario.script, "text")
             scenario.save()
             return redirect(edit_scenario_view, scenario.id)
@@ -185,6 +184,7 @@ def edit_scenario_view(request, scenario_id):
         if scenario is not None:
             if scenario.owner.id != PDUser.objects.get(user=request.user).id:
                 return HttpResponse("Unauthorized")
+            scenario.jsonUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" +  scenario.jsonUrl
             scenario.script = urllib2.urlopen(scenario.jsonUrl).read()
             return render(request, 'scenarioEditor/index.html/', {'scenario': scenario})
     else:
