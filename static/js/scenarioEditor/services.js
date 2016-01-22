@@ -923,12 +923,14 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                             localTrigger.args[key] = new Arg();
                             localTrigger.args[key]['value'] = null;
                             localTrigger.args[key]['type'] = triggers[i].args[j].dataType;
+                            ocalTrigger.args[key]['dependsOn'] =  triggers[i].args[j].dependsOn;
                         } else {
                             if (localTrigger.args[key].type != triggers[i].args[j].dataType) {
                                 errors.push("The data type of field " + key + " has been altered for effect "
                                     + localTrigger.type + ". Please update the value of this argument");
                                 localTrigger.args[key].value = null;
                                 localTrigger.args[key].type = triggers[i].args[j].dataType;
+                                localTrigger.args[key].dependsOn =  triggers[i].args[j].dependsOn;
                                 console.log(localTrigger);
                             }
                         }
