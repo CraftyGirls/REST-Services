@@ -51,12 +51,10 @@ Arg.BuildFromData = function (data) {
     var arg = new Arg();
     // The key values of an arg are not set so we iterate through the stored
     // data object to determine what they are
-    console.log(data);
     for (var key in data) {
         if (!data[key].hasOwnProperty('dependsOn')) {
             data[key]['dependsOn'] = "NONE";
         }
-        console.log(data);
         if (data.hasOwnProperty(key)) {
             arg[key] = data[key];
         }
@@ -71,7 +69,6 @@ function Trigger() {
     this.id = -1;
 
     this.addArg = function (key, type, dependsOn) {
-        console.log(dependsOn);
         this.args[key] = {value: null, type: type, dependsOn: dependsOn};
     };
 
@@ -548,12 +545,11 @@ TriggerResource.BuildFromData = function (data) {
     for (var i = 0; i < data.args.length; i++) {
         trigger.args.push(TriggerArgumentResource.BuildFromData(data.args[i]));
     }
-
     return trigger;
 };
 
 function TriggerArgumentResource() {
-    this.dataType = "";
+    this.dataType = "STRING";
     this.field = "";
     this.id = -1;
     this.dependsOn = "NONE";
@@ -561,7 +557,7 @@ function TriggerArgumentResource() {
 
 TriggerArgumentResource.BuildFromData = function (data) {
     var arg = new TriggerArgumentResource();
-    arg.dataType = data.dataType;
+    arg.dataType = data.dataType.toUpperCase();
     arg.field = data.field;
     arg.id = data.id;
     arg.dependsOn = data.dependsOn;
@@ -834,15 +830,15 @@ scenarioServices.service('roomService', function () {
 
 scenarioServices.service('triggerService', ['$http', function ($http) {
 
-    triggers = [];
+    var _triggers = [];
 
     function _fetchTriggers(onComplete) {
         $http.get('/scenario/service/trigger').then(
             // Success
             function (response) {
-                triggers = [];
+                _triggers = [];
                 for (var i = 0; i < response.data.length; i++) {
-                    triggers.push(TriggerResource.BuildFromData(response.data[i]));
+                    _triggers.push(TriggerResource.BuildFromData(response.data[i]));
                 }
                 if (onComplete != null) {
                     onComplete();
@@ -859,7 +855,7 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
 
     return {
         triggers: function () {
-            return triggers;
+            return _triggers;
         },
         dataTypes: function () {
             return TRIGGER_ARG_DATA_TYPES;
@@ -903,8 +899,8 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
         validateLocalTrigger: function (localTrigger, ownerContainer) {
             var errors = [];
             var found = false;
-            for (var i = 0; i < triggers.length; i++) {
-                if (triggers[i].id == localTrigger.id) {
+            for (var i = 0; i < _triggers.length; i++) {
+                if (_triggers[i].id == localTrigger.id) {
                     found = true;
                 }
             }
@@ -913,36 +909,35 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                 ownerContainer.splice(ownerContainer.indexOf(localTrigger), 1);
                 return errors;
             }
-            for (var i = 0; i < triggers.length; i++) {
-                if (triggers[i].id == localTrigger.id) {
-                    for (var j = 0; j < triggers[i].args.length; j++) {
-                        var key = triggers[i].args[j].field;
+            for (var i = 0; i < _triggers.length; i++) {
+                if (_triggers[i].id == localTrigger.id) {
+                    for (var j = 0; j < _triggers[i].args.length; j++) {
+                        var key = _triggers[i].args[j].field;
                         if (!localTrigger.args.hasOwnProperty(key)) {
                             errors.push("Effect " + localTrigger.type + " is missing argument " + key +
                                 ". Please update this effect");
                             localTrigger.args[key] = new Arg();
                             localTrigger.args[key]['value'] = null;
-                            localTrigger.args[key]['type'] = triggers[i].args[j].dataType;
-                            ocalTrigger.args[key]['dependsOn'] =  triggers[i].args[j].dependsOn;
+                            localTrigger.args[key]['type'] = _triggers[i].args[j].dataType;
+                            ocalTrigger.args[key]['dependsOn'] =  _triggers[i].args[j].dependsOn;
                         } else {
-                            if (localTrigger.args[key].type != triggers[i].args[j].dataType) {
+                            if (localTrigger.args[key].type != _triggers[i].args[j].dataType) {
                                 errors.push("The data type of field " + key + " has been altered for effect "
                                     + localTrigger.type + ". Please update the value of this argument");
                                 localTrigger.args[key].value = null;
-                                localTrigger.args[key].type = triggers[i].args[j].dataType;
-                                localTrigger.args[key].dependsOn =  triggers[i].args[j].dependsOn;
-                                console.log(localTrigger);
+                                localTrigger.args[key].type = _triggers[i].args[j].dataType;
+                                localTrigger.args[key].dependsOn =  _triggers[i].args[j].dependsOn;à
                             }
                         }
                     }
                 }
             }
             triggerIArgs = {};
-            for (var i = 0; i < triggers.length; i++) {
-                if (triggers[i].id == localTrigger.id) {
+            for (var i = 0; i < _triggers.length; i++) {
+                if (_triggers[i].id == localTrigger.id) {
                     triggerIArgs = {};
-                    for (var j = 0; j < triggers[i].args.length; j++) {
-                        triggerIArgs[triggers[i].args[j].field] = "";
+                    for (var j = 0; j < _triggers[i].args.length; j++) {
+                        triggerIArgs[_triggers[i].args[j].field] = "";
                     }
                 }
             }
@@ -957,14 +952,14 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
         },
         assignIdByName: function (trigger) {
             var d = function () {
-                for (var i = 0; i < triggers.length; i++) {
-                    if (triggers[i].type == trigger.type) {
-                        trigger.id = triggers[i].id;
+                for (var i = 0; i < _triggers.length; i++) {
+                    if (_triggers[i].type == trigger.type) {
+                        trigger.id = _triggers[i].id;
                         break;
                     }
                 }
             };
-            if (triggers.length == 0) {
+            if (_triggers.length == 0) {
                 _fetchTriggers(function () {
                     d();
                 });

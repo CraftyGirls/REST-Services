@@ -111,8 +111,8 @@
                                 <tr ng-repeat="arg in pendingTrigger.args">
                                     <td><input type="text" ng-model="arg.field"></td>
                                     <td><select ng-options="label as label for label in dataTypes()"
-                                                ng-model="arg.dataType"
-                                                ng-init="arg.dataType = dataTypes()[0]"></select></td>
+                                                ng-model="arg.dataType"></select>
+                                    </td>
                                     <td>
                                         <select ng-if="showDependsOn(arg)"
                                                 ng-options="option.field as option.field for option in getDependsOnOptions(arg, pendingTrigger)"
