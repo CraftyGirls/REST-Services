@@ -629,6 +629,9 @@ scenarioServices.service('convoService', function () {
         },
         addOption: function (convoId, label) {
             currConversation.addOption(convoId, label)
+        },
+        resetCurrent : function () {
+            currConversation = null;
         }
     };
 });
@@ -781,6 +784,9 @@ scenarioServices.service('itemService', ['roomService', 'charService', function 
                 items.push(_getById(allIds[c]));
             }
             return items;
+        },
+        resetCurrent: function () {
+            currItem = null;
         }
     };
 }]);
@@ -923,6 +929,7 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                                     + localTrigger.type + ". Please update the value of this argument");
                                 localTrigger.args[key].value = null;
                                 localTrigger.args[key].type = triggers[i].args[j].dataType;
+                                console.log(localTrigger);
                             }
                         }
                     }

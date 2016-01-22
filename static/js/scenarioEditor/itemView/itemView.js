@@ -136,6 +136,8 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                 for(var i = 0; i < errors.length; i++){
                     $scope.$emit('showMessage', [errors[i], 'danger']);
                 }
+                itemService.resetCurrent();
+                $scope.editVisible = false;
             });
         }
         validateTriggers();

@@ -69,7 +69,23 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
                             }
                             var messages = triggerService.validateLocalTrigger(convoService.conversations()[i].dialogue[x].triggers[j], convoService.conversations()[i].dialogue[x].triggers);
                             for (var x = 0; x < messages.length; x++) {
-                                messages[x] = convoService.conversations()[i].name + " -> " + convoService.conversations()[i].dialogue[x].name + " -> Effects -> " + messages[x];
+                                messages[x] = convoService.conversations()[i].name + " -> " + convoService.conversations()[i].dialogue[x].name + " -> Triggers -> " + messages[x];
+                            }
+                            errors = errors.concat(messages);
+                        }
+                    }
+                }
+                for (var i = 0; i < convoService.conversations().length; i++) {
+                    for (var x = 0; x < convoService.conversations()[i].dialogue.length; x++) {
+                        var trig = convoService.conversations()[i].dialogue[x].conditions;
+                        console.log(trig);
+                        for (var j = 0; j < trig.length; j++) {
+                            if (convoService.conversations()[i].dialogue[x].conditions[j].id == -1) {
+                                conditionservice.assignIdByName(convoService.conversations()[i].dialogue[x].conditions[j]);
+                            }
+                            var messages = conditionservice.validateLocalTrigger(convoService.conversations()[i].dialogue[x].conditions[j], convoService.conversations()[i].dialogue[x].conditions);
+                            for (var x = 0; x < messages.length; x++) {
+                                messages[x] = convoService.conversations()[i].name + " -> " + convoService.conversations()[i].dialogue[x].name + " -> Conditions -> " + messages[x];
                             }
                             errors = errors.concat(messages);
                         }
@@ -78,6 +94,8 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
                 for (var i = 0; i < errors.length; i++) {
                     $scope.$emit('showMessage', [errors[i], 'danger']);
                 }
+                convoService.resetCurrent();
+                $scope.editVisible = false;
             });
         }
         validateTriggers();
