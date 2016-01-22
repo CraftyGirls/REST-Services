@@ -376,8 +376,7 @@ def upload_asset(request):
                 char_comp.name = uuid_str
 
                 file_name = "components/" + file_name
-                tex.imageUrl = gitlab_utility.get_project_url(
-                        gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + file_name
+                tex.imageUrl = file_name
 
                 gitlab_utility.create_file(gitlab_utility.get_project_name(),
                                            PDUser.branch_for_user(user=request.user),
