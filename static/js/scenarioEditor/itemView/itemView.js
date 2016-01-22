@@ -118,7 +118,7 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
                         }
                         var messages = triggerService.validateLocalTrigger(itemService.items()[i].effects[j], itemService.items()[i].effects);
                         for(var x = 0; x < messages.length; x++){
-                            messages[x] = itemService.items()[i].name + " -> Pickup Effects -> " + messages[x];
+                            messages[x] = itemService.items()[i].name + " -> Effects -> " + messages[x];
                         }
                         errors = errors.concat(messages);
                     }

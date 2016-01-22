@@ -129,12 +129,14 @@ var application = angular.module('scenarioEditor', [
 
                     $scope.getDependsOnOptions = function(){
                         if($scope.trigger.args[$scope.field].type == 'CHARACTER_STATE'){
-                            var charId = $scope.trigger.args[$scope.trigger.args[$scope.field].dependsOn].value;
-                            console.log(charId);
-                            var char = charService.getById(charId);
-                            if(char != null){
-                                return char.states;
-                            }
+                            try {
+                                console.log($scope.trigger.args[$scope.field]);
+                                var charId = $scope.trigger.args[$scope.trigger.args[$scope.field].dependsOn].value;
+                                var char = charService.getById(charId);
+                                if (char != null) {
+                                    return char.states;
+                                }
+                            }catch (err){console.log(err)}
                         }
                         return [];
                     };

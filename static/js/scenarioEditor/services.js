@@ -51,11 +51,13 @@ Arg.BuildFromData = function (data) {
     var arg = new Arg();
     // The key values of an arg are not set so we iterate through the stored
     // data object to determine what they are
+    console.log(data);
     for (var key in data) {
+        if (!data[key].hasOwnProperty('dependsOn')) {
+            data[key]['dependsOn'] = "NONE";
+        }
+        console.log(data);
         if (data.hasOwnProperty(key)) {
-            if(!data[key].hasOwnProperty('dependsOn')){
-                data[key]['dependsOn'] = "NONE";
-            }
             arg[key] = data[key];
         }
     }
@@ -69,7 +71,8 @@ function Trigger() {
     this.id = -1;
 
     this.addArg = function (key, type, dependsOn) {
-        this.args[key] = {value: null, type: type, dependsOn:dependsOn};
+        console.log(dependsOn);
+        this.args[key] = {value: null, type: type, dependsOn: dependsOn};
     };
 
     this.validate = function () {
@@ -895,11 +898,11 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
             var errors = [];
             var found = false;
             for (var i = 0; i < triggers.length; i++) {
-                if(triggers[i].id == localTrigger.id){
+                if (triggers[i].id == localTrigger.id) {
                     found = true;
                 }
             }
-            if(!found){
+            if (!found) {
                 errors.push("Effect " + localTrigger.type + " no longer exists. The effect has been removed");
                 ownerContainer.splice(ownerContainer.indexOf(localTrigger), 1);
                 return errors;
@@ -919,25 +922,26 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                                 errors.push("The data type of field " + key + " has been altered for effect "
                                     + localTrigger.type + ". Please update the value of this argument");
                                 localTrigger.args[key].value = null;
+                                localTrigger.args[key].type = triggers[i].args[j].dataType;
                             }
                         }
                     }
                 }
-                triggerIArgs = {};
-                for (var i = 0; i < triggers.length; i++) {
-                    if (triggers[i].id == localTrigger.id) {
-                        triggerIArgs = {};
-                        for (var j = 0; j < triggers[i].args.length; j++) {
-                            triggerIArgs[triggers[i].args[j].field] = "";
-                        }
+            }
+            triggerIArgs = {};
+            for (var i = 0; i < triggers.length; i++) {
+                if (triggers[i].id == localTrigger.id) {
+                    triggerIArgs = {};
+                    for (var j = 0; j < triggers[i].args.length; j++) {
+                        triggerIArgs[triggers[i].args[j].field] = "";
                     }
                 }
-                for (key in localTrigger.args) {
-                    if (!triggerIArgs.hasOwnProperty(key)) {
-                        errors.push("Effect " + localTrigger.type + " has additional incorrect field " + key +
-                            ". An attempt has been made to resolve this error. Please verify this correction");
-                        delete localTrigger.args[key];
-                    }
+            }
+            for (key in localTrigger.args) {
+                if (!triggerIArgs.hasOwnProperty(key)) {
+                    errors.push("Effect " + localTrigger.type + " has additional incorrect field " + key +
+                        ". An attempt has been made to resolve this error. Please verify this correction");
+                    delete localTrigger.args[key];
                 }
             }
             return errors;
