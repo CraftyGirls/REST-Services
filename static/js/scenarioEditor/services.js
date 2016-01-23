@@ -926,7 +926,7 @@ scenarioServices.service('triggerService', ['$http', function ($http) {
                                     + localTrigger.type + ". Please update the value of this argument");
                                 localTrigger.args[key].value = null;
                                 localTrigger.args[key].type = _triggers[i].args[j].dataType;
-                                localTrigger.args[key].dependsOn =  _triggers[i].args[j].dependsOn;à
+                                localTrigger.args[key].dependsOn =  _triggers[i].args[j].dependsOn;
                             }
                         }
                     }

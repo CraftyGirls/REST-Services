@@ -302,7 +302,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.$on('dropzoneComplete', function (event, data) {
             dropzonesProcessed++;
             if (dropzonesProcessed == $scope.dropzones.length) {
-                if($scope.selectedAsset.id == $scope.CONST.CHARACTER_COMPONENT) {
+                if($scope.selectedAsset.id == $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT) {
                     $http.post(
                         '/scenario/service/post_process_component_set/',
                         {id: $scope.assetId}
