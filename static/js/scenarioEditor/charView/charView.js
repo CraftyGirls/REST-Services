@@ -94,9 +94,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
 
         $scope.updateTexture = function(char, component, jsonUrl){
-
             charService.setComponentSourceForType(char, $scope.currBodyPart, jsonUrl);
-            console.log($scope.currBodyPart);
 
             if(jsonUrl != "" && jsonUrl != undefined) {
                 jointService.getJoint(jsonUrl).then(
