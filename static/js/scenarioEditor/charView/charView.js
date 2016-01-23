@@ -230,6 +230,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         $scope.clearComponent = function(component){
             charService.getCurrChar().getComponentForType(component).src = "";
             $scope.charToImgMap[charService.getCurrChar().id][component] = [];
-        }
+        };
     }]);
 
