@@ -252,7 +252,7 @@ def component_set_service(request, component_set_id=None):
                 comp_set.description = comp_set_form.cleaned_data["description"]
                 comp_set.setType = comp_set_form.cleaned_data["setType"]
 
-                joints_file_name = "components/" + str(uuid.uuid4()) + ".json"
+                joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
 
                 json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
@@ -585,7 +585,7 @@ def post_process_component_set_service(request):
 
                 gitlab_utility.update_file(gitlab_utility.get_project_name(),
                                            PDUser.branch_for_user(user=request.user),
-                                           "/components/" + file_name,
+                                           "/components/definitions/" + file_name,
                                            json.dumps(set_json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
                                            "text")
 
@@ -679,3 +679,50 @@ def gitlab_asset(request):
             return HttpResponse("url param required", status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
+
+
+@login_required(login_url='/scenario/login/')
+def dump_data_service(request):
+    comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
+    assets = {'assets': []}
+
+    for tex in comp_textures:
+        d = tex.asDict()
+        d.pop("imageUrl", None)
+        d['type'] = 'texture'
+        assets['assets'].append(d)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                               PDUser.branch_for_user(user=request.user),
+                               "component-textures.json",
+                               json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
+    item_textures = Texture.objects.filter(type=Texture.ITEM).all()
+    assets = {'assets': []}
+
+    for tex in item_textures:
+        d = tex.asDict()
+        d.pop("imageUrl", None)
+        d['type'] = 'texture'
+        assets['assets'].append(d)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                               PDUser.branch_for_user(user=request.user),
+                               "item-textures.json",
+                               json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
+    components = {'components':[]}
+    sets = ComponentSet.objects.all()
+
+    for set in sets:
+        components['components'].append(set.jsonRepresentation)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                               PDUser.branch_for_user(user=request.user),
+                               "component-definitions.json",
+                               json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
+    return HttpResponse("Success")

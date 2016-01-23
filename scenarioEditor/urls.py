@@ -33,4 +33,5 @@ urlpatterns = patterns('',
                        url(r'^service/proxy/', scenarioEditor.views.proxy_service, name='proxy_service'),
                        url(r'^service/gitlab_asset/', scenarioEditor.views.gitlab_asset, name='gitlab_asset_service'),
                        url(r'^service/post_process_component_set/', scenarioEditor.views.post_process_component_set_service, name='post_process_component_set_service'),
+                       url(r'^service/dump_data/', scenarioEditor.views.dump_data_service, name='dump_data_service'),
                        )
