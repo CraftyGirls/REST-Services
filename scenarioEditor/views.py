@@ -243,7 +243,7 @@ def component_set_service(request, component_set_id=None):
             return HttpResponse("Object could not be found", status=404)
 
     elif request.method == 'POST':
-        #try:
+        try:
             in_data = json.loads(request.body)
             comp_set_form = ComponentSetForm(data=in_data)
             if comp_set_form.is_valid():
@@ -269,11 +269,24 @@ def component_set_service(request, component_set_id=None):
                     tag = Tag(value=t)
                     tag.owner = comp_set
                     tag.save()
+
+                components = {'components':[]}
+                sets = ComponentSet.objects.all()
+
+                for set in sets:
+                    components['components'].append(set.jsonRepresentation)
+
+                gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                           PDUser.branch_for_user(user=request.user),
+                                           "component-definitions.json",
+                                           json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
                 return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
                                     content_type='application/json')
             else:
                 return HttpResponse("Invalid request data - " + comp_set_form.errors.as_json(), status=400)
-        #except:
+        except:
             return HttpResponse("Bad post data - " + request.body, status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
