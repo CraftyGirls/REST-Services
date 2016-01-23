@@ -126,7 +126,7 @@ def register_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = User.objects.create_user(username=username, password=password)
-        pd_user = PDUser(user=user.id)
+        pd_user = PDUser(user=user)
         pd_user.gitlab_branch = username
         pd_user.save()
         gitlab_utility.create_branch_if_not_exists(username)

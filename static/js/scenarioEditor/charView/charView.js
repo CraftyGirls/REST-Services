@@ -96,6 +96,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         $scope.updateTexture = function(char, component, jsonUrl){
 
             charService.setComponentSourceForType(char, $scope.currBodyPart, jsonUrl);
+            console.log($scope.currBodyPart);
 
             if(jsonUrl != "" && jsonUrl != undefined) {
                 jointService.getJoint(jsonUrl).then(
@@ -105,6 +106,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                             textureService.getTextureById(joint.textures[i].id).then(
                                 function (texture) {
                                     try {
+                                        console.log($scope.charToImgMap);
                                         $scope.charToImgMap[char.id][component].push(texture);
                                     }catch (err){
                                         console.log(err);

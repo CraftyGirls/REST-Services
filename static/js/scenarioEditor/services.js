@@ -694,7 +694,7 @@ scenarioServices.service('charService', [function () {
         setComponentSourceForType: function (char, type, src) {
             if (type.length > 0) {
                 var s = src.split("master/");
-                char.getComponentForType(type).src = s.length > 0 ? s[1] : s[0];
+                char.getComponentForType(type).src = s.length > 1 ? s[1] : s[0];
             }
         }
     };

@@ -187,7 +187,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS')">
-                            <img class="thumbnail" src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl$}"/>
+                            <img class="thumbnail" src="{$ '/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('PELVIS').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('PELVIS').tags"></sweet-tags>
@@ -207,7 +207,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG')">
-                            <img class="thumbnail" src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl$}"/>
+                            <img class="thumbnail" src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_LEG').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('LEFT_LEG').tags"></sweet-tags>
@@ -226,7 +226,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG')">
-                            <img class="thumbnail" src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl$}"/>
+                            <img class="thumbnail" src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('RIGHT_LEG').tags"></sweet-tags>
