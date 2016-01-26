@@ -25,6 +25,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.asset.tags = "";
         $scope.asset.type = "";
 
+        $scope.mode = 'CREATE';
+
         // @TODO Make this a server-side resource later on
         $scope.asset.types = [{
             id: $scope.CONST.ASSET_TYPES.NONE,
@@ -65,6 +67,43 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.joints = {};
 
         var dropzonesProcessed = 0;
+
+
+        // EDIT VIEW
+        $scope.query = {
+            type:'COMPONENT'
+        };
+
+        $scope.queryResults = [];
+
+        $scope.queryChanged = function () {
+            performQuery();
+        };
+
+        function performQuery() {
+            var params = {};
+            if ($scope.query.tags != null && $scope.query.tags.length > 0) {
+                params["tags"] = $scope.query.tags;
+            }
+            if ($scope.query.name != null && $scope.query.name.length > 0) {
+                params["name"] = $scope.query.name;
+            }
+            var endpoint = $scope.query.type == 'ITEM' ? 'item' : 'component_set';
+
+            $http.get('/scenario/service/' + endpoint + '/', {
+                params:params
+            }).then(
+                function(response){
+                    $scope.queryResults = response.data;
+                },
+                function(response){
+                    if(response.status != 404) {
+                        $scope.$emit('showMessage', ['Asset query failed', 'danger']);
+                    }
+                }
+            );
+        }
+        // END EDIT VIEW
 
         $scope.componentTypes = [{
             id: -1,
@@ -302,7 +341,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.$on('dropzoneComplete', function (event, data) {
             dropzonesProcessed++;
             if (dropzonesProcessed == $scope.dropzones.length) {
-                if($scope.selectedAsset.id == $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT) {
+                if ($scope.selectedAsset.id == $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT) {
                     $http.post(
                         '/scenario/service/post_process_component_set/',
                         {id: $scope.assetId}
@@ -318,7 +357,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             $scope.$emit('showMessage', ['Error Post Processing Component Set', 'danger']);
                         }
                     );
-                }else{
+                } else {
                     $scope.$emit('showMessage', ['Asset created successfully', 'success']);
                     $route.reload();
                     $scope.$emit('blockUi', [false]);
@@ -350,6 +389,36 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             $(cont).html("");
         }
 
+    }])
+
+    .directive('assetResult', [ function(){
+        return{
+            template:
+            "<td>{$obj.name$}</td>" +
+            "<td>{$obj.description$}</td>" +
+            "<td>{$obj.setType$}</td>" +
+            "<td>{$splitTags(obj.tags)$}</td>"+
+            "<td><img class='thumbnail' ng-src='{$\"/scenario/service/texture/\" + obj.texture.id + \"?format=image\"$}'/></td>",
+            scope:{
+               obj:"=sweetTarget"
+            },
+            link: function ($scope, element, attrs, ctrls) {
+                $scope.splitTags = function(tags){
+                    var res = "";
+                    for(var i = 0; i < tags.length; i++) {
+                        res += tags[i].value;
+                    }
+                    if(res.length > 0){
+                        res = res.substr(0, res.length - 1);
+                    }
+                    return res;
+                };
+
+                $scope.getUrlFromBody = function(){
+
+                }
+            }
+        }
     }])
 
     // Directive for dropzone file uploader

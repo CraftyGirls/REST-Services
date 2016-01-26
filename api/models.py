@@ -64,6 +64,7 @@ class ComponentSet(Taggable):
     jsonRepresentation = models.TextField(default='')
     fileUrl = models.CharField(default='', max_length=512)
     setType = models.CharField(default='', max_length=100, choices=TYPE_CHOICES)
+    description = models.TextField(default='')
 
     def get_components(self):
         return list(CharacterComponent.objects.filter(componentSet=self))
@@ -87,7 +88,8 @@ class ComponentSet(Taggable):
             'jsonRepresentation': self.jsonRepresentation,
             'setType': self.setType,
             'components': compsArr,
-            'tags': tagsArr
+            'tags': tagsArr,
+            'description':self.description
         }
 
     def asJson(self):

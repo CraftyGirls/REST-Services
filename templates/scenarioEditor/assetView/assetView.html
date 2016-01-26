@@ -4,80 +4,156 @@
 
         <h1>Assets</h1>
 
-        <div class="content-block">
-            <div>
-                <div class="row padded-top-bottom-10">
-                    <div class="col-sm-1">
-                        <span>Asset Type:</span>
+        <strong>Mode</strong>
+
+        <form>
+            <label>
+                Create
+                <input type="radio"
+                       ng-model="mode"
+                       name="create"
+                       value="CREATE">
+            </label>
+            <label>
+                Edit
+                <input type="radio"
+                       ng-model="mode"
+                       name="edit"
+                       value="EDIT">
+            </label>
+        </form>
+
+        <div ng-show="mode=='CREATE'">
+            <div class="content-block">
+                <div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Asset Type:</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <select ng-model="selectedAsset"
+                                    ng-options="type as type.label for type in asset.types track by type.id"
+                                    ng-init="selectedAsset = asset.types[0]" ng-change="onAssetTypeChanged()"
+                                    title="Asset Type"></select>
+                        </div>
                     </div>
-                    <div class="col-sm-1">
-                        <select ng-model="selectedAsset"
-                                ng-options="type as type.label for type in asset.types track by type.id"
-                                ng-init="selectedAsset = asset.types[0]" ng-change="onAssetTypeChanged()"
-                                title="Asset Type"></select>
+                    <div class="row padded-top-bottom-10" ng-show="showCharacterComponentTypes">
+                        <div class="col-sm-1">
+                            <span>Component Type:</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <select ng-model="selectedComponentType"
+                                    ng-options="type as type.label for type in componentTypes track by type.id"
+                                    ng-init="selectedComponentType = componentTypes[0]"
+                                    ng-change="onComponentTypeChange()"
+                                    title="Component Type"></select>
+                        </div>
                     </div>
                 </div>
-                <div class="row padded-top-bottom-10" ng-show="showCharacterComponentTypes">
-                    <div class="col-sm-1">
-                        <span>Component Type:</span>
+
+                <div ng-show="selectedAsset.id != CONST.ASSET_TYPES.NONE">
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Name:</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="text" name="name" ng-model="asset.name" title="Name" required/>
+                        </div>
                     </div>
-                    <div class="col-sm-1">
-                        <select ng-model="selectedComponentType"
-                                ng-options="type as type.label for type in componentTypes track by type.id"
-                                ng-init="selectedComponentType = componentTypes[0]"
-                                ng-change="onComponentTypeChange()"
-                                title="Component Type"></select>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Description:</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <textarea type="text" name="name" ng-model="asset.description"></textarea>
+                        </div>
                     </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Tags (Comma Seperated):</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="text" name="name" ng-model="asset.tags"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="showFileUploaders">
+                    <div id="file-upload-container"></div>
+                    <button class="btn btn-primary" id="upload-files"
+                            ng-show="selectedAsset.id == CONST.ASSET_TYPES.CHARACTER_COMPONENT"
+                            ng-click="initJointPlacement()">Place Joints
+                    </button>
+                </div>
+                <div ng-show="componentFilesConfirmed" class="padded-top-bottom-10">
+                    <span>Left components tinted red. Right Components tinted blue</span>
+                    <br/>
+                    <span>It's your left, not the character's left</span>
+                    <br/>
+                    <span>Component Scale : </span>
+                    <input type="number" ng-model="componentScale" step="0.1" min=0.1/>
+                    <component-builder class="padded-top-bottom-10" joints="joints" components="componentImages"
+                                       component-type="selectedComponentType"
+                                       component-scale="componentScale"></component-builder>
                 </div>
             </div>
 
-            <div ng-show="selectedAsset.id != CONST.ASSET_TYPES.NONE">
-                <div class="row padded-top-bottom-10">
-                    <div class="col-sm-1">
-                        <span>Name:</span>
-                    </div>
-                    <div class="col-sm-1">
-                        <input type="text" name="name" ng-model="asset.name" title="Name" required/>
-                    </div>
-                </div>
-                <div class="row padded-top-bottom-10">
-                    <div class="col-sm-1">
-                        <span>Description:</span>
-                    </div>
-                    <div class="col-sm-1">
-                        <textarea type="text" name="name" ng-model="asset.description"></textarea>
-                    </div>
-                </div>
-                <div class="row padded-top-bottom-10">
-                    <div class="col-sm-1">
-                        <span>Tags (Comma Seperated):</span>
-                    </div>
-                    <div class="col-sm-1">
-                        <input type="text" name="name" ng-model="asset.tags"/>
-                    </div>
-                </div>
-            </div>
+            <button class="btn btn-primary" ng-click="uploadAsset()">Save Asset</button>
 
-            <div ng-show="showFileUploaders">
-                <div id="file-upload-container"></div>
-                <button class="btn btn-primary" id="upload-files"
-                        ng-show="selectedAsset.id == CONST.ASSET_TYPES.CHARACTER_COMPONENT"
-                        ng-click="initJointPlacement()">Place Joints
-                </button>
-            </div>
-            <div ng-show="componentFilesConfirmed" class="padded-top-bottom-10">
-                <span>Left components tinted red. Right Components tinted blue</span>
-                <br/>
-                <span>It's your left, not the character's left</span>
-                <br/>
-                <span>Component Scale : </span>
-                <input type="number" ng-model="componentScale" step="0.1" min=0.1/>
-                <component-builder class="padded-top-bottom-10" joints="joints" components="componentImages" component-type="selectedComponentType"
-                                   component-scale="componentScale"></component-builder>
-            </div>
         </div>
 
-        <button class="btn btn-primary" ng-click="uploadAsset()">Save Asset</button>
+        <div ng-show="mode=='EDIT'">
+            Edit
+            <!-- Search Box -->
+            <div class="content-block">
+                <label>
+                    Name
+                    <input ng-model="query.name" type="text" ng-change="queryChanged()"/>
+                </label>
+                <br/>
+                <label>
+                    Tags
+                    <input ng-model="query.tags" type="text" ng-change="queryChanged()"/>
+                </label>
+                <br/>
+                <div>
+                    <strong>Type</strong>
+                    <br/>
+                    <label>
+                        Component
+                        <input type="radio"
+                               ng-model="query.type"
+                               name="component"
+                               checked="checked"
+                               value="COMPONENT"
+                               ng-change="queryChanged()">
+                    </label>
+                    <label>
+                        Item
+                        <input type="radio"
+                               ng-change="queryChanged()"
+                               ng-model="query.type"
+                               name="item"
+                               value="ITEM">
+                    </label>
+                </div>
+                <!-- Search Results -->
+                <div class="content-block">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Tags</th>
+                                <th>Texture</th>
+                            </tr>
+                        </thead>
+                            <tr asset-result ng-repeat="result in queryResults" sweet-target="result"></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
 
     </div>
 

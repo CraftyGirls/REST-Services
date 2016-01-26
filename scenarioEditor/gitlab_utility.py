@@ -43,12 +43,14 @@ def update_file(project_name, branch, file, file_contents, encoding):
     return git.updatefile(proj_id, file, branch, file_contents, "Content Updated", encoding)
     
 
-def get_project_url(project_name):
-    git = login()
-    for project in git.getprojects():
-        if project['name'] == project_name:
-            return project["web_url"]
-
+def get_project_url():
+    configParser = ConfigParser.RawConfigParser()
+    configFilePath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'gitlab.cnf')
+    configParser.read(configFilePath)
+    proj = configParser.get('contents', 'project')
+    username = configParser.get('contents', 'username')
+    url = configParser.get('contents', 'url')
+    return url + "/" + username + "/" + proj
 
 def get_project_name():
     configParser = ConfigParser.RawConfigParser()

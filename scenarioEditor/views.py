@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.template import Template, Context, RequestContext
@@ -185,7 +185,7 @@ def edit_scenario_view(request, scenario_id):
         if scenario is not None:
             if scenario.owner.id != PDUser.objects.get(user=request.user).id:
                 return HttpResponse("Unauthorized")
-            scenario.jsonUrl = gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" +  scenario.jsonUrl
+            scenario.jsonUrl = gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" +  scenario.jsonUrl
             scenario.script = urllib2.urlopen(scenario.jsonUrl).read()
             return render(request, 'scenarioEditor/index.html/', {'scenario': scenario})
     else:
@@ -562,7 +562,7 @@ def post_process_component_set_service(request):
             if parent_set is not None:
 
                 set_json_str = urllib2.urlopen(
-                    gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + parent_set.jsonRepresentation
+                    gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + parent_set.jsonRepresentation
                 ).read()
                 set_json_obj = json.loads(set_json_str)
 
@@ -684,8 +684,30 @@ def proxy_service(request):
 def texture_service(request, texture_id):
     if request.method == "GET":
         if texture_id is not None:
-            tex_dict = Texture.objects.get(id=texture_id).asDict()
-            return HttpResponse(json.dumps(tex_dict, sort_keys=True, indent=4, separators=(',', ': ')),
+            if 'format' in request.GET and request.GET['format'] == 'image':
+                try:
+                    tex = Texture.objects.get(id=texture_id)
+                except:
+                    return HttpResponse('Texture could not be found', status=404)
+                url = gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + tex.imageUrl
+                return HttpResponseRedirect(url)
+            elif 'format' in request.GET and request.GET['format'] == 'url' :
+                try:
+                    tex = Texture.objects.get(id=texture_id)
+                except:
+                    return HttpResponse('Texture could not be found', status=404)
+
+                return HttpResponse(gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + tex.imageUrl)
+            else:
+                tex_dict = Texture.objects.get(id=texture_id).asDict()
+                return HttpResponse(json.dumps(tex_dict, sort_keys=True, indent=4, separators=(',', ': ')),
+                                    content_type=APPLICATION_JSON)
+        else:
+            texturesArr = []
+            textures = Texture.objects.all()
+            for tex in textures:
+                texturesArr.append(tex.asDict())
+            return HttpResponse(json.dumps(texturesArr, sort_keys=True, indent=4, separators=(',', ': ')),
                                 content_type=APPLICATION_JSON)
     return None
 
@@ -694,12 +716,9 @@ def gitlab_asset(request):
     if request.method == "GET":
         if 'asset' in request.GET:
             url = urllib2.urlopen(
-                    gitlab_utility.get_project_url(gitlab_utility.get_project_name()) + "/raw/" + PDUser.branch_for_user(request.user) + "/" + request.GET[
+                    gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + request.GET[
                         "asset"])
-            http_message = url.info()
-            content_type = http_message.type
-            content = url.read()
-            return HttpResponse(content, content_type=content_type)
+            return HttpResponseRedirect(url)
         else:
             return HttpResponse("url param required", status=400)
     else:
