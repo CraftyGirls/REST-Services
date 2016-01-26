@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -231,6 +232,12 @@ def component_set_service(request, component_set_id=None):
                 else:
                     filteredSets = sets.all()
 
+
+                paginator = Paginator(filteredSets, 10)
+
+                if 'page' in request.GET:
+                    filteredSets = paginator.page(request.GET['page']).object_list
+
                 if (len(filteredSets) > 0):
                     cj = []
                     for c in filteredSets:
@@ -329,6 +336,11 @@ def item_service(request, item_id=None):
                             filteredItems.append(item)
             else:
                 filteredItems = items.all()
+
+            paginator = Paginator(filteredItems, 3)
+
+            if 'page' in request.GET:
+                filteredItems = paginator.page(request.GET['page']).object_list
 
             if (len(filteredItems) > 0):
                 cj = []
