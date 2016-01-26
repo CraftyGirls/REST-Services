@@ -149,7 +149,7 @@
                                 <th>Texture</th>
                             </tr>
                         </thead>
-                            <tr asset-result ng-repeat="result in queryResults" sweet-target="result"></tr>
+                            <tr asset-result ng-repeat="result in queryResults" sweet-target="result" sweet-type="{$query.type$}"></tr>
                     </table>
                 </div>
             </div>

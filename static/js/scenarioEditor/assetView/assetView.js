@@ -71,7 +71,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
         // EDIT VIEW
         $scope.query = {
-            type:'COMPONENT'
+            type: 'COMPONENT'
         };
 
         $scope.queryResults = [];
@@ -91,18 +91,20 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             var endpoint = $scope.query.type == 'ITEM' ? 'item' : 'component_set';
 
             $http.get('/scenario/service/' + endpoint + '/', {
-                params:params
+                params: params
             }).then(
-                function(response){
+                function (response) {
                     $scope.queryResults = response.data;
                 },
-                function(response){
-                    if(response.status != 404) {
+                function (response) {
+                    if (response.status != 404) {
                         $scope.$emit('showMessage', ['Asset query failed', 'danger']);
                     }
                 }
             );
         }
+        performQuery();
+
         // END EDIT VIEW
 
         $scope.componentTypes = [{
@@ -391,31 +393,35 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     }])
 
-    .directive('assetResult', [ function(){
-        return{
-            template:
-            "<td>{$obj.name$}</td>" +
+    .directive('assetResult', ['$compile', function ($compile) {
+        return {
+            template: "<td>{$obj.name$}</td>" +
             "<td>{$obj.description$}</td>" +
             "<td>{$obj.setType$}</td>" +
-            "<td>{$splitTags(obj.tags)$}</td>"+
-            "<td><img class='thumbnail' ng-src='{$\"/scenario/service/texture/\" + obj.texture.id + \"?format=image\"$}'/></td>",
-            scope:{
-               obj:"=sweetTarget"
+            "<td>{$splitTags(obj.tags)$}</td>" +
+            "<td id='img-container'></td>",
+            scope: {
+                obj: "=sweetTarget",
+                type: "@sweetType"
             },
             link: function ($scope, element, attrs, ctrls) {
-                $scope.splitTags = function(tags){
+                $scope.splitTags = function (tags) {
                     var res = "";
-                    for(var i = 0; i < tags.length; i++) {
+                    for (var i = 0; i < tags.length; i++) {
                         res += tags[i].value;
                     }
-                    if(res.length > 0){
+                    if (res.length > 0) {
                         res = res.substr(0, res.length - 1);
                     }
                     return res;
                 };
 
-                $scope.getUrlFromBody = function(){
-
+                if ($scope.type == 'ITEM') {
+                    $(element).find("#img-container").append($compile("<img class='thumbnail' ng-src='/scenario/service/texture/" + $scope.obj.texture.id + "?format=image'/>")($scope));
+                } else {
+                    for (var i = 0; i < $scope.obj.components.length; i++) {
+                        $(element).find("#img-container").append($compile("<img class='thumbnail' ng-src='/scenario/service/texture/" + $scope.obj.components[i].texture.id + "?format=image'/>")($scope));
+                    }
                 }
             }
         }
