@@ -222,5 +222,11 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
             charService.getCurrChar().getComponentForType(component).src = "";
             $scope.charToImgMap[charService.getCurrChar().id][component] = [];
         };
+
+        for(var i = 0; i < charService.chars().length; i++){
+            $scope.updateTextures(charService.chars()[i]);
+            
+        }
+
     }]);
 
