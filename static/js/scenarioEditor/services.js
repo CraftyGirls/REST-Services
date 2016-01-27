@@ -1073,6 +1073,7 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
                 }
                 var path = jointSrc.split("/master");
                 path = path.length > 1 ? path[1] : path[0];
+                console.log(path);
                 $http.get('/scenario/service/gitlab_asset/', {
                     params: {
                         asset: path

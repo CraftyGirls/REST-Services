@@ -200,13 +200,6 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                 })
                 .then(function success(response) {
                         var correctedData = response.data;
-                        for(var j = 0; j < correctedData.length; j++) {
-                            for (var i = 0; i < correctedData[j].components.length; i++) {
-                                var url = correctedData[j].components[i].jsonRepresentation;
-                                url = '/scenario/service/gitlab_asset?asset=' + url;
-                                correctedData[j].components[i].jsonRepresentation = url;
-                            }
-                        }
                         $scope.componentSets = correctedData;
                     },
                     function failure(response) {

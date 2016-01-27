@@ -106,7 +106,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD')">
-                            <img class="thumbnail" ng-src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl$}"/>
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
                             <span>{$img.componentType$}</span>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('HEAD').src == ''">
@@ -126,7 +126,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM')">
-                            <img class="thumbnail" ng-src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl$}"/>
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
                         </div>
 
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_ARM').src == ''">
@@ -147,7 +147,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO')">
-                            <img class="thumbnail" ng-src="{$ '/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
+                            <img class="thumbnail-small" ng-src="{$ '/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('TORSO').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('TORSO').tags"></sweet-tags>
@@ -167,7 +167,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM')">
-                            <img class="thumbnail" ng-src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl$}"/>
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_ARM').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('RIGHT_ARM').tags"></sweet-tags>
@@ -187,7 +187,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS')">
-                            <img class="thumbnail" ng-src="{$ '/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
+                            <img class="thumbnail-small" ng-src="{$ '/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('PELVIS').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('PELVIS').tags"></sweet-tags>
@@ -207,7 +207,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG')">
-                            <img class="thumbnail" ng-src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_LEG').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('LEFT_LEG').tags"></sweet-tags>
@@ -226,7 +226,7 @@
                             </button>
                         </div>
                         <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG')">
-                            <img class="thumbnail" ng-src="{$'/scenario/service/gitlab_asset?asset=' + c.imageUrl $}"/>
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src == ''">
                             <sweet-tags sweet-target="getCurrChar().getComponentForType('RIGHT_LEG').tags"></sweet-tags>
@@ -276,7 +276,7 @@
                                 </div>
                             </td>
                             <td ng-repeat="img in comp.components">
-                                <img class="thumbnail" ng-src="{$'/scenario/service/gitlab_asset?asset=' + img.texture.imageUrl$}"/>
+                                <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + img.texture.id + '?format=image'$}"/>
                                 <span>{$img.componentType$}</span>
                             </td>
                         </tr>

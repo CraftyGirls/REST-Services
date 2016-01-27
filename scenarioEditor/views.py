@@ -840,7 +840,7 @@ def gitlab_asset(request):
             url = urllib2.urlopen(
                 gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + request.GET[
                     "asset"])
-            return HttpResponseRedirect(url)
+            return HttpResponse(url.read())
         else:
             return HttpResponse("url param required", status=400)
     else:

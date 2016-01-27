@@ -56,7 +56,7 @@ angular.module('scenarioEditor.itemView', ['ngRoute', 'scenarioServices'])
         $scope.selectTexture = function (texture, item) {
             textureService.getTextureById(texture).then(
                 function (tex) {
-                    $scope.textureUrl = "/scenario/service/gitlab_asset?asset=" + tex.imageUrl;
+                    $scope.textureUrl = "/scenario/service/texture/" + tex.id + "?format=image";
                     item.texture = tex.id;
                 },
                 function (response) {
