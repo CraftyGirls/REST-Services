@@ -305,40 +305,60 @@ def component_set_service(request, component_set_id=None):
             in_data = json.loads(request.body)
             comp_set_form = ComponentSetForm(data=in_data)
             if comp_set_form.is_valid():
-                comp_set = ComponentSet()
+                if component_set_id is None:
+                    comp_set = ComponentSet()
+                else:
+                    try:
+                        comp_set = ComponentSet.objects.get(id=long(component_set_id))
+                    except:
+                        return HttpResponse("Could not find component set for id " + str(component_set_id), status=404)
                 comp_set.name = comp_set_form.cleaned_data["name"]
                 comp_set.description = comp_set_form.cleaned_data["description"]
                 comp_set.setType = comp_set_form.cleaned_data["setType"]
 
-                joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
+                if component_set_id is None:
 
-                json_obj = json.loads(comp_set_form.cleaned_data["joints"])
+                    joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
 
-                gitlab_utility.create_file(gitlab_utility.get_project_name(),
-                                           PDUser.branch_for_user(user=request.user),
-                                           joints_file_name,
-                                           json.dumps(json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
-                                           "text")
+                    json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
-                comp_set.jsonRepresentation = joints_file_name
+                    gitlab_utility.create_file(gitlab_utility.get_project_name(),
+                                               PDUser.branch_for_user(user=request.user),
+                                               joints_file_name,
+                                               json.dumps(json_obj, sort_keys=True, indent=4, separators=(',', ': ')),
+                                               "text")
+
+                    comp_set.jsonRepresentation = joints_file_name
+
+
                 comp_set.save()
 
+                tags = comp_set.getTags()
+
+                ex_tag_vals = []
+
+                for tag in tags:
+                    ex_tag_vals.append(tag.value)
+
                 for t in comp_set_form.cleaned_data["tags"]:
-                    tag = Tag(value=t)
-                    tag.owner = comp_set
-                    tag.save()
+                    if t not in ex_tag_vals:
+                        tag = Tag(value=t)
+                        tag.owner = comp_set
+                        tag.save()
 
-                components = {'components': []}
-                sets = ComponentSet.objects.all()
+                if component_set_id is None:
 
-                for set in sets:
-                    components['components'].append(set.jsonRepresentation)
+                    components = {'components': []}
+                    sets = ComponentSet.objects.all()
 
-                gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                                           PDUser.branch_for_user(user=request.user),
-                                           "component-definitions.json",
-                                           json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
-                                           "text")
+                    for set in sets:
+                        components['components'].append(set.jsonRepresentation)
+
+                    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                                               PDUser.branch_for_user(user=request.user),
+                                               "component-definitions.json",
+                                               json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
+                                               "text")
 
                 return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
                                     content_type='application/json')
@@ -422,19 +442,35 @@ def item_service(request, item_id=None):
     elif request.method == 'POST':
         try:
             in_data = json.loads(request.body)
-            itemForm = ItemForm(data=in_data)
-            if (itemForm.is_valid()):
-                item = ItemDefinition()
-                item.name = itemForm.cleaned_data["name"]
-                item.description = itemForm.cleaned_data["description"]
+            item_form = ItemForm(data=in_data)
+            if item_form.is_valid():
+                if item_id is None:
+                    item = ItemDefinition()
+                else:
+                    try:
+                        item = ItemDefinition.objects.get(id=long(item_id))
+                    except:
+                        return HttpResponse('Item for id ' + item_id + ' could not be found', status=404)
+                item.name = item_form.cleaned_data["name"]
+                item.description = item_form.cleaned_data["description"]
                 item.save()
-                for t in itemForm.cleaned_data["tags"]:
-                    tag = Tag(value=t)
-                    tag.owner = item
-                    tag.save()
+
+                tags = item.getTags()
+
+                ex_tag_vals = []
+
+                for tag in tags:
+                    ex_tag_vals.append(tag.value)
+
+                for t in item_form.cleaned_data["tags"]:
+                    if t not in ex_tag_vals:
+                        tag = Tag(value=t)
+                        tag.owner = item
+                        tag.save()
+
                 return HttpResponse('{"status":"created", "id":' + str(item.id) + '}', content_type='application/json')
             else:
-                return HttpResponse("Invalid request data - " + itemForm.errors.as_json(), status=400)
+                return HttpResponse("Invalid request data - " + item_form.errors.as_json(), status=400)
         except:
             return HttpResponse("Bad post data - " + request.body, status=400)
     elif request.method == 'DELETE':
