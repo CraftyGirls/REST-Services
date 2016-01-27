@@ -102,6 +102,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 function (response) {
                     if (response.status != 404) {
                         $scope.$emit('showMessage', ['Asset query failed', 'danger']);
+                    }else{
+                        $scope.queryResults = [];
                     }
                 }
             );

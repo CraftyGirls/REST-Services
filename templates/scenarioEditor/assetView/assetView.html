@@ -105,7 +105,7 @@
         <div ng-show="mode=='EDIT'">
             Edit
             <!-- Search Box -->
-            <div class="content-block">
+            <div class="content-block" >
                 <label>
                     Name
                     <input ng-model="query.name" type="text" ng-change="queryChanged()"/>
@@ -138,7 +138,10 @@
                     </label>
                 </div>
                 <!-- Search Results -->
-                <div class="content-block">
+                 <div class="content-block" ng-show="queryResults.length == 0">
+                    <strong>No Results Founds</strong>
+                </div>
+                <div ng-show="queryResults.length > 0" class="content-block">
                     <table class="table table-striped">
                         <thead>
                             <tr>
