@@ -52,7 +52,8 @@ var application = angular.module('scenarioEditor', [
                 scope: {
                     variable: "=",
                     container: "=",
-                    confirm: "="
+                    confirm: "=",
+                    onComplete: "="
                 },
                 template: '<span class="glyphicon glyphicon-remove clickable hover-fade" ng-click="sweetDelete()"></span>',
                 link: function ($scope, iElm, iAttrs, controller) {
@@ -64,13 +65,19 @@ var application = angular.module('scenarioEditor', [
                             }
                         };
 
+                        var deleted = false;
                         if ($scope.confirm == true) {
                             var msg = "Are you sure?";
                             if (window.confirm(msg)) {
                                 $scope.$eval(this.del());
+                                deleted = true;
                             }
                         } else {
                             this.del();
+                            deleted = true;
+                        }
+                        if ($scope.onComplete != null) {
+                            $scope.onComplete(deleted);
                         }
                     }
                 }
@@ -101,7 +108,7 @@ var application = angular.module('scenarioEditor', [
                     type: "@sweetType",
                     trigger: "=sweetTrigger",
                     field: "@sweetField",
-                    dependsOn:"@sweetDependsOn"
+                    dependsOn: "@sweetDependsOn"
                 },
                 transclude: true,
                 template: '<div class="row"><div class="col-sm-1 right-justify"><span>{$field$} = </span></div></div>',
@@ -123,12 +130,12 @@ var application = angular.module('scenarioEditor', [
                         return convoService.conversations();
                     };
 
-                    $scope.getStates = function(id){
+                    $scope.getStates = function (id) {
                         return charService.getById(id).states;
                     };
 
-                    $scope.getDependsOnOptions = function(){
-                        if($scope.trigger.args[$scope.field].type == 'CHARACTER_STATE'){
+                    $scope.getDependsOnOptions = function () {
+                        if ($scope.trigger.args[$scope.field].type == 'CHARACTER_STATE') {
                             try {
                                 console.log($scope.trigger.args[$scope.field]);
                                 var charId = $scope.trigger.args[$scope.trigger.args[$scope.field].dependsOn].value;
@@ -136,7 +143,9 @@ var application = angular.module('scenarioEditor', [
                                 if (char != null) {
                                     return char.states;
                                 }
-                            }catch (err){console.log(err)}
+                            } catch (err) {
+                                console.log(err)
+                            }
                         }
                         return [];
                     };
@@ -202,7 +211,7 @@ var application = angular.module('scenarioEditor', [
                     return triggerService.triggers();
                 };
 
-                $scope.getChars = function(){
+                $scope.getChars = function () {
                     return charService.chars();
                 };
 
@@ -210,7 +219,7 @@ var application = angular.module('scenarioEditor', [
                     var trigger = new Trigger();
                     trigger.type = $scope.selected.type;
                     for (var i = 0; i < $scope.selected.args.length; i++) {
-                        trigger.addArg($scope.selected.args[i].field, $scope.selected.args[i].dataType,  $scope.selected.args[i].dependsOn) ;
+                        trigger.addArg($scope.selected.args[i].field, $scope.selected.args[i].dataType, $scope.selected.args[i].dependsOn);
                     }
                     $scope.target.push(trigger);
                 };
@@ -231,9 +240,8 @@ var application = angular.module('scenarioEditor', [
             scope: {
                 target: "=sweetTarget"
             },
-            replace:true,
-            template:
-            "<div>" +
+            replace: true,
+            template: "<div>" +
             "<div class='row padded-top-bottom-10'><div class='col-md-6'><strong>Excluded</strong></div></div>" +
             "<div class='row' ng-repeat='tag in target.not track by $index'>" +
             "<div class='col-sm-2'>" +
@@ -285,9 +293,9 @@ var application = angular.module('scenarioEditor', [
                     }
                 };
 
-                function exists(val){
-                    return(
-                           $scope.target.required.indexOf(val) != -1
+                function exists(val) {
+                    return (
+                        $scope.target.required.indexOf(val) != -1
                         || $scope.target.preferred.indexOf(val) != -1
                         || $scope.target.not.indexOf(val) != -1
                     )

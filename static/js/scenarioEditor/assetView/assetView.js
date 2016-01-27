@@ -82,12 +82,15 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
         function performQuery() {
             var params = {};
+
             if ($scope.query.tags != null && $scope.query.tags.length > 0) {
                 params["tags"] = $scope.query.tags;
             }
+
             if ($scope.query.name != null && $scope.query.name.length > 0) {
                 params["name"] = $scope.query.name;
             }
+
             var endpoint = $scope.query.type == 'ITEM' ? 'item' : 'component_set';
 
             $http.get('/scenario/service/' + endpoint + '/', {
@@ -104,6 +107,32 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             );
         }
         performQuery();
+
+        $scope.$on('saveAsset', function(event, data){
+            var asset = data[0];
+        });
+
+        $scope.$on('deleteAsset', function(event, data){
+            var asset = data[0];
+            if($scope.query.type == 'ITEM' || $scope.query.type == 'COMPONENT'){
+                var endpoint = $scope.query.type == 'ITEM' ? 'item' : 'component_set';
+                $http.delete('/scenario/service/' + endpoint + '/' + asset.id).then(
+                    function(response){
+                        $scope.$emit('blockUi',[false]);
+                        $scope.$emit('showMessage', ['Asset deleted', 'success']);
+                        var idx = $scope.queryResults.indexOf(asset);
+                        $scope.queryResults.splice(idx, 1);
+                    },
+                    function(response){
+                        $scope.$emit('showMessage', ['Error deleting asset', 'danger']);
+                        $scope.$emit('false',[false]);
+                    }
+                );
+                $scope.$emit('blockUi',[true]);
+            }else{
+                $scope.$emit('showMessage', ['Invalid asset mode - ' + $scope.mode, 'danger']);
+            }
+        });
 
         // END EDIT VIEW
 
@@ -199,7 +228,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 for (var i = 0; i < errors.length; i++) {
                     $scope.$emit('showMessage', [errors[i], 'danger']);
                 }
-
             }
         };
 
@@ -353,7 +381,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             $scope.$emit('showMessage', ['Asset created successfully', 'success']);
                             $route.reload();
                             $scope.$emit('blockUi', [false]);
-                            $scope.$apply();
                         },
                         function (response) {
                             $scope.$emit('showMessage', ['Error Post Processing Component Set', 'danger']);
@@ -395,16 +422,29 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     .directive('assetResult', ['$compile', function ($compile) {
         return {
-            template: "<td>{$obj.name$}</td>" +
-            "<td>{$obj.description$}</td>" +
+            template: "<td ng-if='state==\"view\"'>{$obj.name$}</td>" +
+            "<td ng-if='state==\"view\"'>{$obj.description$}</td>" +
+            "<td ng-if='state==\"view\"'>{$splitTags(obj.tags)$}</td>" +
+            "<td ng-if='state==\"view\"' id='img-container'></td>" +
+            "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.name'/></td>" +
+            "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.description'/></td>" +
+            "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.tags'/></td>" +
             "<td>{$obj.setType$}</td>" +
-            "<td>{$splitTags(obj.tags)$}</td>" +
-            "<td id='img-container'></td>",
+            "<td id='img-container'></td>" +
+            "<td>" +
+            "<span ng-click='onDelete()' class='glyphicon glyphicon-remove clickable hover-fade action-icon'></span>" +
+            "<span ng-if='state==\"view\"' ng-click='onEdit()' class='glyphicon glyphicon-edit clickable hover-fade action-icon'></span>" +
+            "<span ng-if='state==\"edit\"' ng-click='onSave()' class='glyphicon glyphicon-floppy-save clickable hover-fade action-icon'></span>" +
+            "</td>",
             scope: {
                 obj: "=sweetTarget",
                 type: "@sweetType"
             },
+            transclude:true,
             link: function ($scope, element, attrs, ctrls) {
+
+                $scope.state = 'view';
+
                 $scope.splitTags = function (tags) {
                     var res = "";
                     for (var i = 0; i < tags.length; i++) {
@@ -417,11 +457,23 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 };
 
                 if ($scope.type == 'ITEM') {
-                    $(element).find("#img-container").append($compile("<img class='thumbnail' ng-src='/scenario/service/texture/" + $scope.obj.texture.id + "?format=image'/>")($scope));
+                    $(element).find("#img-container").append($compile("<img class='thumbnail-small' ng-src='/scenario/service/texture/" + $scope.obj.texture.id + "?format=image'/>")($scope));
                 } else {
                     for (var i = 0; i < $scope.obj.components.length; i++) {
-                        $(element).find("#img-container").append($compile("<img class='thumbnail' ng-src='/scenario/service/texture/" + $scope.obj.components[i].texture.id + "?format=image'/>")($scope));
+                        $(element).find("#img-container").append($compile("<img class='thumbnail-small' ng-src='/scenario/service/texture/" + $scope.obj.components[i].texture.id + "?format=image'/>")($scope));
                     }
+                }
+
+                $scope.onDelete = function(){
+                    $scope.$emit('deleteAsset', [$scope.obj]);
+                };
+
+                $scope.onSave = function(){
+                    $scope.$emit('saveAsset', [$scope.obj]);
+                };
+
+                $scope.onEdit = function(){
+                    $scope.state = 'edit';
                 }
             }
         }

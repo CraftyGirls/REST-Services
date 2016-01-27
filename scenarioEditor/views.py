@@ -73,6 +73,55 @@ def user_home_view(request):
     return render(request, 'scenarioEditor/profile/home.html/', {})
 
 
+def dump_component_textures(request):
+    comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
+    assets = {'assets': []}
+
+    for tex in comp_textures:
+        d = tex.asDict()
+        d.pop("imageUrl", None)
+        d['type'] = 'texture'
+        assets['assets'].append(d)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                               PDUser.branch_for_user(user=request.user),
+                               "component-textures.json",
+                               json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
+
+def dump_item_textures(request):
+    item_textures = Texture.objects.filter(type=Texture.ITEM).all()
+
+    assets = {'assets': []}
+
+    for tex in item_textures:
+        d = tex.asDict()
+        d.pop("imageUrl", None)
+        d['type'] = 'texture'
+        assets['assets'].append(d)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                               PDUser.branch_for_user(user=request.user),
+                               "item-textures.json",
+                               json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
+
+def dump_component_definitions(request):
+    components = {'components': []}
+    sets = ComponentSet.objects.all()
+
+    for set in sets:
+        components['components'].append(set.jsonRepresentation)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                               PDUser.branch_for_user(user=request.user),
+                               "component-definitions.json",
+                               json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
+                               "text")
+
+
 def browse_scenarios_view(request):
     get_params = request.GET
     simple_query_items = dict()
@@ -148,7 +197,8 @@ def update_scenario_service(request, scenario_id):
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
                 file_name = scenario.jsonUrl
-                gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user), file_name, scenario.script, "text")
+                gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
+                                           file_name, scenario.script, "text")
                 scenario.save()
                 return HttpResponse(request.body)
             else:
@@ -170,7 +220,8 @@ def create_scenario_view(request):
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
             scenario.script = '{"assets":[]}'
             scenario.jsonUrl = file_name
-            gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user), file_name, scenario.script, "text")
+            gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
+                                       file_name, scenario.script, "text")
             scenario.save()
             return redirect(edit_scenario_view, scenario.id)
     else:
@@ -185,7 +236,8 @@ def edit_scenario_view(request, scenario_id):
         if scenario is not None:
             if scenario.owner.id != PDUser.objects.get(user=request.user).id:
                 return HttpResponse("Unauthorized")
-            scenario.jsonUrl = gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" +  scenario.jsonUrl
+            scenario.jsonUrl = gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(
+                request.user) + "/" + scenario.jsonUrl
             scenario.script = urllib2.urlopen(scenario.jsonUrl).read()
             return render(request, 'scenarioEditor/index.html/', {'scenario': scenario})
     else:
@@ -232,7 +284,6 @@ def component_set_service(request, component_set_id=None):
                 else:
                     filteredSets = sets.all()
 
-
                 paginator = Paginator(filteredSets, 10)
 
                 if 'page' in request.GET:
@@ -277,7 +328,7 @@ def component_set_service(request, component_set_id=None):
                     tag.owner = comp_set
                     tag.save()
 
-                components = {'components':[]}
+                components = {'components': []}
                 sets = ComponentSet.objects.all()
 
                 for set in sets:
@@ -287,7 +338,7 @@ def component_set_service(request, component_set_id=None):
                                            PDUser.branch_for_user(user=request.user),
                                            "component-definitions.json",
                                            json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
-                               "text")
+                                           "text")
 
                 return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
                                     content_type='application/json')
@@ -295,6 +346,23 @@ def component_set_service(request, component_set_id=None):
                 return HttpResponse("Invalid request data - " + comp_set_form.errors.as_json(), status=400)
         except:
             return HttpResponse("Bad post data - " + request.body, status=400)
+    elif request.method == 'DELETE':
+        if component_set_id is not None:
+            set = ComponentSet.objects.get(id=component_set_id)
+            components = set.get_components()
+
+            branch = PDUser.branch_for_user(user=request.user)
+
+            for comp in components:
+                url = comp.texture.imageUrl
+                gitlab_utility.delete_file(url, branch)
+                comp.delete()
+
+            gitlab_utility.delete_file(set.jsonRepresentation, branch)
+            set.delete()
+            dump_component_definitions(request)
+            dump_component_textures(request)
+            return HttpResponse('Success')
     else:
         return HttpResponse("Invalid Method", status=405)
 
@@ -350,7 +418,7 @@ def item_service(request, item_id=None):
                 return HttpResponse(data, content_type='application/json')
             else:
                 return HttpResponse("No objects found for query", status=404)
-    elif (request.method == 'POST'):
+    elif request.method == 'POST':
         try:
             in_data = json.loads(request.body)
             itemForm = ItemForm(data=in_data)
@@ -368,6 +436,15 @@ def item_service(request, item_id=None):
                 return HttpResponse("Invalid request data - " + itemForm.errors.as_json(), status=400)
         except:
             return HttpResponse("Bad post data - " + request.body, status=400)
+    elif request.method == 'DELETE':
+        if item_id is not None:
+            item = ItemDefinition.objects.get(id=item_id)
+            gitlab_utility.delete_file(item.texture.imageUrl, PDUser.branch_for_user(user=request.user))
+            item.delete()
+            dump_item_textures(request)
+            return HttpResponse('Success')
+        else:
+            return HttpResponse('Item id required', status=400)
     else:
         return HttpResponse("Invalid Method", status=405)
 
@@ -500,10 +577,10 @@ def trigger_service(request, trigger_id):
             trigger.save()
             for arg in trigger_args:
                 trigger_arg = TriggerArgument(
-                        dataType=arg.cleaned_data['dataType'],
-                        field=arg.cleaned_data['field'],
-                        dependsOn=arg.cleaned_data['dependsOn'],
-                        trigger=trigger
+                    dataType=arg.cleaned_data['dataType'],
+                    field=arg.cleaned_data['field'],
+                    dependsOn=arg.cleaned_data['dependsOn'],
+                    trigger=trigger
                 )
                 trigger_arg.save()
         # UPDATE
@@ -562,7 +639,8 @@ def post_process_component_set_service(request):
             if parent_set is not None:
 
                 set_json_str = urllib2.urlopen(
-                    gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + parent_set.jsonRepresentation
+                    gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(
+                        request.user) + "/" + parent_set.jsonRepresentation
                 ).read()
                 set_json_obj = json.loads(set_json_str)
 
@@ -689,15 +767,17 @@ def texture_service(request, texture_id):
                     tex = Texture.objects.get(id=texture_id)
                 except:
                     return HttpResponse('Texture could not be found', status=404)
-                url = gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + tex.imageUrl
+                url = gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(
+                    request.user) + "/" + tex.imageUrl
                 return HttpResponseRedirect(url)
-            elif 'format' in request.GET and request.GET['format'] == 'url' :
+            elif 'format' in request.GET and request.GET['format'] == 'url':
                 try:
                     tex = Texture.objects.get(id=texture_id)
                 except:
                     return HttpResponse('Texture could not be found', status=404)
 
-                return HttpResponse(gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + tex.imageUrl)
+                return HttpResponse(gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(
+                    request.user) + "/" + tex.imageUrl)
             else:
                 tex_dict = Texture.objects.get(id=texture_id).asDict()
                 return HttpResponse(json.dumps(tex_dict, sort_keys=True, indent=4, separators=(',', ': ')),
@@ -716,8 +796,8 @@ def gitlab_asset(request):
     if request.method == "GET":
         if 'asset' in request.GET:
             url = urllib2.urlopen(
-                    gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + request.GET[
-                        "asset"])
+                gitlab_utility.get_project_url() + "/raw/" + PDUser.branch_for_user(request.user) + "/" + request.GET[
+                    "asset"])
             return HttpResponseRedirect(url)
         else:
             return HttpResponse("url param required", status=400)
@@ -727,46 +807,7 @@ def gitlab_asset(request):
 
 @login_required(login_url='/scenario/login/')
 def dump_data_service(request):
-    comp_textures = Texture.objects.filter(type=Texture.CHARACTER_COMPONENT).all()
-    assets = {'assets': []}
-
-    for tex in comp_textures:
-        d = tex.asDict()
-        d.pop("imageUrl", None)
-        d['type'] = 'texture'
-        assets['assets'].append(d)
-
-    gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                               PDUser.branch_for_user(user=request.user),
-                               "component-textures.json",
-                               json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
-                               "text")
-
-    item_textures = Texture.objects.filter(type=Texture.ITEM).all()
-    assets = {'assets': []}
-
-    for tex in item_textures:
-        d = tex.asDict()
-        d.pop("imageUrl", None)
-        d['type'] = 'texture'
-        assets['assets'].append(d)
-
-    gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                               PDUser.branch_for_user(user=request.user),
-                               "item-textures.json",
-                               json.dumps(assets, sort_keys=True, indent=4, separators=(',', ': ')),
-                               "text")
-
-    components = {'components':[]}
-    sets = ComponentSet.objects.all()
-
-    for set in sets:
-        components['components'].append(set.jsonRepresentation)
-
-    gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                               PDUser.branch_for_user(user=request.user),
-                               "component-definitions.json",
-                               json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
-                               "text")
-
+    dump_component_textures(request)
+    dump_item_textures(request)
+    dump_component_definitions(request)
     return HttpResponse("Success")

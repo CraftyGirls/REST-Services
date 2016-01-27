@@ -43,6 +43,13 @@ def update_file(project_name, branch, file, file_contents, encoding):
     return git.updatefile(proj_id, file, branch, file_contents, "Content Updated", encoding)
     
 
+def delete_file(file, branch):
+    git = login()
+    project_name = get_project_name()
+    proj_id = get_project_id_by_name(project_name)
+    return git.deletefile(proj_id, file, branch, 'Content Deleted')
+
+
 def get_project_url():
     configParser = ConfigParser.RawConfigParser()
     configFilePath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'gitlab.cnf')

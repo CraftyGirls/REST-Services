@@ -29,6 +29,12 @@
     padding: 0;
 }
 
+.thumbnail-small{
+    width: 100px;
+    height: auto;
+    margin: 5px;
+}
+
 .pd-modal {
     position: absolute;
     width: 950px;
@@ -40,6 +46,10 @@
     border-style: solid;
     border-width: 2px;
 
+}
+
+.action-icon{
+    margin: 10px;
 }
 
 #main {

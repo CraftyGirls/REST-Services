@@ -1,4 +1,4 @@
-<div ng-Controller="assetCtrl">
+<div>
 
     <div class="content-block container">
 
@@ -144,12 +144,13 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Type</th>
                                 <th>Tags</th>
+                                <th>Type</th>
                                 <th>Texture</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                            <tr asset-result ng-repeat="result in queryResults" sweet-target="result" sweet-type="{$query.type$}"></tr>
+                        <tr asset-result ng-repeat="result in queryResults" sweet-target="result" sweet-type="{$query.type$}"></tr>
                     </table>
                 </div>
             </div>
