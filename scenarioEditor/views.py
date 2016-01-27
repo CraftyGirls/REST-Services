@@ -312,11 +312,14 @@ def component_set_service(request, component_set_id=None):
                         comp_set = ComponentSet.objects.get(id=long(component_set_id))
                     except:
                         return HttpResponse("Could not find component set for id " + str(component_set_id), status=404)
+                
                 comp_set.name = comp_set_form.cleaned_data["name"]
+                
                 comp_set.description = comp_set_form.cleaned_data["description"]
-                comp_set.setType = comp_set_form.cleaned_data["setType"]
 
                 if component_set_id is None:
+
+                    comp_set.setType = comp_set_form.cleaned_data["setType"]
 
                     joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
 

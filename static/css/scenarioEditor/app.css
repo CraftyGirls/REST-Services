@@ -35,6 +35,14 @@
     margin: 5px;
 }
 
+.dz-success-mark{
+    display: none;
+}
+
+.dz-error-mark{
+    display: none;
+}
+
 .pd-modal {
     position: absolute;
     width: 950px;
