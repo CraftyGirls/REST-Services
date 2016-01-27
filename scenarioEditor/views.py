@@ -356,6 +356,7 @@ def component_set_service(request, component_set_id=None):
             for comp in components:
                 url = comp.texture.imageUrl
                 gitlab_utility.delete_file(url, branch)
+                comp.texture.delete()
                 comp.delete()
 
             gitlab_utility.delete_file(set.jsonRepresentation, branch)
@@ -440,7 +441,9 @@ def item_service(request, item_id=None):
         if item_id is not None:
             item = ItemDefinition.objects.get(id=item_id)
             gitlab_utility.delete_file(item.texture.imageUrl, PDUser.branch_for_user(user=request.user))
+            tex = Texture.objects.get(id=item.texture.id)
             item.delete()
+            tex.delete()
             dump_item_textures(request)
             return HttpResponse('Success')
         else:

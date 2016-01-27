@@ -2,21 +2,21 @@
 
 angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
-    .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/assetView', {
-            templateUrl: '/scenario/assetView/',
-            controller: 'assetCtrl'
-        });
-    }])
+.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider.when('/assetView', {
+        templateUrl: '/scenario/assetView/',
+        controller: 'assetCtrl'
+    });
+}])
 
-    .controller('assetCtrl', ['$scope', '$compile', '$http', '$route', function ($scope, $compile, $http, $route) {
+.controller('assetCtrl', ['$scope', '$compile', '$http', '$route', function ($scope, $compile, $http, $route) {
 
-        $scope.CONST = {};
-        $scope.CONST.ASSET_TYPES = {
-            NONE: -1,
-            CHARACTER_COMPONENT: 1,
-            ITEM: 2
-        };
+    $scope.CONST = {};
+    $scope.CONST.ASSET_TYPES = {
+        NONE: -1,
+        CHARACTER_COMPONENT: 1,
+        ITEM: 2
+    };
 
         // Current Asset
         $scope.asset = {};
@@ -32,14 +32,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             id: $scope.CONST.ASSET_TYPES.NONE,
             label: 'Select Asset Type'
         },
-            {
-                id: $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT,
-                label: 'Character Component'
-            },
-            {
-                id: $scope.CONST.ASSET_TYPES.ITEM,
-                label: 'Item'
-            }
+        {
+            id: $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT,
+            label: 'Character Component'
+        },
+        {
+            id: $scope.CONST.ASSET_TYPES.ITEM,
+            label: 'Item'
+        }
         ];
 
         $scope.dropzones = [];
@@ -96,14 +96,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             $http.get('/scenario/service/' + endpoint + '/', {
                 params: params
             }).then(
-                function (response) {
-                    $scope.queryResults = response.data;
-                },
-                function (response) {
-                    if (response.status != 404) {
-                        $scope.$emit('showMessage', ['Asset query failed', 'danger']);
-                    }
+            function (response) {
+                $scope.queryResults = response.data;
+            },
+            function (response) {
+                if (response.status != 404) {
+                    $scope.$emit('showMessage', ['Asset query failed', 'danger']);
                 }
+            }
             );
         }
         performQuery();
@@ -127,7 +127,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         $scope.$emit('showMessage', ['Error deleting asset', 'danger']);
                         $scope.$emit('false',[false]);
                     }
-                );
+                    );
                 $scope.$emit('blockUi',[true]);
             }else{
                 $scope.$emit('showMessage', ['Invalid asset mode - ' + $scope.mode, 'danger']);
@@ -169,21 +169,21 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             switch ($scope.selectedAsset.id) {
 
                 case $scope.CONST.ASSET_TYPES.NONE :
-                    $scope.showCharacterComponentTypes = false;
-                    break;
+                $scope.showCharacterComponentTypes = false;
+                break;
 
                 case $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT : // Character Component
-                    $scope.showCharacterComponentTypes = true;
-                    if ($scope.selectedComponentType.id != -1) {
-                        $scope.onComponentTypeChange();
-                    }
-                    break;
+                $scope.showCharacterComponentTypes = true;
+                if ($scope.selectedComponentType.id != -1) {
+                    $scope.onComponentTypeChange();
+                }
+                break;
 
                 case $scope.CONST.ASSET_TYPES.ITEM :
-                    addFileUploader("Item Texture");
-                    $scope.showFileUploaders = true;
-                    $scope.showCharacterComponentTypes = false;
-                    break;
+                addFileUploader("Item Texture");
+                $scope.showFileUploaders = true;
+                $scope.showCharacterComponentTypes = false;
+                break;
             }
         };
 
@@ -251,28 +251,28 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 switch ($scope.selectedAsset.id) {
                     case $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT :
 
-                        var valid = true;
-                        var errors = [];
+                    var valid = true;
+                    var errors = [];
 
-                        if ($scope.selectedComponentType.id == -1) {
-                            errors.push('A valid component type must be selected');
+                    if ($scope.selectedComponentType.id == -1) {
+                        errors.push('A valid component type must be selected');
+                        valid = false;
+                    }
+
+                    for (var i = 0; i < $scope.dropzones.length; i++) {
+                        if ($scope.dropzones[i].files.length != 1) {
+                            errors.push('A file is required for each component');
                             valid = false;
+                            break;
                         }
+                    }
 
-                        for (var i = 0; i < $scope.dropzones.length; i++) {
-                            if ($scope.dropzones[i].files.length != 1) {
-                                errors.push('A file is required for each component');
-                                valid = false;
-                                break;
-                            }
-                        }
+                    if (Object.getOwnPropertyNames($scope.joints).length == 0) {
+                        errors.push('Joints must be specified');
+                        valid = false;
+                    }
 
-                        if (Object.getOwnPropertyNames($scope.joints).length == 0) {
-                            errors.push('Joints must be specified');
-                            valid = false;
-                        }
-
-                        if (valid) {
+                    if (valid) {
                             // Setup the appropriate data object for a component set
 
                             var joints = {textures: [], joints: $scope.joints};
@@ -307,18 +307,18 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     alert("Error creating component set - " + response.data);
                                     $scope.$emit('blockUi', [false]);
                                 }
-                            );
-                        } else {
-                            for (var i = 0; i < errors.length; i++) {
-                                $scope.$emit('showMessage', [errors[i], 'danger']);
-                            }
-                        }
+                                );
+} else {
+    for (var i = 0; i < errors.length; i++) {
+        $scope.$emit('showMessage', [errors[i], 'danger']);
+    }
+}
 
-                        break;
+break;
 
-                    case $scope.CONST.ASSET_TYPES.ITEM:
+case $scope.CONST.ASSET_TYPES.ITEM:
 
-                        if ($scope.dropzones[0].files.length == 1) {
+if ($scope.dropzones[0].files.length == 1) {
 
                             // Create the appropriate data object for an item
                             var itemData = {
@@ -349,18 +349,18 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                     alert(response.data);
                                     $scope.$emit('blockUi', [false]);
                                 }
-                            );
+                                );
                         } else {
                             $scope.$emit('showMessage', ['Item texture is required', 'danger']);
                         }
                         break;
+                    }
+                } else {
+                    for (var i = 0; i < errors.length; i++) {
+                        $scope.$emit('showMessage', [errors[i], 'danger']);
+                    }
                 }
-            } else {
-                for (var i = 0; i < errors.length; i++) {
-                    $scope.$emit('showMessage', [errors[i], 'danger']);
-                }
-            }
-        };
+            };
 
         /**
          * The dropzones need to be processed syncronously so that Gitlab doesn't throw
@@ -368,14 +368,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
          * it will emit a dropzoneComplete event. When this is recieved we tell the next
          * on in the array to commit its file
          */
-        $scope.$on('dropzoneComplete', function (event, data) {
+         $scope.$on('dropzoneComplete', function (event, data) {
             dropzonesProcessed++;
             if (dropzonesProcessed == $scope.dropzones.length) {
                 if ($scope.selectedAsset.id == $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT) {
                     $http.post(
                         '/scenario/service/post_process_component_set/',
                         {id: $scope.assetId}
-                    ).then(
+                        ).then(
                         function (response) {
                             // Successfully uploaded all of the files
                             $scope.$emit('showMessage', ['Asset created successfully', 'success']);
@@ -385,29 +385,29 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         function (response) {
                             $scope.$emit('showMessage', ['Error Post Processing Component Set', 'danger']);
                         }
-                    );
+                        );
+                    } else {
+                        $scope.$emit('showMessage', ['Asset created successfully', 'success']);
+                        $route.reload();
+                        $scope.$emit('blockUi', [false]);
+                        $scope.$apply();
+                    }
                 } else {
-                    $scope.$emit('showMessage', ['Asset created successfully', 'success']);
-                    $route.reload();
-                    $scope.$emit('blockUi', [false]);
-                    $scope.$apply();
-                }
-            } else {
                 // Use the dropzonesProcessed as the idx since we process the first one outside
                 // of this function
                 $scope.dropzones[dropzonesProcessed].processQueue();
             }
         });
 
-        function getFileUploadContainer() {
-            return angular.element(document.getElementById('file-upload-container'));
-        }
+function getFileUploadContainer() {
+    return angular.element(document.getElementById('file-upload-container'));
+}
 
-        function addFileUploader(label) {
-            var container = getFileUploadContainer();
-            container.append($compile(
-                "<span>File for " + label + "</span><div file-uploader id='drop_zone' asset-type='' dropzone_" + $scope.dropzones.length + " asset-id='' dropzones='dropzones' additional-data=''></div><br/>"
-            )($scope));
+function addFileUploader(label) {
+    var container = getFileUploadContainer();
+    container.append($compile(
+        "<span>File for " + label + "</span><div file-uploader id='drop_zone' asset-type='' dropzone_" + $scope.dropzones.length + " asset-id='' dropzones='dropzones' additional-data=''></div><br/>"
+        )($scope));
             // append adds to dropzones so use the length minus one
             return $("div[dropzone_" + ($scope.dropzones.length - 1) + "]");
         }
@@ -420,64 +420,67 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
     }])
 
-    .directive('assetResult', ['$compile', function ($compile) {
-        return {
-            template: "<td ng-if='state==\"view\"'>{$obj.name$}</td>" +
-            "<td ng-if='state==\"view\"'>{$obj.description$}</td>" +
-            "<td ng-if='state==\"view\"'>{$splitTags(obj.tags)$}</td>" +
-            "<td ng-if='state==\"view\"' id='img-container'></td>" +
-            "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.name'/></td>" +
-            "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.description'/></td>" +
-            "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.tags'/></td>" +
-            "<td>{$obj.setType$}</td>" +
-            "<td id='img-container'></td>" +
-            "<td>" +
-            "<span ng-click='onDelete()' class='glyphicon glyphicon-remove clickable hover-fade action-icon'></span>" +
-            "<span ng-if='state==\"view\"' ng-click='onEdit()' class='glyphicon glyphicon-edit clickable hover-fade action-icon'></span>" +
-            "<span ng-if='state==\"edit\"' ng-click='onSave()' class='glyphicon glyphicon-floppy-save clickable hover-fade action-icon'></span>" +
-            "</td>",
-            scope: {
-                obj: "=sweetTarget",
-                type: "@sweetType"
-            },
-            transclude:true,
-            link: function ($scope, element, attrs, ctrls) {
+.directive('assetResult', ['$compile', function ($compile) {
+    return {
+        template: 
+        "<td ng-if='state==\"view\"'>{$obj.name$}</td>" +
+        "<td ng-if='state==\"view\"'>{$obj.description$}</td>" +
+        "<td ng-if='state==\"view\"'>{$splitTags(obj.tags)$}</td>" +
+        "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.name'/></td>" +
+        "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.description'/></td>" +
+        "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.tags'/></td>" +
+        "<td>{$obj.setType$}</td>" +
+        "<td id='img-container'></td>" +
+        "<td>" +
+        "<span ng-click='onDelete()' class='glyphicon glyphicon-remove clickable hover-fade action-icon'></span>" +
+        "<span ng-if='state==\"view\"' ng-click='onEdit()' class='glyphicon glyphicon-edit clickable hover-fade action-icon'></span>" +
+        "<span ng-if='state==\"edit\"' ng-click='onSave()' class='glyphicon glyphicon-floppy-save clickable hover-fade action-icon'></span>" +
+        "</td>",
+        scope: {
+            obj: "=sweetTarget",
+            type: "@sweetType"
+        },
+        transclude:true,
+        link: function ($scope, element, attrs, ctrls) {
 
-                $scope.state = 'view';
+            $scope.state = 'view';
 
-                $scope.splitTags = function (tags) {
-                    var res = "";
-                    for (var i = 0; i < tags.length; i++) {
-                        res += tags[i].value;
-                    }
-                    if (res.length > 0) {
-                        res = res.substr(0, res.length - 1);
-                    }
-                    return res;
-                };
-
-                if ($scope.type == 'ITEM') {
-                    $(element).find("#img-container").append($compile("<img class='thumbnail-small' ng-src='/scenario/service/texture/" + $scope.obj.texture.id + "?format=image'/>")($scope));
-                } else {
-                    for (var i = 0; i < $scope.obj.components.length; i++) {
-                        $(element).find("#img-container").append($compile("<img class='thumbnail-small' ng-src='/scenario/service/texture/" + $scope.obj.components[i].texture.id + "?format=image'/>")($scope));
-                    }
+            $scope.splitTags = function (tags) {
+                var res = "";
+                for (var i = 0; i < tags.length; i++) {
+                    res += tags[i].value;
                 }
+                if (res.length > 0) {
+                    res = res.substr(0, res.length - 1);
+                }
+                return res;
+            };
 
-                $scope.onDelete = function(){
-                    $scope.$emit('deleteAsset', [$scope.obj]);
-                };
-
-                $scope.onSave = function(){
-                    $scope.$emit('saveAsset', [$scope.obj]);
-                };
-
-                $scope.onEdit = function(){
-                    $scope.state = 'edit';
+            if ($scope.type == 'ITEM') {
+                $(element).find("#img-container").append($compile("<img class='thumbnail-small' ng-src='/scenario/service/texture/" + $scope.obj.texture.id + "?format=image'/>")($scope));
+            } else {
+                for (var i = 0; i < $scope.obj.components.length; i++) {
+                    $(element).find("#img-container").append($compile("<img class='thumbnail-small' ng-src='/scenario/service/texture/" + $scope.obj.components[i].texture.id + "?format=image'/>")($scope));
                 }
             }
+
+        $scope.onDelete = function(){
+            var msg = "Are you sure?";
+            if (window.confirm(msg)) {
+                $scope.$emit('deleteAsset', [$scope.obj]);
+            }
+        };
+
+        $scope.onSave = function(){
+            $scope.$emit('saveAsset', [$scope.obj]);
+        };
+
+        $scope.onEdit = function(){
+            $scope.state = 'edit';
         }
-    }])
+    }
+}
+}])
 
     // Directive for dropzone file uploader
     .directive('fileUploader', ['$parse', function ($parse) {
@@ -544,50 +547,50 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     }
                 });
 
-                dropzone.on("success", function (file, response) {
-                    $scope.$emit('dropzoneComplete', []);
-                });
+dropzone.on("success", function (file, response) {
+    $scope.$emit('dropzoneComplete', []);
+});
 
-                dropzone.on("error", function (file, response) {
-                    $scope.$emit('blockUi', [false]);
-                    alert("Error uploading asset file - " + response);
-                });
+dropzone.on("error", function (file, response) {
+    $scope.$emit('blockUi', [false]);
+    alert("Error uploading asset file - " + response);
+});
 
-                if ($scope.eventHandlers) {
-                    Object.keys($scope.eventHandlers).forEach(function (eventName) {
-                        dropzone.on(eventName, $scope.eventHandlers[eventName]);
-                    });
-                }
+if ($scope.eventHandlers) {
+    Object.keys($scope.eventHandlers).forEach(function (eventName) {
+        dropzone.on(eventName, $scope.eventHandlers[eventName]);
+    });
+}
 
 
-                dropzone.process = function () {
-                    $scope.$evalAsync(function () {
-                        dropzone.processQueue();
-                    });
-                };
+dropzone.process = function () {
+    $scope.$evalAsync(function () {
+        dropzone.processQueue();
+    });
+};
 
-                $scope.dropzones.push(dropzone);
-            }
-        };
-    }])
-    .directive('componentBuilder', [
-        function () {
-            return {
+$scope.dropzones.push(dropzone);
+}
+};
+}])
+.directive('componentBuilder', [
+    function () {
+        return {
 
-                scope: {
-                    components: "=",
-                    componentType: "=",
-                    componentScale: "=",
-                    joints: "="
-                },
+            scope: {
+                components: "=",
+                componentType: "=",
+                componentScale: "=",
+                joints: "="
+            },
 
-                transclude: true,
+            transclude: true,
 
-                template: '<div id="c-wrapper"><canvas id="c" class="component-builder"></canvas></div>',
+            template: '<div id="c-wrapper"><canvas id="c" class="component-builder"></canvas></div>',
 
-                link: function ($scope, element, attr) {
+            link: function ($scope, element, attr) {
 
-                    var componentImages = [];
+                var componentImages = [];
 
                     // @TODO is there a better way to do this?
                     var componentRelationShips = {
@@ -672,28 +675,28 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         inJointGroup.moveTo(1000);
                     });
 
-                    $scope.$watch('componentScale', function (value) {
-                        for (var i = 0; i < componentImages.length; i++) {
-                            componentImages[i].scaleX = value;
-                            componentImages[i].scaleY = value;
-                        }
-                        canvas.renderAll();
+$scope.$watch('componentScale', function (value) {
+    for (var i = 0; i < componentImages.length; i++) {
+        componentImages[i].scaleX = value;
+        componentImages[i].scaleY = value;
+    }
+    canvas.renderAll();
 
-                    });
+});
 
-                    canvasWrapper.addEventListener("keydown", function (e) {
-                        if (e.shiftKey) {
-                            shiftDown = true;
-                        }
+canvasWrapper.addEventListener("keydown", function (e) {
+    if (e.shiftKey) {
+        shiftDown = true;
+    }
 
-                    }, false);
+}, false);
 
-                    canvasWrapper.addEventListener("keyup", function (e) {
-                        if (e.shiftKey == false) {
-                            shiftDown = false;
-                        }
+canvasWrapper.addEventListener("keyup", function (e) {
+    if (e.shiftKey == false) {
+        shiftDown = false;
+    }
 
-                    }, false);
+}, false);
 
                     // Calculates the joint/image percentages for all components
                     // This is probably overly complicated and can probably be cleaned up/improved
@@ -746,98 +749,98 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
                         switch (compType) {
                             case "ARM":
-                                converted = {
-                                    id: "Upper Arm",
+                            converted = {
+                                id: "Upper Arm",
+                                texture: "",
+                                in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
+                                out: [[parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"]],
+                                components: [
+                                {
+                                    id: "Lower Arm",
                                     texture: "",
-                                    in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
-                                    out: [[parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"]],
+                                    in: [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6))],
+                                    out: [[parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]],
                                     components: [
-                                        {
-                                            id: "Lower Arm",
-                                            texture: "",
-                                            in: [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6))],
-                                            out: [[parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]],
-                                            components: [
-                                                {
-                                                    id: "Hand",
-                                                    texture: "",
-                                                    in: [parseFloat(rels[4]['percentages']['x'].toFixed(6)), parseFloat(rels[4]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[5]['percentages']['x'].toFixed(6)), parseFloat(rels[5]['percentages']['y'].toFixed(6)), "ANY"]]
-                                                }
-                                            ]
-                                        }
+                                    {
+                                        id: "Hand",
+                                        texture: "",
+                                        in: [parseFloat(rels[4]['percentages']['x'].toFixed(6)), parseFloat(rels[4]['percentages']['y'].toFixed(6))],
+                                        out: [[parseFloat(rels[5]['percentages']['x'].toFixed(6)), parseFloat(rels[5]['percentages']['y'].toFixed(6)), "ANY"]]
+                                    }
                                     ]
-                                };
-                                break;
+                                }
+                                ]
+                            };
+                            break;
 
                             case "LEG":
-                                converted = {
-                                    id: "Upper Leg",
+                            converted = {
+                                id: "Upper Leg",
+                                texture: "",
+                                in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
+                                out: [[parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"]],
+                                components: [
+                                {
+                                    id: "Lower Leg",
                                     texture: "",
-                                    in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
-                                    out: [[parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"]],
+                                    in: [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6))],
+                                    out: [[parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]],
                                     components: [
-                                        {
-                                            id: "Lower Leg",
-                                            texture: "",
-                                            in: [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6))],
-                                            out: [[parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]],
-                                            components: [
-                                                {
-                                                    id: "Foot",
-                                                    texture: "",
-                                                    in: [parseFloat(rels[4]['percentages']['x'].toFixed(6)), parseFloat(rels[4]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[5]['percentages']['x'].toFixed(6)), parseFloat(rels[5]['percentages']['y'].toFixed(6)), "ANY"]]
-                                                }
-                                            ]
-                                        }
+                                    {
+                                        id: "Foot",
+                                        texture: "",
+                                        in: [parseFloat(rels[4]['percentages']['x'].toFixed(6)), parseFloat(rels[4]['percentages']['y'].toFixed(6))],
+                                        out: [[parseFloat(rels[5]['percentages']['x'].toFixed(6)), parseFloat(rels[5]['percentages']['y'].toFixed(6)), "ANY"]]
+                                    }
                                     ]
-                                };
-                                break;
+                                }
+                                ]
+                            };
+                            break;
 
                             case "TORSO":
-                                converted = {
-                                    id: "Neck",
-                                    texture: "",
-                                    in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
-                                    out: [
-                                        [parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"],
-                                        [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6)), "ANY"],
-                                        [parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]]
-                                };
-                                break;
+                            converted = {
+                                id: "Neck",
+                                texture: "",
+                                in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
+                                out: [
+                                [parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"],
+                                [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6)), "ANY"],
+                                [parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]]
+                            };
+                            break;
 
                             case "PELVIS":
-                                converted = {
-                                    id: "OUT",
-                                    texture: "",
-                                    in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
-                                    out: [
-                                        [parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"],
-                                        [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6)), "ANY"],
-                                        [parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]]
-                                };
-                                break;
+                            converted = {
+                                id: "OUT",
+                                texture: "",
+                                in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
+                                out: [
+                                [parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"],
+                                [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6)), "ANY"],
+                                [parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"]]
+                            };
+                            break;
 
                             case "HEAD":
-                                converted = {
-                                    id: "Lower Jaw",
+                            converted = {
+                                id: "Lower Jaw",
+                                texture: "",
+                                in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
+                                out: [[parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"]],
+                                components: [
+                                {
+                                    id: "Upper Jaw",
                                     texture: "",
-                                    in: [parseFloat(rels[0]['percentages']['x'].toFixed(6)), parseFloat(rels[0]['percentages']['y'].toFixed(6))],
-                                    out: [[parseFloat(rels[1]['percentages']['x'].toFixed(6)), parseFloat(rels[1]['percentages']['y'].toFixed(6)), "ANY"]],
-                                    components: [
-                                        {
-                                            id: "Upper Jaw",
-                                            texture: "",
-                                            in: [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6))],
-                                            out: [
+                                    in: [parseFloat(rels[2]['percentages']['x'].toFixed(6)), parseFloat(rels[2]['percentages']['y'].toFixed(6))],
+                                    out: [
                                                 [parseFloat(rels[3]['percentages']['x'].toFixed(6)), parseFloat(rels[3]['percentages']['y'].toFixed(6)), "ANY"], // Nose
                                                 [parseFloat(rels[5]['percentages']['x'].toFixed(6)), parseFloat(rels[5]['percentages']['y'].toFixed(6)), "ANY"],  // Left Eyebrow
                                                 [parseFloat(rels[7]['percentages']['x'].toFixed(6)), parseFloat(rels[7]['percentages']['y'].toFixed(6)), "ANY"], // Right Eyebrow
                                                 [parseFloat(rels[9]['percentages']['x'].toFixed(6)), parseFloat(rels[9]['percentages']['y'].toFixed(6)), "ANY"], // Left Eye
                                                 [parseFloat(rels[13]['percentages']['x'].toFixed(6)), parseFloat(rels[13]['percentages']['y'].toFixed(6)), "ANY"] // Right Eye
-                                            ],
-                                            components: [
+                                                ],
+                                                components: [
                                                 {
                                                     id: "Nose",
                                                     texture: "",
@@ -862,12 +865,12 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                     in: [parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6))],
                                                     out: [[parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6)), "ANY"]],
                                                     components: [
-                                                        {
-                                                            id: "Left Pupil",
-                                                            texture: "",
-                                                            in: [parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6))],
-                                                            out: [[parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6)), "ANY"]]
-                                                        }
+                                                    {
+                                                        id: "Left Pupil",
+                                                        texture: "",
+                                                        in: [parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6))],
+                                                        out: [[parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                    }
                                                     ]
                                                 },
                                                 {
@@ -876,23 +879,23 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                     in: [parseFloat(rels[14]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6))],
                                                     out: [[parseFloat(rels[14]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6)), "ANY"]],
                                                     components: [
-                                                        {
-                                                            id: "Right Pupil",
-                                                            texture: "",
-                                                            in: [parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6))],
-                                                            out: [[parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6)), "ANY"]]
-                                                        }
+                                                    {
+                                                        id: "Right Pupil",
+                                                        texture: "",
+                                                        in: [parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6))],
+                                                        out: [[parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                    }
                                                     ]
                                                 }
+                                                ]
+                                            }
                                             ]
-                                        }
-                                    ]
-                                };
-                                break;
-                        }
+                                        };
+                                        break;
+                                    }
 
 
-                        $scope.joints = converted;
+                                    $scope.joints = converted;
 
                         // Since we're in a watch we need to run an apply
                         $scope.$apply();
@@ -926,7 +929,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                      * Clears out the existing images and out joint objects from
                      * the canvas, as well as empties out the corresponding arrays
                      */
-                    function clearExisting() {
+                     function clearExisting() {
                         for (var i = 0; i < outJoints.length; i++) {
                             canvas.remove(outJoints[i]);
                         }
@@ -1091,7 +1094,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             e.target.opacity = 1;
                         }
                     });
-                }
-            };
-        }
-    ]);
+}
+};
+}
+]);
