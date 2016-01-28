@@ -1,18 +1,23 @@
 {% load staticfiles %}
 <div ng-controller="ConvoCtrl">
     <div class="row fill-height">
-        <div class="col-md-2 list-view">
+        <div class="list-view">
             <h3>Conversations</h3>
 
             <form>
                 <span ng-repeat="conversation in getConvos()">
-                    {$conversation.id$}
-                    <span>Name: </span><input type="text" ng-model="conversation.name" title="Name"/>
-                    <span class="glyphicon glyphicon-edit clickable hover-fade"
-                          ng-click="editConvo(conversation)"></span>
-                    <sweet-delete variable="conversation" container="getConvos()" confirm="true"></sweet-delete>
-
-                    <hr/>
+                    <div style="margin-left:{$conversation.settings.indentation * 10$}px">
+                        <span>Name: </span><input type="text" ng-model="conversation.name" title="Name"/>
+                        <span class="glyphicon glyphicon-edit clickable hover-fade"
+                              ng-click="editConvo(conversation)"></span>
+                        <sweet-delete variable="conversation" container="getConvos()" confirm="true"></sweet-delete>
+                        <br/>
+                        <span class="glyphicon glyphicon-triangle-left hover-fade clickable" ng-click="outdent(conversation)"></span>
+                        <span class="glyphicon glyphicon-triangle-right hover-fade clickable" ng-click="indent(conversation)"></span>
+                        <span class="glyphicon glyphicon-triangle-top hover-fade clickable" ng-click="orderUp(conversation)"></span>
+                        <span class="glyphicon glyphicon-triangle-bottom hover-fade clickable" ng-click="orderDown(conversation)"></span>
+                        <hr/>
+                    </div>
                 </span>
                 <button class="btn btn-primary" ng-click="addConvo()">Add new conversation</button>
             </form>

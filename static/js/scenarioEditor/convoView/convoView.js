@@ -19,6 +19,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
 
         $scope.addConvo = function () {
             convoService.addConversation();
+            updateConvoOrders();
         };
 
         $scope.addLine = function (dialogue) {
@@ -55,6 +56,40 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
             asJson = asJson.replace(oldKey, newKey);
             argParent.args = JSON.parse(asJson);
         };
+
+        $scope.indent = function(convo){
+            convo.settings.indentation++;
+        }
+
+        $scope.outdent = function(convo){
+            if(convo.settings.indentation > 0){
+                convo.settings.indentation--;
+            }
+        }
+
+        $scope.orderUp = function(convo){
+            var idx = convoService.conversations().indexOf(convo);
+            if(idx > 0){
+                var temp = convoService.conversations()[idx - 1];
+                convoService.conversations()[idx - 1] = convo;
+                convoService.conversations()[idx] = temp;
+            }
+        }
+
+        $scope.orderDown = function(convo){
+            var idx = convoService.conversations().indexOf(convo);
+            if(idx < convoService.conversations().length - 1){
+                var temp = convoService.conversations()[idx + 1];
+                convoService.conversations()[idx + 1] = convo;
+                convoService.conversations()[idx] = temp;
+            }
+        }
+
+        function updateConvoOrders(){
+            for(var i = 0; i < convoService.conversations().length; i++){
+                convoService.conversations()[i].settings.order = i;
+            }
+        }
 
         function validateTriggers() {
             triggerService.fetchTriggers(function () {

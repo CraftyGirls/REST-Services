@@ -52,9 +52,11 @@ Arg.BuildFromData = function (data) {
     // The key values of an arg are not set so we iterate through the stored
     // data object to determine what they are
     for (var key in data) {
+        
         if (!data[key].hasOwnProperty('dependsOn')) {
             data[key]['dependsOn'] = "NONE";
         }
+
         if (data.hasOwnProperty(key)) {
             arg[key] = data[key];
         }
@@ -215,6 +217,9 @@ function Conversation(id, name) {
     this.dialogue = [];
     this.options = [];
     this.type = "conversation";
+    this.settings = {
+        indentation : 0
+    };
 
     this.addDialogue = function () {
         this.dialogue.push(new Dialogue("Dialogue " + this.dialogue.length));
@@ -225,6 +230,7 @@ function Conversation(id, name) {
     };
 
     this.validate = function () {
+        
         var errorMessages = [];
         var childMessages = [];
 
@@ -248,7 +254,6 @@ function Conversation(id, name) {
 
         return errorMessages;
     };
-
 }
 
 
@@ -259,6 +264,9 @@ Conversation.BuildFromData = function (data) {
     }
     for (var i = 0; i < data.options.length; i++) {
         convo.addOption(data.options[i].convoId, data.options[i].label);
+    }
+    if(data.hasOwnProperty('settings')){
+        convo.settings = data.settings;
     }
     return convo;
 };
@@ -1097,4 +1105,4 @@ scenarioServices.service('jointService', ['textureService', '$q', '$http', funct
             });
         }
     }
-}]);
+}])
