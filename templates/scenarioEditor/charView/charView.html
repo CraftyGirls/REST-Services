@@ -41,7 +41,7 @@
                                 <span>Active Conversation: </span>
                                 <select ng-model="state.convo"
                                         ng-options="convo.id as convo.name for convo in getConvos()">
-                                    <option value="">Select Convo</option>
+                                    <option value="">Incidental</option>
                                 </select>
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD') track by $index">
                             <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
                             <span>{$img.componentType$}</span>
                         </div>

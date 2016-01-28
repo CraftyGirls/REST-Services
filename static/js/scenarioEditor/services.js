@@ -281,9 +281,6 @@ function State(id, name) {
         if (this.name == null || this.name.length <= 0) {
             errorMessages.push("State name must be specified")
         }
-        if (this.convo == null || this.convo.toString().length <= 0) {
-            errorMessages.push("State must have a valid conversation selected");
-        }
         return errorMessages;
     }
 }
