@@ -113,7 +113,7 @@ def dump_component_definitions(request):
     sets = ComponentSet.objects.all()
 
     for set in sets:
-        components['components'].append(set.jsonRepresentation)
+        components['components'].append({"src": set.jsonRepresentation, "type": set.setType})
 
     gitlab_utility.update_file(gitlab_utility.get_project_name(),
                                PDUser.branch_for_user(user=request.user),
@@ -312,13 +312,12 @@ def component_set_service(request, component_set_id=None):
                         comp_set = ComponentSet.objects.get(id=long(component_set_id))
                     except:
                         return HttpResponse("Could not find component set for id " + str(component_set_id), status=404)
-                
+
                 comp_set.name = comp_set_form.cleaned_data["name"]
-                
+
                 comp_set.description = comp_set_form.cleaned_data["description"]
 
                 if component_set_id is None:
-
                     comp_set.setType = comp_set_form.cleaned_data["setType"]
 
                     joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
@@ -332,7 +331,6 @@ def component_set_service(request, component_set_id=None):
                                                "text")
 
                     comp_set.jsonRepresentation = joints_file_name
-
 
                 comp_set.save()
 
