@@ -275,6 +275,7 @@ function State(id, name) {
     this.id = id;
     this.name = name;
     this.convo = null;
+    this.animation = "RANDOM";
 
     this.validate = function () {
         var errorMessages = [];
@@ -288,6 +289,9 @@ function State(id, name) {
 State.BuildFromData = function (data) {
     var state = new State(data.id, data.name);
     state.convo = data.convo;
+    if(data.hasOwnProperty('animation')){
+        state.animation = data.animation;
+    }
     return state;
 };
 

@@ -22,7 +22,9 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
 
         $scope.selectedItem = null;
 
+
         $scope.charToImgMap = {};
+        $scope.animations = ["WAVE", "DANCE_1", "DANCE_2"];
 
         $scope.getChars = function () {
             return charService.chars();

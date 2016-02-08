@@ -44,6 +44,13 @@
                                     <option value="">Incidental</option>
                                 </select>
                             </div>
+                            <div class="padded-top-bottom-10">
+                                <span>Animation: </span>
+                                <select ng-model="state.animation"
+                                        ng-options="anim as anim for anim in animations">
+                                    <option value="">RANDOM</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="padded-top-bottom-10" ng-if="getStates(character).length > 1">
                             <strong>Default State</strong>
@@ -125,7 +132,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM') track by $index">
                             <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
                         </div>
 
@@ -146,7 +153,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO')">
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO') track by $index">
                             <img class="thumbnail-small" ng-src="{$ '/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('TORSO').src == ''">
@@ -166,7 +173,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM') track by $index">
                             <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_ARM').src == ''">
@@ -186,7 +193,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS')">
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS') track by $index">
                             <img class="thumbnail-small" ng-src="{$ '/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('PELVIS').src == ''">
@@ -206,7 +213,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG')">
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG') track by $index">
                             <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_LEG').src == ''">
@@ -225,7 +232,7 @@
                                 Clear Textures
                             </button>
                         </div>
-                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG')">
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG') track by $index">
                             <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image' $}"/>
                         </div>
                         <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src == ''">
