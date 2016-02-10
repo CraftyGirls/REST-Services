@@ -102,7 +102,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 function (response) {
                     if (response.status != 404) {
                         $scope.$emit('showMessage', ['Asset query failed', 'danger']);
-                    }else{
+                    } else {
                         $scope.queryResults = [];
                     }
                 }
@@ -627,7 +627,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                         "Arm": "Upper Arm>Lower Arm>Hand>OUT",
                         "Leg": "Upper Leg>Lower Leg>Foot>OUT",
                         "Torso": "Torso>Neck,Torso>Left Arm,Torso>Right Arm",
-                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eyebrow,Upper Jaw>Right Eyebrow,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>OUT",
+                        "Head": "Lower Jaw>Upper Jaw,Upper Jaw>Nose,Upper Jaw>Left Eye>Left Pupil,Upper Jaw>Right Eye>Right Pupil,Upper Jaw>Left Eyebrow,Upper Jaw>Right Eyebrow,Upper Jaw>OUT",
                         "Pelvis": "Pelvis>Torso,Pelvis>Right Leg,Pelvis>Left Leg"
                     };
 
@@ -878,18 +878,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                     out: [[parseFloat(rels[4]['percentages']['x'].toFixed(6)), parseFloat(rels[4]['percentages']['y'].toFixed(6)), "ANY"]]
                                                 },
                                                 {
-                                                    id: "Left Eyebrow",
-                                                    texture: "",
-                                                    in: [parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6)), "ANY"]]
-                                                },
-                                                {
-                                                    id: "Right Eyebrow",
-                                                    texture: "",
-                                                    in: [parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6)), "ANY"]]
-                                                },
-                                                {
                                                     id: "Left Eye",
                                                     texture: "",
                                                     in: [parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6))],
@@ -916,6 +904,18 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                             out: [[parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6)), "ANY"]]
                                                         }
                                                     ]
+                                                },
+                                                {
+                                                    id: "Left Eyebrow",
+                                                    texture: "",
+                                                    in: [parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6))],
+                                                    out: [[parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                },
+                                                {
+                                                    id: "Right Eyebrow",
+                                                    texture: "",
+                                                    in: [parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6))],
+                                                    out: [[parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6)), "ANY"]]
                                                 }
                                             ]
                                         }

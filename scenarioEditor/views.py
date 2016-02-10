@@ -211,10 +211,10 @@ def update_scenario_service(request, scenario_id):
 
 @login_required(login_url='/scenario/login/')
 def create_scenario_view(request):
-    if (request.method == 'GET'):
+    if request.method == 'GET':
         return render(request, 'scenarioEditor/create/create_scenario.html/', {})
-    elif (request.method == 'POST'):
-        if ('scenario_name' in request.POST):
+    elif request.method == 'POST':
+        if 'scenario_name' in request.POST:
             pd_user = PDUser.objects.get(user=request.user)
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
             file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
@@ -231,7 +231,7 @@ def create_scenario_view(request):
 
 @login_required(login_url='/scenario/login/')
 def edit_scenario_view(request, scenario_id):
-    if (request.method == 'GET'):
+    if request.method == 'GET':
         scenario = Scenario.objects.get(id=scenario_id)
         if scenario is not None:
             if scenario.owner.id != PDUser.objects.get(user=request.user).id:
@@ -247,11 +247,11 @@ def edit_scenario_view(request, scenario_id):
 
 @login_required(login_url='/scenario/login/')
 def component_set_service(request, component_set_id=None):
-    if (request.method == 'GET'):
+    if request.method == 'GET':
         try:
-            if component_set_id != None:
+            if component_set_id is not None:
                 obj = ComponentSet.objects.get(id=component_set_id)
-                if (obj != None):
+                if obj is not None:
                     data = json.dumps(obj.asDict(), sort_keys=True, indent=4, separators=(',', ': '))
                     return HttpResponse(data, content_type='application/json')
             else:
@@ -289,7 +289,7 @@ def component_set_service(request, component_set_id=None):
                 if 'page' in request.GET:
                     filteredSets = paginator.page(request.GET['page']).object_list
 
-                if (len(filteredSets) > 0):
+                if len(filteredSets) > 0:
                     cj = []
                     for c in filteredSets:
                         cj.append(c.asDict())
@@ -417,24 +417,24 @@ def item_service(request, item_id=None):
                 tags = get_params['tags'].split(",")
                 tagResult = Tag.objects.filter(value__in=tags, owner__in=items)
 
-            filteredItems = []
+            filtered_items = []
 
             if tagResult != None and 'tags' in get_params:
                 for tag in tagResult:
                     for item in items.all():
-                        if tag.owner.id == item.id and item not in filteredItems:
-                            filteredItems.append(item)
+                        if tag.owner.id == item.id and item not in filtered_items:
+                            filtered_items.append(item)
             else:
-                filteredItems = items.all()
+                filtered_items = items.all()
 
-            paginator = Paginator(filteredItems, 3)
+            paginator = Paginator(filtered_items, 3)
 
             if 'page' in request.GET:
-                filteredItems = paginator.page(request.GET['page']).object_list
+                filtered_items = paginator.page(request.GET['page']).object_list
 
-            if (len(filteredItems) > 0):
+            if len(filtered_items) > 0:
                 cj = []
-                for c in filteredItems:
+                for c in filtered_items:
                     cj.append(c.asDict())
                 data = json.dumps(cj, sort_keys=True, indent=4, separators=(',', ': '))
                 return HttpResponse(data, content_type='application/json')
@@ -702,18 +702,18 @@ def post_process_component_set_service(request):
                             or charComp.componentType.upper() == 'NOSE' \
                             or charComp.componentType.upper() == 'FOOT':
                         joints["components"][0]["components"][0]["texture"] = tex.id
-                    elif charComp.componentType.upper() == 'LEFT EYEBROW':
-                        joints["components"][0]["components"][1]["texture"] = tex.id
-                    elif charComp.componentType.upper() == 'RIGHT EYEBROW':
-                        joints["components"][0]["components"][2]["texture"] = tex.id
                     elif charComp.componentType.upper() == 'LEFT EYE':
-                        joints["components"][0]["components"][3]["texture"] = tex.id
+                        joints["components"][0]["components"][1]["texture"] = tex.id
                     elif charComp.componentType.upper() == 'RIGHT EYE':
+                        joints["components"][0]["components"][2]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'LEFT EYEBROW':
+                        joints["components"][0]["components"][3]["texture"] = tex.id
+                    elif charComp.componentType.upper() == 'RIGHT EYEBROW':
                         joints["components"][0]["components"][4]["texture"] = tex.id
                     elif charComp.componentType.upper() == 'RIGHT PUPIL':
-                        joints["components"][0]["components"][4]['components'][0]["texture"] = tex.id
+                        joints["components"][0]["components"][2]['components'][0]["texture"] = tex.id
                     elif charComp.componentType.upper() == 'LEFT PUPIL':
-                        joints["components"][0]["components"][3]['components'][0]["texture"] = tex.id
+                        joints["components"][0]["components"][1]['components'][0]["texture"] = tex.id
 
                     if 'textures' not in set_json_obj:
                         set_json_obj['textures'] = []
