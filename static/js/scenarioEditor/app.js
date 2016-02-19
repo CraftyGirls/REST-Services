@@ -409,6 +409,7 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                     name: scenarioService.scenario().name,
                     description: scenarioService.scenario().description,
                     type: scenarioService.scenario().type,
+                    order : scenarioService.scenario().order,
                     assets: assets
                 };
 

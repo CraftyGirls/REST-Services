@@ -39,6 +39,10 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
             return SCENARIO_TYPES;
         };
 
+        $scope.scenarioOrders = function(){
+            return SCENARIO_ORDER;
+        };
+
         $scope.submitTrigger = function () {
             if ($scope.pendingTrigger.id == -1) {
                 for (var i = 0; i < triggerService.triggers().length; i++) {

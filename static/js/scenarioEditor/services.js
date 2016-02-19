@@ -541,9 +541,17 @@ var TRIGGER_ARG_DATA_TYPES = [
 
 var SCENARIO_TYPES = {
     Side		: 0,
-	Beginning   : 1,
-	Plot		: 2,
-	End 		: 3
+	Omar        : 1,
+	Plot		: 2
+};
+
+var SCENARIO_ORDER = {
+    Random       : 0,
+    Beginning    : 1,
+    Middle_One   : 2,
+    Middle_Two   : 3,
+    Middle_Three : 4,
+    End          : 5
 };
 
 function TriggerResource() {
@@ -998,6 +1006,11 @@ scenarioServices.service('scenarioService', function () {
                 scenario.type = data.type;
             }else{
                 scenario.type = SCENARIO_TYPES.Side;
+            }
+            if(data.hasOwnProperty("order")){
+                scenario.order = data.order;
+            }else{
+                scenario.order = SCENARIO_ORDER.Random;
             }
         },
         scenario: function () {
