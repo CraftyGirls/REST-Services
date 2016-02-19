@@ -122,6 +122,20 @@ def dump_component_definitions(request):
                                "text")
 
 
+def dump_scenarios(request):
+    scenarios = []
+    scenario_objs = Scenario.objects.all()
+
+    for obj in scenario_objs:
+        scenarios.append(obj.jsonUrl)
+
+    gitlab_utility.update_file(gitlab_utility.get_project_name(),
+                           PDUser.branch_for_user(user=request.user),
+                           "scenarios.json",
+                           json.dumps(scenarios, sort_keys=True, indent=4, separators=(',', ': ')),
+                           "text")
+
+
 def browse_scenarios_view(request):
     get_params = request.GET
     simple_query_items = dict()
@@ -223,6 +237,7 @@ def create_scenario_view(request):
             gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
                                        file_name, scenario.script, "text")
             scenario.save()
+            dump_scenarios(request)
             return redirect(edit_scenario_view, scenario.id)
     else:
         # Return invalid method response
@@ -850,4 +865,5 @@ def dump_data_service(request):
     dump_component_textures(request)
     dump_item_textures(request)
     dump_component_definitions(request)
+    dump_scenarios(request)
     return HttpResponse("Success")
