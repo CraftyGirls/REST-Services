@@ -127,7 +127,12 @@ def dump_scenarios(request):
     scenario_objs = Scenario.objects.all()
 
     for obj in scenario_objs:
-        scenarios.append(obj.jsonUrl)
+
+        scenarios.append({
+            'src': obj.jsonUrl,
+            'order': obj.order,
+            'type': obj.type
+        })
 
     gitlab_utility.update_file(gitlab_utility.get_project_name(),
                            PDUser.branch_for_user(user=request.user),
@@ -210,10 +215,14 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
+                scen_json = json.loads(scenario.script)
+                scenario.order = scen_json['order']
+                scenario.type = scen_json['type']
                 file_name = scenario.jsonUrl
                 gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
                                            file_name, scenario.script, "text")
                 scenario.save()
+                dump_scenarios(request)
                 return HttpResponse(request.body)
             else:
                 return HttpResponse("Unauthorized", status=401)

@@ -20,6 +20,8 @@ class Scenario(models.Model):
     script = models.TextField(blank=False, default='')
     owner = models.ForeignKey(PDUser, related_name='scenarios')
     jsonUrl = models.CharField(max_length=1024, default="{}")
+    order = models.IntegerField(default=0)
+    type = models.IntegerField(default=0)
 
     class Meta:
         ordering = ('created',)
