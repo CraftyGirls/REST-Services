@@ -35,6 +35,10 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
             return scenarioService.scenario();
         };
 
+        $scope.scenarioTypes = function(){
+            return SCENARIO_TYPES;
+        };
+
         $scope.submitTrigger = function () {
             if ($scope.pendingTrigger.id == -1) {
                 for (var i = 0; i < triggerService.triggers().length; i++) {
@@ -84,6 +88,5 @@ angular.module('scenarioEditor.manageView', ['ngRoute', 'scenarioServices'])
 
         $scope.showDependsOn = function(arg){
             return arg.dataType == "CHARACTER_STATE";
-
         }
     }]);

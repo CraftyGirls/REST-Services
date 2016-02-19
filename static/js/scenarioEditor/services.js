@@ -539,6 +539,13 @@ var TRIGGER_ARG_DATA_TYPES = [
     "CHARACTER_STATE"
 ];
 
+var SCENARIO_TYPES = {
+    Side		: 0,
+	Beginning   : 1,
+	Plot		: 2,
+	End 		: 3
+};
+
 function TriggerResource() {
     this.type = "";
     this.description = "";
@@ -987,6 +994,11 @@ scenarioServices.service('scenarioService', function () {
         setData: function (data) {
             scenario.name = data.name;
             scenario.description = data.name;
+            if(data.hasOwnProperty("type")){
+                scenario.type = data.type;
+            }else{
+                scenario.type = SCENARIO_TYPES.Side;
+            }
         },
         scenario: function () {
             return scenario;

@@ -406,8 +406,9 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                 }
 
                 $scope.dataObj = {
-                    name: $scope.scenarioName,
-                    description: $scope.scenarioDescription,
+                    name: scenarioService.scenario().name,
+                    description: scenarioService.scenario().description,
+                    type: scenarioService.scenario().type,
                     assets: assets
                 };
 
