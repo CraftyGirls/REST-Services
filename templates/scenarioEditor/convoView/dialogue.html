@@ -14,10 +14,10 @@
 
         <div class="content-block">
             <div ng-repeat="line in dialogue.text track by $index">
-                <div class="line padded-top-bottom-10">
+                <div class=" padded-top-bottom-10">
                     <span>Text: </span> <input class="width-50" type="text" name="line-input"
                                                ng-model="dialogue.text[$index]"/>
-                    <sweet-delete variable="line" container="dialogue.text"></sweet-delete>
+                    <sweet-delete variable="dialogue.text[$index]" container="dialogue.text"></sweet-delete>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                 </div>
                 <hr/>
             </div>
-            <sweet-trigger-selector sweet-target="dialogue.conditions"></sweet-trigger-selector>
+            <sweet-trigger-selector condition="true" sweet-target="dialogue.conditions"></sweet-trigger-selector>
         </div>
     </div>
 </div>

@@ -298,6 +298,7 @@ class Line(models.Model):
 class Trigger(models.Model):
     type = models.CharField(max_length=100, blank=False, default='')
     description = models.TextField(blank=False, default='')
+    condition = models.BooleanField(default=False)
 
     def getArguments(self):
         return TriggerArgument.objects.filter(trigger=self).all()
@@ -311,7 +312,8 @@ class Trigger(models.Model):
             'id': self.id,
             'type': self.type,
             'description': self.description,
-            'args': argsArr
+            'args': argsArr,
+            'condition':self.condition
         }
 
 

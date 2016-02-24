@@ -636,7 +636,8 @@ def trigger_service(request, trigger_id):
 
         if request.method == 'PUT':
             trigger = Trigger(type=trigger_form.cleaned_data['type'],
-                              description=trigger_form.cleaned_data['description']
+                              description=trigger_form.cleaned_data['description'],
+                              condition=trigger_form.cleaned_data['condition']
                               )
             trigger.save()
             for arg in trigger_args:
@@ -652,6 +653,7 @@ def trigger_service(request, trigger_id):
             trigger = Trigger.objects.get(id=trigger_id)
             trigger.type = trigger_form.cleaned_data['type']
             trigger.description = trigger_form.cleaned_data['description']
+            trigger.condition = trigger_form.cleaned_data['condition']
             trigger.save()
 
             delArgs = []

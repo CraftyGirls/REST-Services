@@ -61,7 +61,7 @@ var application = angular.module('scenarioEditor', [
                         this.del = function () {
                             var idx = $scope.container.indexOf($scope.variable);
                             if (idx !== -1) {
-                                $scope.container = $scope.container.splice(idx, 1);
+                                $scope.container.splice(idx, 1);
                             }
                         };
 
@@ -200,10 +200,11 @@ var application = angular.module('scenarioEditor', [
     .directive('sweetTriggerSelector', ['$compile', 'triggerService', 'charService', function ($compile, triggerService, charService) {
         return {
             scope: {
-                target: "=sweetTarget"
+                target: "=sweetTarget",
+                cond: "=condition"
             },
             transculde: true,
-            template: "<div class='row'><div class='col-sm-1'><select ng-change='typeChanged()' ng-options='trigger as trigger.type for trigger in getTriggers()' ng-model='selected'></select></div>" +
+            template: "<div class='row'><div class='col-sm-1'><select ng-change='typeChanged()' ng-options='trigger as trigger.type for trigger in getTriggers() | filter:{ condition : cond || false}' ng-model='selected'></select></div>" +
             "<div class='col-sm-1'><span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
             link: function ($scope, iElm, iAttrs, controller) {
 
