@@ -52,6 +52,7 @@
                     <tr>
                         <th>Function</th>
                         <th>Description</th>
+                        <th>Condition</th>
                         <th>Arguments</th>
                     </tr>
                     </thead>
@@ -63,11 +64,17 @@
                         <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
                             <span>{$trigger.description$}</span>
                         </td>
+                        <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
+                            <input type="checkbox" disabled ng-checked="{$trigger.condition$}"/>
+                        </td>
                         <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
                             <input type="text" ng-model="pendingTrigger.type"/>
                         </td>
                         <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
                             <textarea type="text" ng-model="pendingTrigger.description"></textarea>
+                        </td>
+                        <td ng-if="pendingTrigger != null && trigger.id == pendingTrigger.id">
+                            <input type="checkbox" ng-model="pendingTrigger.condition"/>
                         </td>
                         <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
                             <table class="table table-striped">
@@ -98,11 +105,10 @@
                                                 ng-model="arg.dataType"
                                                 >
                                         </select>
-                                        <td>
+                                    <td>
                                         <select ng-if="showDependsOn(arg)"
                                                 ng-options="option.field as option.field for option in getDependsOnOptions(arg, pendingTrigger)"
                                                 ng-model="arg.dependsOn"></select>
-                                        </td>
                                     </td>
                                     <td><sweet-delete variable="arg" container="trigger.args"></sweet-delete></td>
                                 </tr>
@@ -121,6 +127,7 @@
                     <tr id="pending-trigger" ng-show="triggerPending && pendingTrigger.id == -1">
                         <td><input type="text" ng-model="pendingTrigger.type"/></td>
                         <td><textarea type="text" ng-model="pendingTrigger.description"></textarea></td>
+                        <td><input type="checkbox" ng-model="pendingTrigger.condition"/></td>
                         <td>
                             <table class="table table-striped">
                                 <tr>

@@ -45,6 +45,7 @@ class TriggerForm(forms.Form):
     id = forms.IntegerField()
     type = forms.CharField(max_length=100)
     description = forms.CharField()
+    condition = forms.BooleanField(required=False)
     args = forms.CharField(required=False)
 
 

@@ -1,6 +1,3 @@
-/**
- * Created by ryan on 2015-09-18.
- */
 
 
 function Texture() {
@@ -31,7 +28,7 @@ function Line() {
 
     this.validate = function () {
         var errorMessages = [];
-        if (this.text == null || this.text.length <= 0) {
+        if (this.text === null || this.text.length <= 0) {
             errorMessages.push("Line does not have text specified");
         }
         return errorMessages;
@@ -496,7 +493,8 @@ function Room(name, id) {
     this.type = "room";
     this.locked = false;
     this.items = [];
-    this.triggers = [];
+    this.triggersOnce = [];
+    this.triggersMulti = [];
 
     this.validate = function () {
         var errorMessages = [];
@@ -508,8 +506,15 @@ function Room(name, id) {
         if (this.description == null || this.description.length <= 0) {
             errorMessages.push(this.name + " is missing a description");
         }
-        for (var i = 0; i < this.triggers.length; i++) {
-            var errors = this.triggers[i].validate();
+        for (var i = 0; i < this.triggersOnce.length; i++) {
+            var errors = this.triggersOnce[i].validate();
+            for (var x = 0; x < errors.length; x++) {
+                errors[x] = " Triggers -> " + errors[x];
+            }
+            errorMessages.concat(errors);
+        }
+      for (var i = 0; i < this.triggersMulti.length; i++) {
+            var errors = this.triggersMulti[i].validate();
             for (var x = 0; x < errors.length; x++) {
                 errors[x] = " Triggers -> " + errors[x];
             }
@@ -531,9 +536,14 @@ Room.BuildFromData = function (data) {
     room.size = data.size;
     room.locked = data.locked;
     room.tags = Tags.BuildFromData(data.tags);
-    if(data.hasOwnProperty("triggers")){
-        for(var i=0; i < data.triggers.length; i++){
-            room.triggers.push(Trigger.BuildFromData(data.triggers[i]));
+    if(data.hasOwnProperty("triggersOnce")){
+        for(var i=0; i < data.triggersOnce.length; i++){
+            room.triggersOnce.push(Trigger.BuildFromData(data.triggersOnce[i]));
+        }
+    }
+    if(data.hasOwnProperty("triggersMulti")){
+        for(var i=0; i < data.triggersMulti.length; i++){
+            room.triggersMulti.push(Trigger.BuildFromData(data.triggersMulti[i]));
         }
     }
     return room;
@@ -572,6 +582,7 @@ function TriggerResource() {
     this.description = "";
     this.id = -1;
     this.args = [];
+    this.condition = false;
 }
 
 TriggerResource.BuildFromData = function (data) {
@@ -581,6 +592,9 @@ TriggerResource.BuildFromData = function (data) {
     trigger.id = data.id;
     for (var i = 0; i < data.args.length; i++) {
         trigger.args.push(TriggerArgumentResource.BuildFromData(data.args[i]));
+    }
+    if(data.hasOwnProperty("condition")){
+        trigger.condition = data.condition;
     }
     return trigger;
 };
