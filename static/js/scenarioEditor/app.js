@@ -61,7 +61,7 @@ var application = angular.module('scenarioEditor', [
                         this.del = function () {
                             var idx = $scope.container.indexOf($scope.variable);
                             if (idx !== -1) {
-                                $scope.container = $scope.container.splice(idx, 1);
+                                $scope.container.splice(idx, 1);
                             }
                         };
 
