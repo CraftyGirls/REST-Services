@@ -496,6 +496,7 @@ function Room(name, id) {
     this.type = "room";
     this.locked = false;
     this.items = [];
+    this.triggers = [];
 
     this.validate = function () {
         var errorMessages = [];
@@ -506,6 +507,13 @@ function Room(name, id) {
 
         if (this.description == null || this.description.length <= 0) {
             errorMessages.push(this.name + " is missing a description");
+        }
+        for (var i = 0; i < this.triggers.length; i++) {
+            var errors = this.triggers[i].validate();
+            for (var x = 0; x < errors.length; x++) {
+                errors[x] = " Triggers -> " + errors[x];
+            }
+            errorMessages.concat(errors);
         }
 
         return errorMessages;
@@ -523,6 +531,11 @@ Room.BuildFromData = function (data) {
     room.size = data.size;
     room.locked = data.locked;
     room.tags = Tags.BuildFromData(data.tags);
+    if(data.hasOwnProperty("triggers")){
+        for(var i=0; i < data.triggers.length; i++){
+            room.triggers.push(Trigger.BuildFromData(data.triggers[i]));
+        }
+    }
     return room;
 };
 
