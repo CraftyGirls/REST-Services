@@ -57,7 +57,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="trigger in triggers()">
+                    <tr ng-repeat="trigger in triggers() | orderBy : 'condition'">
                         <td ng-if="pendingTrigger == null || trigger.id != pendingTrigger.id">
                             <span>{$trigger.type$}</span>
                         </td>
