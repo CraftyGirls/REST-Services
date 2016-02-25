@@ -1,3 +1,5 @@
+# coding=utf8
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -215,6 +217,11 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
+                scenario.script = scenario.script.replace('…', "...")
+                scenario.script = scenario.script.replace('’', "'")
+                scenario.script = scenario.script.replace('‘', "'")
+                scenario.script = scenario.script.replace('”', '"')
+                scenario.script = scenario.script.replace('“', '"')
                 scen_json = json.loads(scenario.script)
                 scenario.order = scen_json['order']
                 scenario.type = scen_json['type']
