@@ -1,11 +1,118 @@
-{% extends "partydarling/base.html" %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    {% load staticfiles %}
 
-{% load staticfiles %}
-
-{% block resources %}
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}"/>
-{% endblock %}
 
-{% block content %}
-    <img class="center splash_image" src="{% static "images/pd.png" %}"/>
-{% endblock %}
+    <title>Party Darling</title>
+
+</head>
+<body>
+<div id="main">
+
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="pull-left" href="/">
+            <img alt="Brand" class="logo-img" src="{% static 'images/partydarling/logo-sm.png' %}">
+          </a>
+        </div>
+         <ul class="nav navbar-nav navbar-right">
+            <li><a href="https://sweetheartsquad.itch.io/"><i class="fa fa-gamepad"></i></a></li>
+            <li><a href="http://sweetheartsquad.tumblr.com/"><i class="fa fa-tumblr"></i></a></li>
+            <li><a href="https://twitter.com/sweetheartsquad"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="https://github.com/SweetheartSquad"><i class="fa fa-github"></i></a></li>
+        </ul>
+      </div>
+    </nav>
+    </div>
+    <div class="banner-container">
+        <img class="banner" src="{% static 'images/partydarling/banner.png '%}"/>
+    </div>
+
+    <div class="video-container">
+        <video width="100%" height="600" controls>
+            <source src="{% static 'videos/partydarling/trailer.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+    <div id="about">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    Column 1
+                </div>
+                <div class="col-md-8">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="team">
+        <div class="container">
+            <h1 class="center-text">Team</h1>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="https://github.com/thehetmanm">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/michael.png' %}"/>
+                        <div class="center-text">
+                            <h4>Michael</h4>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/seleb">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/sean.png' %}"/>
+                        <div class="center-text">
+                            <h4>Sean</h4>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/ecthurlow">
+                    <img class="profile-img center-block" src="{% static 'images/partydarling/emma.png' %}"/>
+                    <div class="center-text">
+                        <h4>Emma</h4>
+                    </div>
+                    </a>
+                </div>
+            </div>
+
+             <div class="row">
+                <div class="col-md-4">
+                    <a href="https://github.com/RyanBluth">
+                    <img class="profile-img center-block" src="{% static 'images/partydarling/ryan.png' %}"/>
+                    <div class="center-text">
+                        <h4>Ryan</h4>
+                    </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/ianmart1n">
+                    <img class="profile-img center-block" src="{% static 'images/partydarling/ian.png' %}"/>
+                    <div class="center-text">
+                       <h4>Ian</h4>
+                    </div>
+                     </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/smalllittlecat">
+                    <img class="profile-img center-block" src="{% static 'images/partydarling/cat.png' %}"/>
+                    <div class="center-text">
+                        <h4>Catherine</h4>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
