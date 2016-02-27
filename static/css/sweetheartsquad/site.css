@@ -1,14 +1,25 @@
-html body{
-	
+html{
+	background: linear-gradient(to bottom, #111111 0%, #171a21 100%);
+  	background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 body{
 	width: 100%;
+ 	background: none;	
 }
 
 a{
 	color:#333333;
 	cursor:pointer;
+}
+
+h4{
+	color : #f9f9f9;
+}
+
+h1{
+    color : #fe1b9c;
 }
 
 .white{
@@ -59,6 +70,7 @@ a{
 	width: 100%;
 	background-color: #ffd7f3;
 	padding :10px;
+	padding-top: 73px;
 }
 
 .hub-img{
@@ -70,10 +82,11 @@ a{
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 200px;
+	width: 500px;
+	max-width: 
 	height:auto;
 }
 
 .logo-container{
-	margin-bottom: 15px;
+	margin-bottom: 25px;
 }
