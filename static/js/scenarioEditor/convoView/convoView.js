@@ -112,12 +112,11 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
                 for (var i = 0; i < convoService.conversations().length; i++) {
                     for (var x = 0; x < convoService.conversations()[i].dialogue.length; x++) {
                         var trig = convoService.conversations()[i].dialogue[x].conditions;
-                        console.log(trig);
                         for (var j = 0; j < trig.length; j++) {
                             if (convoService.conversations()[i].dialogue[x].conditions[j].id == -1) {
-                                conditionservice.assignIdByName(convoService.conversations()[i].dialogue[x].conditions[j]);
+                                triggerService.assignIdByName(convoService.conversations()[i].dialogue[x].conditions[j]);
                             }
-                            var messages = conditionservice.validateLocalTrigger(convoService.conversations()[i].dialogue[x].conditions[j], convoService.conversations()[i].dialogue[x].conditions);
+                            var messages = triggerService.validateLocalTrigger(convoService.conversations()[i].dialogue[x].conditions[j], convoService.conversations()[i].dialogue[x].conditions);
                             for (var y = 0; x < messages.length; y++) {
                                 messages[y] = convoService.conversations()[i].name + " -> " + convoService.conversations()[i].dialogue[x].name + " -> Conditions -> " + messages[y];
                             }
