@@ -2,10 +2,6 @@
 
 {% load staticfiles %}
 
-{% block resources %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}"/>
-{% endblock %}
-
 {% block content %}
     <a href="{% url "profile_scenarios" %}">Your Scenarios</a>
     <a href="{% url "create_scenario" %}">Create Scenario</a>
