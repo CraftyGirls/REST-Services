@@ -73,6 +73,7 @@ h2{
 }
 
 .banner-container{
+    padding-top: 50px;
     width: 100%;
     background-color: #111;
 }
@@ -112,12 +113,13 @@ h2{
 }
 
 .nav{
-    background-color: #222;
+    background-color: #171a21;
     height : 50px;
+    border-bottom: solid thin  #fe1b9c;
 }
 
-.contaier{
-    padding: 0;
+.container{
+    padding: 0 !important;
 }
 
 /* Always float the navbar header */
