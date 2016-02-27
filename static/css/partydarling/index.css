@@ -115,8 +115,9 @@ h2{
 
 .nav{
     background-color: #171a21;
-    height : 50px;
-    border-bottom: solid thin  #fe1b9c;
+    height : 53px;
+    border-bottom: solid medium  #fe1b9c;
+    padding-left: 10px;
 }
 
 .container{
