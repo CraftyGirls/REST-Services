@@ -4,7 +4,12 @@
 
 html{
     font-family: 'Roboto', sans-serif;
-    background-color: #febedf;
+    background: linear-gradient(to bottom, #111111 0%, #171a21 100%); 
+}
+
+body{
+    background: none;
+    color: #f9f9f9;
 }
 
 a{
@@ -15,13 +20,16 @@ a:hover{
     color: #fe1b9c
 }
 
+h1{
+    color : #fe1b9c;
+}
+
+
 #about{
-    background-color: #feddf2;
     padding: 20px;
 }
 
 #team{
-    background-color: #febedf;
     padding: 20px;
 }
 
@@ -40,31 +48,26 @@ a:hover{
     margin-top: 7px;
 }
 
-.banner{
-    display: -webkit-flex;
-    display: flex;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.banner-container{
-    background-color: #6e08b9;
-    width: 100%;
-}
-
 .video{
-    display: -webkit-flex;
-    display: flex;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom:20px;
+    max-height: 500px;
+    width: 100%;
 }
 
 .video-container{
-    background-color: #000;
+    background-color: #222;
+}
+
+.banner{
+    display: flex;
+    width : 100%;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.banner-container{
     width: 100%;
+    margin-bottom: 40px;
 }
 
 .profile-img{
@@ -82,4 +85,19 @@ a:hover{
 .center-text{
     width: 100%;
     text-align: center;
+}
+
+.logo{
+    width : 500px;
+    max-width: 100%;
+    padding: 20px;
+}
+
+.description{
+    max-width:900px;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
 }
