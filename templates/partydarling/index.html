@@ -16,7 +16,7 @@
 <body>
 <div id="main">
 
-    <nav class="navbar navbar-inverse">
+    <nav class="nav">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="pull-left" href="/">
@@ -33,39 +33,43 @@
     </nav>
     </div>
     <div class="banner-container">
-        <img class="banner" src="{% static 'images/partydarling/banner2.png'%}"/>
+        <div class="container">
+            <img class="banner" src="{% static 'images/partydarling/banner2.png'%}"/>
+        </div>
     </div>
-    <div class="video-container container description">
-       <h3 class="center-text ">
-        "Party, Darling?" is a narrative adventure game developed alongside S-Tengine2, SweetHeart Squad's custom C++ and OpenGl based open-source engine. 
-        </h3>
-        <br/>
-        <video class="video" controls>
-            <source src="{% static 'videos/partydarling/trailer.mp4' %}" type="video/mp4">
-        </video>
+    <div class="video-container ">
+        <div class="container">
+            <video class="video" controls>
+                <source src="{% static 'videos/partydarling/trailer.mp4' %}" type="video/mp4">
+            </video>
+        </div>
     </div>
     <div id="about">
-
-        <div class="container-fluid description">
-         
-            <h4 class="center-text">
+        <div class="container description">
+             <h2 class="center-text ">
+            "Party, Darling?" is a narrative adventure game developed alongside S-Tengine2, SweetHeart Squad's custom C++ and OpenGl based open-source engine. 
+            </h2>
+            <h3 class="center-text">
             The game revolves around a murder mystery in which the player must explore the alternate realities of a bizarre mansion in search of its enigmatic owner.
-            </h4>
+            </h3>
         </div>
     </div>
     <div class="container">
         <div class="row vertical-center">
             <div class="col-md-6">
-                <img class="center-block logo" src="{% static 'images/partydarling/S-Tengine2_logo.png'%}"/>
+                <a href="https://github.com/SweetheartSquad">
+                    <img class="center-block logo" src="{% static 'images/partydarling/S-Tengine2_logo.png'%}"/>
+                </a>
             </div>
             <div>
+            <a href="https://github.com/SweetheartSquad/S-Tengine2">
                 <img class="center-block logo" src="{% static 'images/partydarling/shs.png'%}"/>
+            </a>
             </div>
         </div>
     </div>
     <div id="team">
         <div class="container">
-            
             <div class="row">
                 <div class="col-md-4">
                     <a href="https://github.com/thehetmanm">
