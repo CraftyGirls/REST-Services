@@ -60,6 +60,10 @@
     margin: 10px;
 }
 
+.margin-left{
+    margin-left: 10px;
+}
+
 #main {
     float: left;
     padding-left: 25px;
