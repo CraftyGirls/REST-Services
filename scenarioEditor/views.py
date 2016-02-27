@@ -217,11 +217,11 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
-                # scenario.script = scenario.script.replace('…', "...")
-                # scenario.script = scenario.script.replace('’', "'")
-                # scenario.script = scenario.script.replace('‘', "'")
-                # scenario.script = scenario.script.replace('”', '"')
-                # scenario.script = scenario.script.replace('“', '"')
+                scenario.script = scenario.script.replace('…', "...")
+                scenario.script = scenario.script.replace('’', "'")
+                scenario.script = scenario.script.replace('‘', "'")
+                scenario.script = scenario.script.replace('”', '\\"')
+                scenario.script = scenario.script.replace('“', '\\"')
                 scen_json = json.loads(scenario.script)
                 scenario.order = scen_json['order']
                 scenario.type = scen_json['type']
