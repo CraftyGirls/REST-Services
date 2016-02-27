@@ -3,11 +3,12 @@
 }
 
 html{
-    font-family: 'borders_divide_but_hearts_sRg', sans-serif !important;
+    font-family: 'borders_divide_but_hearts_sRg' !important;
     background: linear-gradient(to bottom, #111111 0%, #171a21 100%); 
 }
 
 body{
+    font-family: 'borders_divide_but_hearts_sRg' !important;
     background: none;
     color: #f9f9f9;
 }
