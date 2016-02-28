@@ -1,31 +1,89 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
-	<head>
-    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
-		<link rel="stylesheet" href="{% static 'css/sweetheartsquad/site.css' %}">
-		<title>Sweetheart Squad</title>
-	</head>
-	<body>
-		{% include 'navbar.html' %}
-		<div class="container header">
-			<div class="container logo-container">
-				<img src="{% static 'images/sweetheartsquad/shs.png' %}" class="logo">
-			</div>
-			<div class="container-fluid">
-				<div class="row row-centered">
-					<div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="{% url 'partydarling.views.index' %}">Party Darling</a></div>
-					<div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="http://sweetheartsquad.github.io/S-Tengine2/">S-Tengine 2</a></div>
-					<div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="http://sweetheartsquad.itch.io/">Games</a></div>
-				</div>
-			</div>
-		</div>
-		<div class="container">
-			<h1 class="center">Sweetheart&nbsp;Squad</h1>
-			<h4 class="center">
-			We are a gaggle of game makers from Ottawa working a custom engine and a plethora of playable titles. We’re all fourth-year students studying Interactive Multimedia and Design at Carleton University.
-			</h4>
-		</div>
-	</body>
+<head>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+   <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
+   <link rel="stylesheet" href="{% static 'css/sweetheartsquad/site.css' %}">
+   <title>Sweetheart Squad</title>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <div class="container header">
+     <div class="container logo-container">
+        <img src="{% static 'images/sweetheartsquad/shs.png' %}" class="logo">
+    </div>
+    <div class="container-fluid">
+        <div class="row row-centered">
+           <div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="{% url 'partydarling.views.index' %}">Party Darling</a></div>
+           <div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="http://sweetheartsquad.github.io/S-Tengine2/">S-Tengine 2</a></div>
+           <div class="col-md-1 col-centered center-text"><a class="h4 dark-grey" href="http://sweetheartsquad.itch.io/">Games</a></div>
+       </div>
+   </div>
+   
+</div>
+</div>
+<div class="container">
+    <h1 class="center">Sweetheart&nbsp;Squad</h1>
+    <h4 class="center">
+        We are a gaggle of game makers from Ottawa working a custom engine and a plethora of playable titles. We’re all fourth-year students studying Interactive Multimedia and Design at Carleton University.
+    </h4>
+    <div id="team">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="https://github.com/thehetmanm">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/michael.png' %}"/>
+                        <div class="center-text">
+                            <h4>Michael</h4>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/seleb">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/sean.png' %}"/>
+                        <div class="center-text">
+                            <h4>Sean</h4>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/ecthurlow">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/emma.png' %}"/>
+                        <div class="center-text">
+                            <h4>Emma</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="https://github.com/RyanBluth">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/ryan.png' %}"/>
+                        <div class="center-text">
+                            <h4>Ryan</h4>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/ianmart1n">
+                        <img class="profile-img center-block" src="{% static 'images/partydarling/ian.png' %}"/>
+                        <div class="center-text">
+                         <h4>Ian</h4>
+                     </div>
+                 </a>
+             </div>
+             <div class="col-md-4">
+                <a href="https://github.com/smalllittlecat">
+                    <img class="profile-img center-block" src="{% static 'images/partydarling/cat.png' %}"/>
+                    <div class="center-text">
+                        <h4>Catherine</h4>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 </html>
