@@ -351,7 +351,7 @@ def component_set_service(request, component_set_id=None):
                 if component_set_id is None:
                     comp_set.setType = comp_set_form.cleaned_data["setType"]
 
-                    joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
+                    joints_file_name = "components/definitions/" + comp_set_form.cleaned_data["name"] + "_" + comp_set_form.cleaned_data["setType"] + ".json"
 
                     json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
@@ -530,8 +530,6 @@ def upload_asset(request):
             asset_id = form.cleaned_data["assetId"]
 
             tex = Texture()
-            uuid_str = str(uuid.uuid4())
-            file_name = uuid_str + ".png"
 
             additional_data = None
 
@@ -542,11 +540,16 @@ def upload_asset(request):
 
             if asset_type == Asset.CHARACTER_COMPONENT:
 
+                parent_set = ComponentSet.objects.get(pk=long(asset_id))
+
+                name = parent_set.name + "_" + additional_data["componentType"]
+                file_name = name + ".png"
+
                 tex.name = "components/" + file_name
 
                 char_comp = CharacterComponent()
                 char_comp.componentType = additional_data["componentType"]
-                char_comp.name = uuid_str
+                char_comp.name = name
 
                 file_name = "components/" + file_name
                 tex.imageUrl = file_name
@@ -562,17 +565,18 @@ def upload_asset(request):
 
                 char_comp.texture = tex
 
-                parent_set = ComponentSet.objects.get(pk=long(asset_id))
-
                 char_comp.componentSet = parent_set
 
                 char_comp.save()
 
             elif asset_type == Asset.ITEM:
 
-                tex.name = "items/" + file_name
-
                 item_def = ItemDefinition.objects.get(id=long(asset_id))
+
+                name = item_def.name
+                file_name = name + ".png"
+
+                tex.name = "items/" + file_name
                 file_name = "items/" + file_name
                 tex.imageUrl = file_name
 
