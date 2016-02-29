@@ -22,7 +22,7 @@ class AssetFileForm(forms.Form):
 
 class ComponentSetForm(forms.Form):
     name = forms.CharField(max_length=100)
-    description = forms.CharField()
+    description = forms.CharField(required=False)
     setType = forms.ChoiceField(ComponentSet.TYPE_CHOICES, required=False)
     joints = forms.CharField(required=False)
     tags = TagField()
@@ -30,14 +30,14 @@ class ComponentSetForm(forms.Form):
 
 class AssetForm(forms.Form):
     name = forms.CharField(max_length=100)
-    description = forms.CharField()
+    description = forms.CharField(required=False)
     assetType = forms.ChoiceField(Asset.TYPE_CHOICES)
     tags = TagField()
 
 
 class ItemForm(forms.Form):
     name = forms.CharField(max_length=100)
-    description = forms.CharField()
+    description = forms.CharField(required=False)
     tags = TagField()
 
 

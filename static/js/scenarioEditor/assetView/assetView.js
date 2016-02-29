@@ -268,11 +268,6 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 valid = false;
             }
 
-            if ($scope.asset.description == "") {
-                errors.push('Description is required');
-                valid = false;
-            }
-
             if (valid) {
                 // Tell the app controller to block the ui
                 switch ($scope.selectedAsset.id) {
