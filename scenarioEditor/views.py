@@ -247,7 +247,7 @@ def create_scenario_view(request):
         if 'scenario_name' in request.POST:
             pd_user = PDUser.objects.get(user=request.user)
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
-            file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
+            file_name = "scenarios/" + scenario.name.replace(" ", "_") + ".json"
             scenario.script = '{"assets":[]}'
             scenario.jsonUrl = file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
