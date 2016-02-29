@@ -875,42 +875,42 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                 {
                                                     id: "Left Eye",
                                                     texture: "",
-                                                    in: [parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6)), "ANY"]],
+                                                    in: [parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6))],
+                                                    out: [[parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6)), "ANY"]],
                                                     components: [
                                                         {
                                                             id: "Left Pupil",
                                                             texture: "",
-                                                            in: [parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6))],
-                                                            out: [[parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                            in: [parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6))],
+                                                            out: [[parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[12]['percentages']['y'].toFixed(6)), "ANY"]]
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     id: "Right Eye",
                                                     texture: "",
-                                                    in: [parseFloat(rels[14]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[14]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6)), "ANY"]],
+                                                    in: [parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6))],
+                                                    out: [[parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6)), "ANY"]],
                                                     components: [
                                                         {
                                                             id: "Right Pupil",
                                                             texture: "",
-                                                            in: [parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6))],
-                                                            out: [[parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                            in: [parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6))],
+                                                            out: [[parseFloat(rels[12]['percentages']['x'].toFixed(6)), parseFloat(rels[16]['percentages']['y'].toFixed(6)), "ANY"]]
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     id: "Left Eyebrow",
                                                     texture: "",
-                                                    in: [parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                    in: [parseFloat(rels[14]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6))],
+                                                    out: [[parseFloat(rels[14]['percentages']['x'].toFixed(6)), parseFloat(rels[6]['percentages']['y'].toFixed(6)), "ANY"]]
                                                 },
                                                 {
                                                     id: "Right Eyebrow",
                                                     texture: "",
-                                                    in: [parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[8]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6)), "ANY"]]
+                                                    in: [parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6))],
+                                                    out: [[parseFloat(rels[16]['percentages']['x'].toFixed(6)), parseFloat(rels[8]['percentages']['y'].toFixed(6)), "ANY"]]
                                                 }
                                             ]
                                         }
