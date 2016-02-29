@@ -344,14 +344,14 @@ def component_set_service(request, component_set_id=None):
                     except:
                         return HttpResponse("Could not find component set for id " + str(component_set_id), status=404)
 
-                comp_set.name = comp_set_form.cleaned_data["name"]
+                comp_set.name = comp_set_form.cleaned_data["name"].replace(" ", "_")
 
                 comp_set.description = comp_set_form.cleaned_data["description"]
 
                 if component_set_id is None:
                     comp_set.setType = comp_set_form.cleaned_data["setType"]
 
-                    joints_file_name = "components/definitions/" + comp_set_form.cleaned_data["name"] + "_" + comp_set_form.cleaned_data["setType"] + ".json"
+                    joints_file_name = "components/definitions/" + comp_set_form.cleaned_data["name"].replace(" ", "_") + "_" + comp_set_form.cleaned_data["setType"] + ".json"
 
                     json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
@@ -532,14 +532,15 @@ def upload_asset(request):
 
                 parent_set = ComponentSet.objects.get(pk=long(asset_id))
 
-                name = parent_set.name + "_" + additional_data["componentType"]
+                t = additional_data["componentType"].replace(" ", "_")
+                name = parent_set.name.replace(" ", "_") + "_" + t
                 file_name = name + ".png"
 
                 tex.name = "components/" + file_name
 
                 char_comp = CharacterComponent()
                 char_comp.componentType = additional_data["componentType"]
-                char_comp.name = name
+                char_comp.name = name.replace(" ", "_")
 
                 file_name = "components/" + file_name
                 tex.imageUrl = file_name
@@ -563,7 +564,7 @@ def upload_asset(request):
 
                 item_def = ItemDefinition.objects.get(id=long(asset_id))
 
-                name = item_def.name
+                name = item_def.name.replace(" ", "_")
                 file_name = name + ".png"
 
                 tex.name = "items/" + file_name
