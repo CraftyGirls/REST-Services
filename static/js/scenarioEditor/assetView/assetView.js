@@ -876,7 +876,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                     id: "Left Eye",
                                                     texture: "",
                                                     in: [parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[6]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6)), "ANY"]],
+                                                    out: [[parseFloat(rels[7]['percentages']['x'].toFixed(6)), parseFloat(rels[10]['percentages']['y'].toFixed(6)), "ANY"]],
                                                     components: [
                                                         {
                                                             id: "Left Pupil",
@@ -890,7 +890,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                                     id: "Right Eye",
                                                     texture: "",
                                                     in: [parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6))],
-                                                    out: [[parseFloat(rels[10]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6)), "ANY"]],
+                                                    out: [[parseFloat(rels[11]['percentages']['x'].toFixed(6)), parseFloat(rels[14]['percentages']['y'].toFixed(6)), "ANY"]],
                                                     components: [
                                                         {
                                                             id: "Right Pupil",
