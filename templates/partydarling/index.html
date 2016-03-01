@@ -9,106 +9,52 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/font.css' %}"/>
+    <link rel="icon" href="{% static 'images/partydarling/favicon.ico' %}" type="image/x-icon" />
 
-    <title>Party Darling</title>
+    <title>Party, Darling?</title>
 
+    <script>
+
+    </script>
 </head>
 <body>
 <div id="main">
-
-    <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="pull-left" href="/">
-            <img alt="Brand" class="logo-img" src="{% static 'images/partydarling/logo-sm.png' %}">
-          </a>
-        </div>
-         <ul class="nav navbar-nav navbar-right">
-            <li><a href="https://sweetheartsquad.itch.io/"><i class="fa fa-gamepad"></i></a></li>
-            <li><a href="http://sweetheartsquad.tumblr.com/"><i class="fa fa-tumblr"></i></a></li>
-            <li><a href="https://twitter.com/sweetheartsquad"><i class="fa fa-twitter"></i></a></li>
-            <li><a href="https://github.com/SweetheartSquad"><i class="fa fa-github"></i></a></li>
-        </ul>
-      </div>
-    </nav>
-    </div>
+    {% include 'navbar.html'%}
     <div class="banner-container">
-        <img class="banner" src="{% static 'images/partydarling/banner.png'%}"/>
-    </div>
-
-    <div class="video-container">
-        <video width="100%" height="600" controls>
-            <source src="{% static 'videos/partydarling/trailer.mp4' %}" type="video/mp4">
-        </video>
-    </div>
-    <div id="about">
-
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    Column 1
-                </div>
-                <div class="col-md-8">
-                    
-                </div>
-            </div>
+            <img class="banner" src="{% static 'images/partydarling/banner2.png'%}"/>
         </div>
     </div>
-    <div id="team">
-        <div class="container">
-            <h1 class="center-text">Team</h1>
+    <div class="container">
+        <div class="video-container">
+           <iframe class="video" src="https://www.youtube.com/embed/WB4h2ymDB80?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 
-            <div class="row">
-                <div class="col-md-4">
-                    <a href="https://github.com/thehetmanm">
-                        <img class="profile-img center-block" src="{% static 'images/partydarling/michael.png' %}"/>
-                        <div class="center-text">
-                            <h4>Michael</h4>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="https://github.com/seleb">
-                        <img class="profile-img center-block" src="{% static 'images/partydarling/sean.png' %}"/>
-                        <div class="center-text">
-                            <h4>Sean</h4>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="https://github.com/ecthurlow">
-                    <img class="profile-img center-block" src="{% static 'images/partydarling/emma.png' %}"/>
-                    <div class="center-text">
-                        <h4>Emma</h4>
-                    </div>
-                    </a>
-                </div>
+    <div class="about-container">
+        <div id="about">
+            <div class="container description">
+                 <h2 class="center-text ">
+                "Party, Darling?" is a narrative adventure game developed alongside S-Tengine2, SweetHeart&nbsp;Squad's custom C++ and OpenGL based open-source engine.
+                </h2>
+                <h3 class="center-text">
+                The game revolves around a murder mystery in which the player must explore the alternate realities of a bizarre mansion in search of its enigmatic owner.
+                </h3>
             </div>
+        </div>
 
-             <div class="row">
-                <div class="col-md-4">
-                    <a href="https://github.com/RyanBluth">
-                    <img class="profile-img center-block" src="{% static 'images/partydarling/ryan.png' %}"/>
-                    <div class="center-text">
-                        <h4>Ryan</h4>
-                    </div>
+        <div class="container">
+            <div class="row vertical-center">
+                <div class="col-md-6">
+                    <a href="https://github.com/SweetheartSquad/S-Tengine2">
+                        <img class="center-block logo" src="{% static 'images/partydarling/S-Tengine2_logo.png'%}"/>
                     </a>
                 </div>
-                <div class="col-md-4">
-                    <a href="https://github.com/ianmart1n">
-                    <img class="profile-img center-block" src="{% static 'images/partydarling/ian.png' %}"/>
-                    <div class="center-text">
-                       <h4>Ian</h4>
-                    </div>
-                     </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="https://github.com/smalllittlecat">
-                    <img class="profile-img center-block" src="{% static 'images/partydarling/cat.png' %}"/>
-                    <div class="center-text">
-                        <h4>Catherine</h4>
-                    </div>
-                    </a>
+                <div class="col-md-6">
+                <a href="https://github.com/SweetheartSquad">
+                    <img class="center-block logo" src="{% static 'images/partydarling/shs.png'%}"/>
+                </a>
                 </div>
             </div>
         </div>

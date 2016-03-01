@@ -204,8 +204,8 @@ var application = angular.module('scenarioEditor', [
                 cond: "=condition"
             },
             transculde: true,
-            template: "<div class='row'><div class='col-sm-1'><select ng-change='typeChanged()' ng-options='trigger as trigger.type for trigger in getTriggers() | filter:{ condition : cond || false}' ng-model='selected'></select></div>" +
-            "<div class='col-sm-1'><span class='glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
+            template: "<div class='row'><div><select ng-change='typeChanged()' ng-options='trigger as trigger.type for trigger in getTriggers() | filter:{ condition : cond || false}' ng-model='selected'></select></div>" +
+            "<div><span class='pull-left margin-left glyphicon glyphicon-plus clickable hover-click' ng-click='addTrigger()'></span></div></div>",
             link: function ($scope, iElm, iAttrs, controller) {
 
                 $scope.getTriggers = function () {

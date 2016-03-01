@@ -3,26 +3,35 @@
 }
 
 html{
-    font-family: 'Roboto', sans-serif;
-    background-color: #febedf;
+    background-color: #111;
+    font-family: 'borders_divide_but_hearts_sRg' !important;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-a{
-    color: #fe1b9c
+body{
+    font-family: 'borders_divide_but_hearts_sRg' !important;
+    background: none;
+    color: #f9f9f9;
 }
 
-a:hover{
-    color: #fe1b9c
+h1{
+    color : #fe1b9c;
+}
+
+h3{
+    color : #f9f9f9;
+}
+
+h2{
+    color : #fe1b9c;
+}
+
+.about-container{
+    background: linear-gradient(to bottom, #12141a 0%, #171a21 100%);
 }
 
 #about{
-    background-color: #feddf2;
-    padding: 20px;
-}
-
-#team{
-    background-color: #febedf;
-    padding: 20px;
 }
 
 .main{
@@ -34,44 +43,39 @@ a:hover{
     border: none;
 }
 
-.logo-img{
-    width: 35px;
-    height: 35px;
-    margin-top: 7px;
+.video{
+    width: 100%;
+    margin-bottom: -6px;
+}
+
+.video-container {
+	position:relative;
+	padding-bottom:56.25%;
+	padding-top:30px;
+	height:0;
+	overflow:hidden;
+}
+
+.video-container iframe, .video-container object, .video-container embed {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
 }
 
 .banner{
-    display: -webkit-flex;
     display: flex;
-    max-width: 100%;
+    width : 100%;
     margin-left: auto;
     margin-right: auto;
+
 }
 
 .banner-container{
-    background-color: #6e08b9;
+    padding-top: 53px;
     width: 100%;
-}
-
-.video{
-    display: -webkit-flex;
-    display: flex;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom:20px;
-}
-
-.video-container{
-    background-color: #000;
-    width: 100%;
-}
-
-.profile-img{
-    width: 250px;
-    height: 250px;
-    padding: 25px;
-    margin: 0 auto;
+    background-color: #111;
 }
 
 .center{
@@ -82,4 +86,26 @@ a:hover{
 .center-text{
     width: 100%;
     text-align: center;
+}
+
+.logo{
+    width : 500px;
+    max-width: 100%;
+    padding: 20px;
+    padding-bottom: 40px;
+    image-rendering: pixelated;
+}
+
+.description{
+    padding-top: 30px;
+    padding-bottom: 60px;  
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+
+.container{
+    padding: 0 !important;
 }

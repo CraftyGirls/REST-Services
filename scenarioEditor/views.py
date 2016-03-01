@@ -217,11 +217,11 @@ def update_scenario_service(request, scenario_id):
             pd_user = PDUser.objects.get(user=request.user)
             if (scenario.owner.id == pd_user.id):
                 scenario.script = request.body
-                # scenario.script = scenario.script.replace('…', "...")
-                # scenario.script = scenario.script.replace('’', "'")
-                # scenario.script = scenario.script.replace('‘', "'")
-                # scenario.script = scenario.script.replace('”', '"')
-                # scenario.script = scenario.script.replace('“', '"')
+                scenario.script = scenario.script.replace('…', "...")
+                scenario.script = scenario.script.replace('’', "'")
+                scenario.script = scenario.script.replace('‘', "'")
+                scenario.script = scenario.script.replace('”', '\\"')
+                scenario.script = scenario.script.replace('“', '\\"')
                 scen_json = json.loads(scenario.script)
                 scenario.order = scen_json['order']
                 scenario.type = scen_json['type']
@@ -247,7 +247,7 @@ def create_scenario_view(request):
         if 'scenario_name' in request.POST:
             pd_user = PDUser.objects.get(user=request.user)
             scenario = Scenario(name=str(request.POST['scenario_name']), owner=pd_user)
-            file_name = "scenarios/" + str(uuid.uuid4()) + ".json"
+            file_name = "scenarios/" + scenario.name.replace(" ", "_") + ".json"
             scenario.script = '{"assets":[]}'
             scenario.jsonUrl = file_name
             gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
@@ -344,7 +344,7 @@ def component_set_service(request, component_set_id=None):
                     except:
                         return HttpResponse("Could not find component set for id " + str(component_set_id), status=404)
 
-                comp_set.name = comp_set_form.cleaned_data["name"]
+                comp_set.name = comp_set_form.cleaned_data["name"].replace(" ", "_")
 
                 comp_set.description = comp_set_form.cleaned_data["description"]
                 comp_set.random = comp_set_form.cleaned_data["random"]
@@ -352,7 +352,7 @@ def component_set_service(request, component_set_id=None):
                 if component_set_id is None:
                     comp_set.setType = comp_set_form.cleaned_data["setType"]
 
-                    joints_file_name = "components/definitions/" + str(uuid.uuid4()) + ".json"
+                    joints_file_name = "components/definitions/" + comp_set_form.cleaned_data["name"].replace(" ", "_") + "_" + comp_set_form.cleaned_data["setType"] + ".json"
 
                     json_obj = json.loads(comp_set_form.cleaned_data["joints"])
 
@@ -381,17 +381,7 @@ def component_set_service(request, component_set_id=None):
 
                 if component_set_id is None:
 
-                    components = {'components': []}
-                    sets = ComponentSet.objects.all()
-
-                    for set in sets:
-                        components['components'].append(set.jsonRepresentation)
-
-                    gitlab_utility.update_file(gitlab_utility.get_project_name(),
-                                               PDUser.branch_for_user(user=request.user),
-                                               "component-definitions.json",
-                                               json.dumps(components, sort_keys=True, indent=4, separators=(',', ': ')),
-                                               "text")
+                    dump_component_definitions(request)
 
                 return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
                                     content_type='application/json')
@@ -532,8 +522,6 @@ def upload_asset(request):
             asset_id = form.cleaned_data["assetId"]
             
             tex = Texture()
-            uuid_str = str(uuid.uuid4())
-            file_name = uuid_str + ".png"
 
             additional_data = None
 
@@ -544,11 +532,17 @@ def upload_asset(request):
 
             if asset_type == Asset.CHARACTER_COMPONENT:
 
+                parent_set = ComponentSet.objects.get(pk=long(asset_id))
+
+                t = additional_data["componentType"].replace(" ", "_")
+                name = parent_set.name.replace(" ", "_") + "_" + t
+                file_name = name + ".png"
+
                 tex.name = "components/" + file_name
 
                 char_comp = CharacterComponent()
                 char_comp.componentType = additional_data["componentType"]
-                char_comp.name = uuid_str
+                char_comp.name = name.replace(" ", "_")
 
                 file_name = "components/" + file_name
                 tex.imageUrl = file_name
@@ -564,17 +558,18 @@ def upload_asset(request):
 
                 char_comp.texture = tex
 
-                parent_set = ComponentSet.objects.get(pk=long(asset_id))
-
                 char_comp.componentSet = parent_set
 
                 char_comp.save()
 
             elif asset_type == Asset.ITEM:
 
-                tex.name = "items/" + file_name
-
                 item_def = ItemDefinition.objects.get(id=long(asset_id))
+
+                name = item_def.name.replace(" ", "_")
+                file_name = name + ".png"
+
+                tex.name = "items/" + file_name
                 file_name = "items/" + file_name
                 tex.imageUrl = file_name
 
