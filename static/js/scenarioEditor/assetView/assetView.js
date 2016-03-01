@@ -121,7 +121,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 var params = {
                     name: asset.name,
                     description: asset.description,
-                    tags: asset.tags
+                    tags: asset.tags,
+                    random : asset.random
                 }
 
                 $http.post('/scenario/service/' + endpoint + '/' + asset.id + "/", params).then(
@@ -303,7 +304,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             var compSetData = {
                                 name: $scope.asset.name,
                                 description: $scope.asset.description,
-                                randon:$scope.asset.random,
+                                random:$scope.asset.random,
                                 tags: $scope.asset.tags,
                                 setType: $scope.selectedComponentType.label.toUpperCase(),
                                 joints: JSON.stringify(joints)
@@ -348,7 +349,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             var itemData = {
                                 name: $scope.asset.name,
                                 description: $scope.asset.description,
-                                tags: $scope.asset.tags
+                                tags: $scope.asset.tags,
+                                random: $scope.asset.random
                                 // Extra item attributes
                             };
 

@@ -92,7 +92,8 @@ class ComponentSet(Taggable):
             'setType': self.setType,
             'components': compsArr,
             'tags': tagsArr,
-            'description':self.description
+            'description': self.description,
+            'random': self.random
         }
 
     def asJson(self):
@@ -257,8 +258,7 @@ class CharacterComponent(models.Model):
             'id': self.id,
             'name': self.name,
             'texture': self.texture.asDict(),
-            'componentType': self.componentType,
-            'random':self.randomm
+            'componentType': self.componentType
         }
 
     def asJson(self):

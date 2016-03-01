@@ -115,7 +115,7 @@ def dump_component_definitions(request):
     sets = ComponentSet.objects.all()
 
     for set in sets:
-        components['components'].append({"src": set.jsonRepresentation, "type": set.setType})
+        components['components'].append({"src": set.jsonRepresentation, "type": set.setType, "random": set.random})
 
     gitlab_utility.update_file(gitlab_utility.get_project_name(),
                                PDUser.branch_for_user(user=request.user),
@@ -379,9 +379,7 @@ def component_set_service(request, component_set_id=None):
                         tag.owner = comp_set
                         tag.save()
 
-                if component_set_id is None:
-
-                    dump_component_definitions(request)
+                dump_component_definitions(request)
 
                 return HttpResponse('{"status":"created", "id":' + str(comp_set.id) + '}',
                                     content_type='application/json')
