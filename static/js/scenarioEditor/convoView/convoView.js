@@ -117,7 +117,7 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
                                 triggerService.assignIdByName(convoService.conversations()[i].dialogue[x].conditions[j]);
                             }
                             var messages = triggerService.validateLocalTrigger(convoService.conversations()[i].dialogue[x].conditions[j], convoService.conversations()[i].dialogue[x].conditions);
-                            for (var y = 0; x < messages.length; y++) {
+                            for (var y = 0; y < messages.length; y++) {
                                 messages[y] = convoService.conversations()[i].name + " -> " + convoService.conversations()[i].dialogue[x].name + " -> Conditions -> " + messages[y];
                             }
                             errors = errors.concat(messages);
