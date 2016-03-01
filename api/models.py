@@ -67,6 +67,7 @@ class ComponentSet(Taggable):
     fileUrl = models.CharField(default='', max_length=512)
     setType = models.CharField(default='', max_length=100, choices=TYPE_CHOICES)
     description = models.TextField(default='')
+    random = models.BooleanField(default=True)
 
     def get_components(self):
         return list(CharacterComponent.objects.filter(componentSet=self))
@@ -150,6 +151,7 @@ class ItemDefinition(Taggable):
     description = models.TextField(blank=False, default='')
     interactable = models.BooleanField(default=False)
     texture = models.OneToOneField(Texture, null=True)
+    random = models.BooleanField(default=True)
 
     def asDict(self):
         tex = None
@@ -168,6 +170,7 @@ class ItemDefinition(Taggable):
             'description': self.description,
             'interactable': self.interactable,
             'texture': tex,
+            'random': self.random,
             'tags': tagsArr
         }
 
@@ -254,7 +257,8 @@ class CharacterComponent(models.Model):
             'id': self.id,
             'name': self.name,
             'texture': self.texture.asDict(),
-            'componentType': self.componentType
+            'componentType': self.componentType,
+            'random':self.randomm
         }
 
     def asJson(self):

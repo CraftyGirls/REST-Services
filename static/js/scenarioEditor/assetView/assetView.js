@@ -24,6 +24,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
         $scope.asset.description = "";
         $scope.asset.tags = "";
         $scope.asset.type = "";
+        $scope.asset.random = true;
 
         $scope.mode = 'CREATE';
 
@@ -307,6 +308,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                             var compSetData = {
                                 name: $scope.asset.name,
                                 description: $scope.asset.description,
+                                randon:$scope.asset.random,
                                 tags: $scope.asset.tags,
                                 setType: $scope.selectedComponentType.label.toUpperCase(),
                                 joints: JSON.stringify(joints)
@@ -452,9 +454,11 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
             template: "<td ng-if='state==\"view\"'>{$obj.name$}</td>" +
             "<td ng-if='state==\"view\"'>{$obj.description$}</td>" +
             "<td ng-if='state==\"view\"'>{$obj.tags$}</td>" +
+            "<td ng-if='state==\"view\"'><input type='checkbox' disabled ng-model='obj.random'/></td>" +
             "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.name'/></td>" +
             "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.description'/></td>" +
             "<td ng-if='state==\"edit\"'><input type='text' ng-model='obj.tags'/></td>" +
+            "<td ng-if='state==\"edit\"'><input type='checkbox' ng-model='obj.random'/></td>" +
             "<td>{$obj.setType$}</td>" +
             "<td id='img-container'></td>" +
             "<td>" +

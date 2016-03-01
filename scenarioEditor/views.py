@@ -347,6 +347,7 @@ def component_set_service(request, component_set_id=None):
                 comp_set.name = comp_set_form.cleaned_data["name"]
 
                 comp_set.description = comp_set_form.cleaned_data["description"]
+                comp_set.random = comp_set_form.cleaned_data["random"]
 
                 if component_set_id is None:
                     comp_set.setType = comp_set_form.cleaned_data["setType"]
@@ -485,6 +486,7 @@ def item_service(request, item_id=None):
                         return HttpResponse('Item for id ' + item_id + ' could not be found', status=404)
                 item.name = item_form.cleaned_data["name"]
                 item.description = item_form.cleaned_data["description"]
+                item.random = item_form.cleaned_data["random"]
                 item.save()
 
                 tags = item.getTags()
@@ -528,7 +530,7 @@ def upload_asset(request):
         if form.is_valid():
             asset_type = form.cleaned_data["assetType"]
             asset_id = form.cleaned_data["assetId"]
-
+            
             tex = Texture()
             uuid_str = str(uuid.uuid4())
             file_name = uuid_str + ".png"

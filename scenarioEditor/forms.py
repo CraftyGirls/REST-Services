@@ -25,6 +25,7 @@ class ComponentSetForm(forms.Form):
     description = forms.CharField()
     setType = forms.ChoiceField(ComponentSet.TYPE_CHOICES, required=False)
     joints = forms.CharField(required=False)
+    random = forms.BooleanField(required=False)
     tags = TagField()
 
 
@@ -38,6 +39,7 @@ class AssetForm(forms.Form):
 class ItemForm(forms.Form):
     name = forms.CharField(max_length=100)
     description = forms.CharField()
+    random = forms.BooleanField(required=False)
     tags = TagField()
 
 
