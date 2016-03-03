@@ -299,6 +299,10 @@ function Character(id, name) {
     this.items = [];
     this.type = "character";
     this.defaultState = -1;
+    this.strength = 0;
+    this.sass     = 0;
+    this.insight  = 0;
+    this.defense  = 0;
     this.components = [{
         tags: new Tags(),
         src: "", // Pelvis
@@ -408,7 +412,11 @@ Character.BuildFromData = function (data) {
     if (char.states.length == 0) {
         char.addState();
     }
-
+    
+    char.sass = data.sass || 0;
+    char.defense = data.defense || 0;
+    char.strength = data.strength || 0;
+    char.insight = data.insight || 0;
     char.items = data.items;
     char.components = data.components;
     char.defaultState = data.defaultState;

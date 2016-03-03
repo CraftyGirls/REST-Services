@@ -23,7 +23,38 @@
             <div ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
                 <div ng-if="character.id > 0">
                     <h3>{$character.name$}</h3>
-
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Defense:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.defense"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Insight:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.insight"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Sass:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.sass"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Strength:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.strength"/>
+                        </div>
+                    </div>
                     <form>
                         <div class="padded-top-bottom-10" ng-repeat="state in getStates(character)">
                             <strong>States</strong>
