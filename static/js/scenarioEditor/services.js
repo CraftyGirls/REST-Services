@@ -434,9 +434,10 @@ Character.BuildFromData = function (data) {
 function Item(name, id) {
     this.name = name;
     this.id = id;
-    this.collectable = true;
+    this.collectable  = true;
     this.pixelPerfect = true;
-    this.description = "";
+    this.consumable   = true;
+    this.description  = "";
     this.texture = -1;
     this.effects = [];
     this.pickupEffects = [];
@@ -474,8 +475,11 @@ Item.BuildFromData = function (data) {
     item.name = data.name;
     item.id = data.id;
     item.pixelPerfect = data.pixelPerfect;
-    item.collectable = data.collectable;
-    item.description = data.description;
+    item.collectable  = data.collectable;
+    item.description  = data.description;
+    if(data.hasOwnProperty('consumable')){
+        item.consumable = data.consumable;
+    }
     item.texture = data.texture;
     for (var i = 0; i < data.effects.length; i++) {
         item.effects.push(Trigger.BuildFromData(data.effects[i]));
