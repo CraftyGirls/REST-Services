@@ -492,16 +492,23 @@ Item.BuildFromData = function (data) {
     return item;
 };
 
-const ROOM_SIZES = ["SMALL", "MEDIUM", "LARGE"];
+const ROOM_TYPES = {
+    RANDOM     : ["MEDIUM"],
+    BATHROOM   : ["SMALL"],
+    LIVINGROOM : ["MEDIUM", "LARGE"],
+    KITCHEN    : ["MEDIUM"],
+    OFFICE     : ["SMALL", "MEDIUM"],
+    LABORATORY : ["MEDIUM"]
+} 
 
 function Room(name, id) {
     this.name = name;
     this.id = id;
     this.description = "";
-    this.furnitureTypes = [];
+    this.furnitureTypes = "RANDOM";
     this.characters = [];
     this.tags = new Tags();
-    this.size = ROOM_SIZES[0];
+    this.size = "MEDIUM"
     this.type = "room";
     this.locked = false;
     this.items = [];
@@ -525,7 +532,7 @@ function Room(name, id) {
             }
             errorMessages.concat(errors);
         }
-      for (var i = 0; i < this.triggersMulti.length; i++) {
+        for (var i = 0; i < this.triggersMulti.length; i++) {
             var errors = this.triggersMulti[i].validate();
             for (var x = 0; x < errors.length; x++) {
                 errors[x] = " Triggers -> " + errors[x];
@@ -543,6 +550,9 @@ Room.BuildFromData = function (data) {
     room.id = data.id;
     room.description = data.description;
     room.furnitureTypes = data.furnitureTypes;
+    if(Array.isArray(room.furnitureTypes)){
+        room.furnitureTypes = "RANDOM";
+    }
     room.items = data.items;
     room.characters = data.characters;
     room.size = data.size;
@@ -885,8 +895,8 @@ scenarioServices.service('roomService', function () {
         getRooms: function () {
             return roomData;
         },
-        getRoomSizeOptions: function () {
-            return ROOM_SIZES;
+        getRoomTypeOptions: function () {
+            return ROOM_TYPES;
         }
     };
 });

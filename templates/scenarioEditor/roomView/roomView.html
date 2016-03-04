@@ -49,17 +49,18 @@
                     </div>
                     <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
-                            <span>Furniture Tags</span>
+                            <span>Room Type</span>
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="input-sm" ng-model="currentRoom().furnitureTypes"
-                                   title="tags"/>
+                            <select class="input-sm" ng-model="currentRoom().furnitureTypes"
+                                    ng-change="onTypeChange()"
+                                    ng-options="type as type for (type, value) in roomTypes()" title="Type"></select>
                         </div>
                     </div>
                     <div class="row padded-top-bottom-10">
                         <div class="col-sm-1">
                             <span>Size</span>
-                        </div>
+                        </div
                         <div class="col-lg-2">
                             <select class="input-sm" ng-model="currentRoom().size"
                                     ng-options="size as size for size in roomSizes()" title="Size"></select>

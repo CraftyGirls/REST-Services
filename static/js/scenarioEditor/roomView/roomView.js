@@ -101,7 +101,19 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
             return items;
         };
 
+        $scope.onTypeChange = function(){
+            $scope.currentRoom().size = roomService.getRoomTypeOptions()[$scope.currentRoom().furnitureTypes][0]; 
+        }
+            
         $scope.roomSizes = function(){
-            return roomService.getRoomSizeOptions();
+            if($scope.currentRoom() != null && $scope.currentRoom() != undefined){
+                return roomService.getRoomTypeOptions()[$scope.currentRoom().furnitureTypes];
+            }else{
+                return roomService.getRoomTypeOptions()['RANDOM'];
+            }
+        }
+        
+        $scope.roomTypes = function(){
+            return roomService.getRoomTypeOptions();
         }
     }]);
