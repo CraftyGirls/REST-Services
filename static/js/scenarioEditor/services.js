@@ -550,12 +550,13 @@ Room.BuildFromData = function (data) {
     room.id = data.id;
     room.description = data.description;
     room.furnitureTypes = data.furnitureTypes;
+    room.size = data.size;
     if(!room.furnitureTypes.length > 0){
         room.furnitureTypes = "RANDOM";
+        room.size = "MEDIUM"
     }
     room.items = data.items;
     room.characters = data.characters;
-    room.size = data.size;
     room.locked = data.locked;
     room.tags = Tags.BuildFromData(data.tags);
     if(data.hasOwnProperty("triggersOnce")){
