@@ -550,7 +550,7 @@ Room.BuildFromData = function (data) {
     room.id = data.id;
     room.description = data.description;
     room.furnitureTypes = data.furnitureTypes;
-    if(Array.isArray(room.furnitureTypes)){
+    if(!room.furnitureTypes.length > 0){
         room.furnitureTypes = "RANDOM";
     }
     room.items = data.items;
