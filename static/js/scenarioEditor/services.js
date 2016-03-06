@@ -588,7 +588,8 @@ var TRIGGER_ARG_DATA_TYPES = [
 var SCENARIO_TYPES = {
     Side		: 0,
 	Omar        : 1,
-	Plot		: 2
+	Plot		: 2,
+    Lab         : 3
 };
 
 var SCENARIO_ORDER = {
