@@ -598,7 +598,8 @@ var SCENARIO_ORDER = {
     Middle_One   : 2,
     Middle_Two   : 3,
     Middle_Three : 4,
-    End          : 5
+    End          : 5,
+    Epilogue     : 6
 };
 
 function TriggerResource() {
