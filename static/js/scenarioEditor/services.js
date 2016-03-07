@@ -594,7 +594,8 @@ var SCENARIO_TYPES = {
     Side		: 0,
 	Omar        : 1,
 	Plot		: 2,
-    Lab         : 3
+    Lab         : 3,
+    Intro       : 4
 };
 
 var SCENARIO_ORDER = {
@@ -604,7 +605,7 @@ var SCENARIO_ORDER = {
     Middle_Two   : 3,
     Middle_Three : 4,
     End          : 5,
-    Epilogue     : 6
+    Epilogue     : 6,
 };
 
 function TriggerResource() {
