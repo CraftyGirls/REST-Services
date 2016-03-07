@@ -55,6 +55,14 @@
                             <input type="number" ng-model="character.strength"/>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Visible:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="checkbox" ng-model="character.visible"/>
+                        </div>
+                    </div>
                     <form>
                         <div class="padded-top-bottom-10" ng-repeat="state in getStates(character)">
                             <strong>States</strong>

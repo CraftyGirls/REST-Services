@@ -303,6 +303,7 @@ function Character(id, name) {
     this.sass     = 0;
     this.insight  = 0;
     this.defense  = 0;
+    this.visible  = true;
     this.components = [{
         tags: new Tags(),
         src: "", // Pelvis
@@ -411,6 +412,10 @@ Character.BuildFromData = function (data) {
 
     if (char.states.length == 0) {
         char.addState();
+    }
+    
+    if(data.hasOwnProperty("visible")){
+        char.visible = data.visible;
     }
     
     char.sass = data.sass || 0;
