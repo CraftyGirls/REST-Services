@@ -211,11 +211,11 @@ def register_view(request):
 @csrf_exempt
 @login_required(login_url='/scenario/login/')
 def update_scenario_service(request, scenario_id):
-    if (request.method == 'POST'):
-        if (scenario_id is not None):
+    if request.method == 'POST':
+        if scenario_id is not None:
             scenario = Scenario.objects.get(id=scenario_id)
             pd_user = PDUser.objects.get(user=request.user)
-            if (scenario.owner.id == pd_user.id):
+            if scenario.owner.id == pd_user.id:
                 scenario.script = request.body
                 scenario.script = scenario.script.replace('…', "...")
                 scenario.script = scenario.script.replace('’', "'")
@@ -231,6 +231,27 @@ def update_scenario_service(request, scenario_id):
                 scenario.save()
                 dump_scenarios(request)
                 return HttpResponse(request.body)
+            else:
+                return HttpResponse("Unauthorized", status=401)
+        else:
+            return HttpResponse("Bad Request", status=400)
+    else:
+        return HttpResponse("Invalid Method", status=405)
+
+
+@csrf_exempt
+@login_required(login_url='/scenario/login/')
+def delete_scenario_service(request, scenario_id):
+    if request.method == 'GET':
+        if scenario_id is not None:
+            scenario = Scenario.objects.get(id=scenario_id)
+            pd_user = PDUser.objects.get(user=request.user)
+            if scenario.owner.id == pd_user.id:
+                file_name = scenario.jsonUrl
+                gitlab_utility.delete_file(file_name, PDUser.branch_for_user(user=request.user))
+                scenario.delete()
+                dump_scenarios(request)
+                return redirect('index')
             else:
                 return HttpResponse("Unauthorized", status=401)
         else:

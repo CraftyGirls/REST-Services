@@ -442,6 +442,13 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
             }
         };
 
+        $scope.delete = function(id){
+               if (window.confirm("Are you sure")) {
+                   blockUi(true);
+                   window.location = '/scenario/service/delete_scenario/' + id
+               }
+        };
+
         $scope.clearMessages = function () {
             $scope.messages = [];
         };

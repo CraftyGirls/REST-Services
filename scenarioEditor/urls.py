@@ -34,4 +34,5 @@ urlpatterns = patterns('',
                        url(r'^service/gitlab_asset/', scenarioEditor.views.gitlab_asset, name='gitlab_asset_service'),
                        url(r'^service/post_process_component_set/', scenarioEditor.views.post_process_component_set_service, name='post_process_component_set_service'),
                        url(r'^service/dump_data/', scenarioEditor.views.dump_data_service, name='dump_data_service'),
+                       url(r'^service/delete_scenario/(?P<scenario_id>[0-9]+)/$', scenarioEditor.views.delete_scenario_service, name='delete_scenario_service'),
                        )
