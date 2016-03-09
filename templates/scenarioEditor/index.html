@@ -29,6 +29,7 @@
                     <h2 class="pd-info-title">Editing: </h2>
                     <input class="input input-md" type="text" value="{{ scenario.name }}"  ng-init="scenarioName='{{ scenario.name }}'" ng-model="scenarioName"/>
                     <button class="btn btn-primary navbar-btn" ng-click="rename('{{ scenario.id }}')">Re-name</button>
+                    <a href="{{ scenario.jsonUrl }}">Gitlab</a>
                 </li>
             </ul>
             <ul>
