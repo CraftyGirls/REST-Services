@@ -449,6 +449,19 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
                }
         };
 
+        $scope.rename = function(id){
+            blockUi(true);
+            $http.post('/scenario/service/rename_scenario/' + id + "/", {name:$scope.scenarioName}).then(
+                function(data){
+                    blockUi(false)
+                },
+                function (data){
+                    blockUi(false);
+                    alert("Could not rename scenario")
+                }
+            )
+        };
+
         $scope.clearMessages = function () {
             $scope.messages = [];
         };

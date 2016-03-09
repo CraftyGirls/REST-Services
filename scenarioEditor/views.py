@@ -260,6 +260,31 @@ def delete_scenario_service(request, scenario_id):
         return HttpResponse("Invalid Method", status=405)
 
 
+@csrf_exempt
+@login_required(login_url='/scenario/login/')
+def rename_scenario_service(request, scenario_id):
+    if request.method == 'POST':
+        payload = json.loads(request.body)
+        if scenario_id is not None and 'name' in payload:
+            scenario = Scenario.objects.get(id=scenario_id)
+            pd_user = PDUser.objects.get(user=request.user)
+            if scenario.owner.id == pd_user.id:
+                old_file_name = scenario.jsonUrl
+                scenario.name = payload['name']
+                scenario.jsonUrl = "scenarios/" + scenario.name.replace(" ", "_") + ".json"
+                gitlab_utility.delete_file(old_file_name, PDUser.branch_for_user(user=request.user))
+                gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
+                                       scenario.jsonUrl, scenario.script, "text")
+                dump_scenarios(request)
+                return HttpResponse()
+            else:
+                return HttpResponse("Unauthorized", status=401)
+        else:
+            return HttpResponse("Bad Request", status=400)
+    else:
+        return HttpResponse("Invalid Method", status=405)
+
+
 @login_required(login_url='/scenario/login/')
 def create_scenario_view(request):
     if request.method == 'GET':
