@@ -149,19 +149,19 @@ def browse_scenarios_view(request):
     complex_query_items = []
 
     # id overrides anything
-    if ('id' in get_params):
+    if 'id' in get_params:
         simple_query_items['id'] = get_params['id']
     else:
-        if ('name' in get_params):
+        if 'name' in get_params:
             simple_query_items['name__startswith'] = get_params['name']
-        if ('rating' in get_params):
+        if 'rating' in get_params:
             complex_query_items.append(Q(rating__gte=get_params['rating']) | Q(rating_count=0))
 
     scenarios = Scenario.objects.filter(*complex_query_items, **simple_query_items)
 
-    if ('sort_by' in get_params and (get_params['sort_by'] == 'id' or 'rating' or 'name')):
+    if 'sort_by' in get_params and (get_params['sort_by'] == 'id' or 'rating' or 'name'):
         sort_order = ''
-        if (('sort_order' in get_params) and get_params['sort_order'] == 'desc'):
+        if ('sort_order' in get_params) and get_params['sort_order'] == 'desc':
             sort_order = '-'
         scenarios = scenarios.order_by(sort_order + str(get_params['sort_by']))
 
@@ -275,6 +275,7 @@ def rename_scenario_service(request, scenario_id):
                 gitlab_utility.delete_file(old_file_name, PDUser.branch_for_user(user=request.user))
                 gitlab_utility.create_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
                                        scenario.jsonUrl, scenario.script, "text")
+                scenario.save()
                 dump_scenarios(request)
                 return HttpResponse()
             else:

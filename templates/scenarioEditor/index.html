@@ -27,7 +27,7 @@
             <ul class="nav navbar-nav navbar-left">
                 <li>
                     <h2 class="pd-info-title">Editing: </h2>
-                    <input class="input input-md" type="text" ng-model="scenarioName" value="{{ scenario.name }}"/>
+                    <input class="input input-md" type="text" value="{{ scenario.name }}"  ng-init="scenarioName='{{ scenario.name }}'" ng-model="scenarioName"/>
                     <button class="btn btn-primary navbar-btn" ng-click="rename('{{ scenario.id }}')">Re-name</button>
                 </li>
             </ul>
@@ -35,7 +35,6 @@
                 <li class="nav navbar-nav navbar-right">
                     <button class="btn btn-primary navbar-btn" ng-click="save('{{ scenario.id }}')">Save</button>
                     <button class="btn btn-danger navbar-btn" ng-click="delete('{{ scenario.id }}')">Delete</button>
-                    <a href="{{ scenario.jsonUrl }}" target="_blank">Gitlab</a>
                 </li>
             </ul>
         </div>
