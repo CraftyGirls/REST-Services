@@ -39,7 +39,9 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
             "DRUNK_WAVE_1",
             "FLAILING",
             "SWAY",
-            "JUMPING_JACKS"
+            "JUMPING_JACKS",
+            "BUTLER",
+            "DEAD"
         ];
 
         $scope.getChars = function () {
