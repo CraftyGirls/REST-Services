@@ -526,6 +526,7 @@ function Room(name, id) {
     this.size = "MEDIUM"
     this.type = "room";
     this.locked = false;
+    this.empty = false;
     this.items = [];
     this.triggersOnce = [];
     this.triggersMulti = [];
@@ -583,6 +584,9 @@ Room.BuildFromData = function (data) {
         for(var i=0; i < data.triggersMulti.length; i++){
             room.triggersMulti.push(Trigger.BuildFromData(data.triggersMulti[i]));
         }
+    }
+    if(data.hasOwnProperty("empty")){
+        room.empty = data.empty;
     }
     return room;
 };
