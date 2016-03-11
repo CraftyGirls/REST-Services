@@ -383,7 +383,13 @@ def component_set_service(request, component_set_id=None):
             in_data = json.loads(request.body)
             comp_set_form = ComponentSetForm(data=in_data)
             if comp_set_form.is_valid():
+                
                 if component_set_id is None:
+                    same_name_obj_count = ComponentSet.objects.filter(name=comp_set_form.cleaned_data["name"], setType=comp_set_form.cleaned_data["setType"]).count()
+                
+                    if(same_name_obj_count != 0):
+                        return HttpResponse("Component set with name " + comp_set_form.cleaned_data["name"] + " already exists", status=400)
+                    
                     comp_set = ComponentSet()
                 else:
                     try:
@@ -513,6 +519,11 @@ def item_service(request, item_id=None):
             item_form = ItemForm(data=in_data)
             if item_form.is_valid():
                 if item_id is None:
+                    same_name_obj_count = ItemDefinition.objects.filter(name=item_form.cleaned_data["name"]).count()
+                
+                    if(same_name_obj_count != 0):
+                        return HttpResponse("Item with name " + item_form.cleaned_data["name"] + " already exists", status=400)
+                    
                     item = ItemDefinition()
                 else:
                     try:
