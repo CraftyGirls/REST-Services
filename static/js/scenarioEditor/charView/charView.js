@@ -242,6 +242,14 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
             charService.getCurrChar().getComponentForType(component).src = "";
             $scope.charToImgMap[charService.getCurrChar().id][component] = [];
         };
+        
+        $scope.getVoices = function(){
+            var voices = [];
+            for(var i = 1; i < 29; i++){
+                voices.push(i.toString());
+            }
+            return voices;
+        }
 
         for(var i = 0; i < charService.chars().length; i++){
             $scope.updateTextures(charService.chars()[i]);

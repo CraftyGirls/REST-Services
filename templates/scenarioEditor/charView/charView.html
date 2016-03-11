@@ -63,6 +63,13 @@
                             <input type="checkbox" ng-model="character.visible"/>
                         </div>
                     </div>
+                     <div class="padded-top-bottom-10">
+                        <span>Voice: </span>
+                        <select ng-model="character.voice"
+                                ng-options="v as v for v in getVoices()">
+                            <option value="">RANDOM</option>
+                        </select>
+                    </div>
                     <form>
                         <div class="padded-top-bottom-10" ng-repeat="state in getStates(character)">
                             <strong>States</strong>

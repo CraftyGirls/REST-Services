@@ -304,6 +304,7 @@ function Character(id, name) {
     this.insight  = 0;
     this.defense  = 0;
     this.visible  = true;
+    this.voice    = "RANDOM"
     this.components = [{
         tags: new Tags(),
         src: "", // Pelvis
@@ -416,6 +417,10 @@ Character.BuildFromData = function (data) {
     
     if(data.hasOwnProperty("visible")){
         char.visible = data.visible;
+    }
+    
+    if(data.hasOwnProperty("voice")){
+        char.voice = data.voice;
     }
     
     char.sass = data.sass || 0;
