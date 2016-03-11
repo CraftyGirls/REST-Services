@@ -304,6 +304,7 @@ function Character(id, name) {
     this.insight  = 0;
     this.defense  = 0;
     this.visible  = true;
+    this.enabled  = true;
     this.voice    = "RANDOM"
     this.components = [{
         tags: new Tags(),
@@ -417,6 +418,10 @@ Character.BuildFromData = function (data) {
     
     if(data.hasOwnProperty("visible")){
         char.visible = data.visible;
+    }
+    
+    if(data.hasOwnProperty("enabled")){
+        char.enabled = data.enabled;
     }
     
     if(data.hasOwnProperty("voice")){
