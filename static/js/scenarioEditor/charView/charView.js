@@ -245,7 +245,7 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         
         $scope.getVoices = function(){
             var voices = [];
-            for(var i = 1; i < 29; i++){
+            for(var i = 1; i < 37; i++){
                 voices.push(i.toString());
             }
             return voices;
