@@ -74,7 +74,7 @@
                      <div class="padded-top-bottom-10">
                         <span>Voice: </span>
                         <select ng-model="character.voice"
-                                ng-options="v as v for v in getVoices()">
+                                ng-options="key as value for (key, value) in getVoices()">
                             <option value="">RANDOM</option>
                         </select>
                     </div>

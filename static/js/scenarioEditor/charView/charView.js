@@ -246,10 +246,46 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
         };
         
         $scope.getVoices = function(){
-            var voices = [];
-            for(var i = 1; i < 37; i++){
-                voices.push(i.toString());
+            var voices = {
+                1 : 'Male - "EEEE"',
+                2 : 'Male - "AHH"',
+                3 : 'Male - "ooawh"',
+                4 : 'High Pitch Male - "AH" like a bird',
+                5 : 'Male - "Ahh" like at the dentist, fast',
+                6 : 'Low Male - "ooo" dumb sounding',
+                7 : 'Male - "Ehh" dumb sounding, like you\'ve moved your tounge to the back of your throat',
+                8 : 'Low Male - "Ooeh" dumb sounding',
+                9 : 'Low Male - "Ah" dumb sounding',
+                10 : '"Wuaaah" - kinda sounds like a duck quack',
+                11 : '"Khaah" - kinda sounds like a duck quack kinda',
+                12 : 'Low Male - "eh" dumb sounding',
+                13 : '"Ueeeeh" - kinda sounds like a duck quack',
+                14 : 'Cat - "Wuuhh" ',
+                15 : 'Cat - "Neeeeuh"',
+                16 : 'Cat- "Neeh"',
+                17 : 'Cat- "Meow"',
+                18 : 'Low Male - "Boum"',
+                19 : 'Male - "Buaop"',
+                20 : 'Male - Kinda sounds like a seal "arf"',
+                21 : 'Low Male - "Orw"',
+                22 : 'Male - "Oowh"',
+                23 : 'Male - "Arl"',
+                24 : 'High Male - "Mah"',
+                25 : 'High Male -  "Mowh"',
+                26 : 'Male - "Ehh" - sounds annoyed',
+                27 : 'Male - "Grrrrah" - sounds annoyed/mad',
+                28 : 'Male - "Uhh" - sounds dumb/scared',
+                29 : 'High Robot - 1 beep',
+                30 : 'High Robot - Wobbly Squeek + fade down',
+                31 : 'High Robot - Wobbly Squeek + fade up',
+                32 : 'Robot - Extra Wobble',
+                33 : 'High Robot  - Bing',
+                34 : 'Robot - Bing',
+                35 : 'Lower Robot - Bing',
+                36 : 'Low Robot - Boop',
             }
+            
+            
             return voices;
         }
 
