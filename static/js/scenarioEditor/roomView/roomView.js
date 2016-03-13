@@ -95,9 +95,6 @@ angular.module('scenarioEditor.roomView', ['ngRoute', 'scenarioServices'])
 
         $scope.getUnusedItems = function(){
             var items = itemService.getUnusedItems();
-            if (items.length > 0) {
-                $scope.selectedItem = items[0].id;
-            }
             return items;
         };
 
