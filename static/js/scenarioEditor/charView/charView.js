@@ -124,9 +124,11 @@ angular.module('scenarioEditor.charView', ['ngRoute', 'scenarioServices'])
                             textureService.getTextureById(joint.textures[i].id).then(
                                 function (texture) {
                                     try {
-                                        $scope.charToImgMap[char.id][component].push(texture);
+                                        if($scope.charToImgMap.hasOwnProperty(char.id) && $scope.charToImgMap[char.id].hasOwnProperty(component)){
+                                            $scope.charToImgMap[char.id][component].push(texture);
+                                        }
                                     }catch (err){
-                                        console.log(err);
+                                        //console.log(err);
                                     }
                                 },
                                 function (response) {
