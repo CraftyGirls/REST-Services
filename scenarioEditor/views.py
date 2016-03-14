@@ -229,7 +229,6 @@ def update_scenario_service(request, scenario_id):
                 gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
                                            file_name, scenario.script, "text")
                 scenario.save()
-                dump_scenarios(request)
                 return HttpResponse(request.body)
             else:
                 return HttpResponse("Unauthorized", status=401)

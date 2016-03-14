@@ -24,6 +24,13 @@
         </div>
 
         <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <div class="content-block padded-top-bottom-10">
+                <select ng-model="swap1" ng-options="d as d.name for d in getCurrentCovnversation().dialogue">
+                </select>
+                <select ng-model="swap2" ng-options="d as d.name for d in getCurrentCovnversation().dialogue">
+                </select>
+                <button class="btn btn-primary" ng-click="swapDialogue()">Swap</button>
+            </div>
             <h2>{$getCurrentCovnversation().name$}</h2>
             <h2>Dialogues</h2>
             <div class="dialogue-container">

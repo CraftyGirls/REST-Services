@@ -84,6 +84,14 @@ angular.module('scenarioEditor.convoView', ['ngRoute', 'scenarioServices'])
                 convoService.conversations()[idx] = temp;
             }
         }
+        
+        $scope.swapDialogue = function(){
+            var idx1 = $scope.getCurrentCovnversation().dialogue.indexOf($scope.swap1);
+            var idx2 = $scope.getCurrentCovnversation().dialogue.indexOf($scope.swap2);
+            var temp = $scope.swap1;
+            $scope.getCurrentCovnversation().dialogue[idx1] = $scope.swap2;
+            $scope.getCurrentCovnversation().dialogue[idx2] = temp;
+        }
 
         function updateConvoOrders(){
             for(var i = 0; i < convoService.conversations().length; i++){
