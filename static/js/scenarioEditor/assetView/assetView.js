@@ -67,6 +67,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
 
         $scope.joints = {};
 
+        $scope.pendingComponentErrors = [];
+        
         var dropzonesProcessed = 0;
 
 
@@ -162,7 +164,7 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 $scope.$emit('showMessage', ['Invalid asset mode - ' + $scope.mode, 'danger']);
             }
         });
-
+    
         // END EDIT VIEW
 
         $scope.componentTypes = [{
@@ -269,8 +271,14 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                 errors.push('Name is required');
                 valid = false;
             }
+            
+            for(var i = 0; i < $scope.pendingComponentErrors.length; i++){
+                errors.push($scope.pendingComponentErrors[i]);
+            }
+            
+            $scope.pendingComponentErrors = [];
 
-            if (valid) {
+            if (errors.length == 0) {
                 // Tell the app controller to block the ui
                 switch ($scope.selectedAsset.id) {
                     case $scope.CONST.ASSET_TYPES.CHARACTER_COMPONENT :
@@ -612,7 +620,8 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                     components: "=",
                     componentType: "=",
                     componentScale: "=",
-                    joints: "="
+                    joints: "=",
+                    pendingErrors: "="
                 },
 
                 transclude: true,
@@ -924,8 +933,48 @@ angular.module('scenarioEditor.assetView', ['ngRoute', 'scenarioServices'])
                                 };
                                 break;
                         }
-
-
+                        
+                        $scope.pendingErrors = [];
+                        
+                        var compLeft = null;
+                        var compLeftVal = "";
+                        
+                        for(var i = 0; i < outJoints.length; i++){
+                            var comp = outJoints[i].item(1);
+                            if(comp.getText().indexOf('Left') != -1){
+                                var st = comp.getText().split("-")[1];
+                                st = st.trim();
+                                st = st.split(" ")[1];
+                                compLeft = outJoints[i];
+                                compLeftVal = st;
+                            }
+                        }
+                        
+                        var compRight = null;
+                        for(var i = 0; i < outJoints.length; i++){
+                            var comp = outJoints[i].item(1);
+                            if(comp.getText().indexOf('Right') != -1 && comp.getText().indexOf(compLeftVal) != -1){
+                                compRight = outJoints[i];
+                            }
+                        }
+        
+                        if(compLeft != null && compRight != null){
+                            if(compLeft.left > compRight.left){
+                                $scope.pendingErrors.push("Left joint is to the right of right joint");
+                            }
+                        }
+                        
+                        for(var i = 0; i < outJoints.length; i++){
+                            if(outJoints.top == 50){
+                                $scope.pendingErrors.push("Not all joints have been set");
+                                break;
+                            }
+                        }
+                        
+                        if(inJointGroup.top == 50){
+                            $scope.pendingErrors.push("Not all joints have been set");
+                        }
+                        
                         $scope.joints = converted;
 
                         // Since we're in a watch we need to run an apply
