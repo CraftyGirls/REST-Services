@@ -112,8 +112,7 @@
                             <div class="padded-top-bottom-10 row">
                                 <span>Active Conversation: </span>
                                 <select ng-model="character.defaultState"
-                                        ng-options="state.id as state.name for state in character.states"
-                                        ng-init="character.defaultState = character.states[0].id">
+                                        ng-options="state.id as state.name for state in character.states">
                                 </select>
                             </div>
                         </div>
