@@ -507,12 +507,12 @@ Item.BuildFromData = function (data) {
 };
 
 const ROOM_TYPES = {
-    RANDOM     : ["MEDIUM"],
-    BATHROOM   : ["SMALL"],
-    LIVINGROOM : ["MEDIUM", "LARGE"],
-    KITCHEN    : ["MEDIUM"],
-    OFFICE     : ["SMALL", "MEDIUM"],
-    LABORATORY : ["MEDIUM"]
+    RANDOM      : ["MEDIUM"],
+    BATHROOM    : ["SMALL"],
+    LIVING_ROOM : ["MEDIUM", "LARGE"],
+    KITCHEN     : ["MEDIUM"],
+    OFFICE      : ["SMALL", "MEDIUM"],
+    BEDROOM     : ["MEDIUM"]
 } 
 
 function Room(name, id) {
