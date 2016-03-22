@@ -226,9 +226,13 @@ def update_scenario_service(request, scenario_id):
                 scenario.order = scen_json['order']
                 scenario.type = scen_json['type']
                 file_name = scenario.jsonUrl
-                gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
+                gitlab_result = gitlab_utility.update_file(gitlab_utility.get_project_name(), PDUser.branch_for_user(user=request.user),
                                            file_name, scenario.script, "text")
+                if gitlab_result is False:
+                    return HttpResponse("Gitlab save failed", status = 500)
+                
                 scenario.save()
+                
                 return HttpResponse(request.body)
             else:
                 return HttpResponse("Unauthorized", status=401)

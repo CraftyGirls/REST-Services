@@ -77,7 +77,7 @@ var application = angular.module('scenarioEditor', [
                             deleted = true;
                         }
                         if ($scope.onComplete != null) {
-                            $scope.onComplete(deleted);
+                            $scope.onComplete(deeleted);
                         }
                     }
                 }
@@ -556,3 +556,9 @@ scenarioEditor.controller('EditorCtrl', ['$scope', '$http', 'convoService', 'cha
         init();
     }
 ]);
+
+$(document).ready(function(){
+    window.onbeforeunload = function (e) {
+      return 'Are you sure?';
+    };
+});
