@@ -58,7 +58,6 @@ def get_project_url():
     username = configParser.get('contents', 'username')
     url = configParser.get('contents', 'url')
     return url + "/" + username + "/" + proj
-    
 
 def get_project_name():
     configParser = ConfigParser.RawConfigParser()
