@@ -1,70 +1,353 @@
 {% load staticfiles %}
-<div id="sidebar" class="list-view">
-    <h3>Characters</h3>
+<div ng-controller="CharCtrl">
+    <div class="fill-height">
+        <div id="sidebar" class="col-md-2 list-view">
+            <h3>Characters</h3>
+            <!-- SIDEBAR FOR LIST OF CHARACTERS -->
+            <form>
+                <div ng-repeat="character in getChars()" class="padded-top-bottom-10">
+                    <div ng-if="character.id > 0">
+                        <span>Name: </span><input type="text" ng-model="character.name">
+                        <span class="glyphicon glyphicon-edit clickable hover-fade"
+                              ng-click="editChar(character)"></span>
+                        <sweet-delete variable="character" container="getChars()" confirm="true"></sweet-delete>
+                        <hr/>
+                    </div>
+                </div>
+                <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
+            </form>
+        </div>
 
-    <!-- SIDEBAR FOR LIST OF CHARACTERS -->
-    <form>
-	<span ng-repeat="character in getChars()">
-		Name: <input type="text" ng-model="character.name"><br/>
-		<button class="btn btn-default" ng-click="editChar(character)">Edit</button>
-		<button class="btn btn-danger" ng-confirm-click="deleteChar(character)">Delete</button>
-		<hr/>
-	</span>
-        <button class="btn btn-primary" ng-click="addChar()">Add new character</button>
-    </form>
-</div>
+        <!-- AREA FOR EDITING CHARACTERS -->
+        <div id="main" ng-show="editVisible">
+            <div ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
+                <div ng-if="character.id > 0">
+                    <h3>{$character.name$}</h3>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Defense:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.defense"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Insight:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.insight"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Sass:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.sass"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Strength:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" ng-model="character.strength"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <span>Visible:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="checkbox" ng-model="character.visible"/>
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-sm-1">
+                            <span>Enabled:</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="checkbox" ng-model="character.enabled"/>
+                        </div>
+                    </div>
+                     <div class="padded-top-bottom-10">
+                        <span>Voice: </span>
+                        <select ng-model="character.voice"
+                                ng-options="key as value for (key, value) in getVoices()">
+                            <option value="">RANDOM</option>
+                        </select>
+                    </div>
+                    <form>
+                        <div class="padded-top-bottom-10" ng-repeat="state in getStates(character)">
+                            <strong>States</strong>
 
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <span>Name:</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="state.name"/>
+                                    <sweet-delete variable="state" container="getStates(character)"></sweet-delete>
+                                </div>
+                            </div>
+                            <div class="padded-top-bottom-10">
+                                <span>Active Conversation: </span>
+                                <select ng-model="state.convo"
+                                        ng-options="convo.id as convo.name for convo in getConvos()">
+                                    <option value="">Incidental</option>
+                                </select>
+                            </div>
+                            <div class="padded-top-bottom-10">
+                                <span>Animation: </span>
+                                <select ng-model="state.animation"
+                                        ng-options="anim as anim for anim in animations">
+                                    <option value="">RANDOM</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="padded-top-bottom-10" ng-if="getStates(character).length > 1">
+                            <strong>Default State</strong>
 
+                            <div class="padded-top-bottom-10 row">
+                                <span>Active Conversation: </span>
+                                <select ng-model="character.defaultState"
+                                        ng-options="state.id as state.name for state in character.states">
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
 
-<!-- AREA FOR EDITING CHARACTERS -->
-<div id="main" ng-show="editVisible">
-	<span ng-repeat="character in getChars() | filter : {id: getCurrChar().id}">
-		<h3>{$character.name$}</h3>
-		<table style="text-align:center;float:right;padding:10px;">
-            <tr>
-                <td></td>
-                <td colspan="2"><button class="btn btn-default" data-toggle="modal" data-target="#component-modal" ng-click="editBodyPart('Head')">HEAD</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal"  ng-click="editBodyPart('Left Arm')">LEFT ARM</button></td>
-                <td colspan="2"><button data-toggle="modal" data-target="#component-modal" class="btn btn-default" ng-click="editBodyPart('Torso')">TORSO</button></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal" ng-click="editBodyPart('Right Arm')">RIGHT ARM</button></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal" ng-click="editBodyPart('Left Leg')">LEFT LEG</button></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#component-modal"  ng-click="editBodyPart('Right Leg')">RIGHT LEG</button></td>
-                <td></td>
-            </tr>
-        </table>
-		<strong>States</strong>
-		<form>
-			<span ng-repeat="state in getStates(character)">
-				Name: <input type="text" ng-model="state.name"><br/>
-				Active Conversation: <select ng-model="state.convo" ng-options="convo.id as convo.name for convo in getConvos()" >
-                <option value="">Select Convo</option>
-            </select><br/>
-				<button class="btn btn-default" ng-click="deleteState(character, state)">Delete</button>
-				<br/><br/>
-			</span>
-            <hr/>
-            <button class="btn btn-primary" ng-click="addState(character)">Add new state</button>
-        </form>
-	</span>
-</div>
+                        <div class="padded-top-bottom-10">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <span>Items</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row" ng-repeat="item in itemsForCurrentChar()">
+                                        <div>
+                                            <span class="col-sm-2">{$item.name$}</span>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <sweet-delete variable="item.id"
+                                                          container="character.items"></sweet-delete>
+                                        </div>
+                                    </div>
+                                    <div class="row padded-top-bottom-5">
+                                        <div class="col-sm-2">
+                                            <select class="input-sm" ng-model="selectedItem"
+                                                    ng-options="item.id as item.name for item in getUnusedItems()"
+                                                    title="Items">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn btn-primary" ng-click="addSelectedItem()">Add Item
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr/>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Head</strong>
+                            <br/>
+                            <button class="btn btn-default"  ng-show="getCurrChar().getComponentForType('HEAD').src == ''" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('HEAD')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('HEAD')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'HEAD') track by $index">
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
+                            <span>{$img.componentType$}</span>
+                        </div>
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('HEAD').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('HEAD').tags"></sweet-tags>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Left Arm</strong>
+                            <br/>
+                            <button class="btn btn-default"  ng-show="getCurrChar().getComponentForType('LEFT_ARM').src == ''" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('LEFT_ARM')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('LEFT_ARM')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_ARM') track by $index">
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
+                        </div>
 
-<!-- MODAL WINDOW FOR PICKING/UPLOADING ASSETS -->
-<div class="modal fade" id="component-modal" ng-show="editBodyPartVisible">
-    <div class="modal-content">
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_ARM').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('LEFT_ARM').tags"></sweet-tags>
+                        </div>
+
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Torso</strong>
+                            <br/>
+                            <button data-toggle="modal" ng-show="getCurrChar().getComponentForType('TORSO').src == ''" data-target="#component-modal" class="btn btn-default"
+                                    ng-click="editBodyPart('TORSO')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('TORSO')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'TORSO') track by $index">
+                            <img class="thumbnail-small" ng-src="{$ '/scenario/service/texture/' + c.id + '?format=image' $}"/>
+                        </div>
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('TORSO').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('TORSO').tags"></sweet-tags>
+                        </div>
+
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Right Arm</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getCurrChar().getComponentForType('RIGHT_ARM').src == ''" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('RIGHT_ARM')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('RIGHT_ARM')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_ARM') track by $index">
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image'$}"/>
+                        </div>
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_ARM').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('RIGHT_ARM').tags"></sweet-tags>
+                        </div>
+
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Pelvis</strong>
+                            <br/>
+                            <button data-toggle="modal"  ng-show="getCurrChar().getComponentForType('PELVIS').src == ''" data-target="#component-modal" class="btn btn-default"
+                                    ng-click="editBodyPart('PELVIS')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('PELVIS')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'PELVIS') track by $index">
+                            <img class="thumbnail-small" ng-src="{$ '/scenario/service/texture/' + c.id + '?format=image' $}"/>
+                        </div>
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('PELVIS').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('PELVIS').tags"></sweet-tags>
+                        </div>
+
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Left Leg</strong>
+                            <br/>
+                            <button class="btn btn-default" ng-show="getCurrChar().getComponentForType('LEFT_LEG').src == ''" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('LEFT_LEG')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('LEFT_LEG')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3" ng-repeat="c in getTexturesForComponent(getCurrChar(), 'LEFT_LEG') track by $index">
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image' $}"/>
+                        </div>
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('LEFT_LEG').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('LEFT_LEG').tags"></sweet-tags>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <strong>Right Leg</strong>
+                            <br/>
+                            <button class="btn btn-default"  ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src == ''" data-toggle="modal" data-target="#component-modal"
+                                    ng-click="editBodyPart('RIGHT_LEG')">Pick Texture
+                            </button>
+                            <button class="btn btn-danger" ng-click="clearComponent('RIGHT_LEG')">
+                                Clear Textures
+                            </button>
+                        </div>
+                        <div class="col-sm-3"  ng-repeat="c in getTexturesForComponent(getCurrChar(), 'RIGHT_LEG') track by $index">
+                            <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + c.id + '?format=image' $}"/>
+                        </div>
+                        <div class="col-sm-3" ng-show="getCurrChar().getComponentForType('RIGHT_LEG').src == ''">
+                            <sweet-tags sweet-target="getCurrChar().getComponentForType('RIGHT_LEG').tags"></sweet-tags>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- MODAL WINDOW FOR PICKING/UPLOADING ASSETS -->
+            <div class="modal fade" id="component-modal" ng-show="editBodyPartVisible">
+                <div class="modal-content">
         <span>
             Pick asset for: {$currBodyPart$}
         </span>
-        <hr/>
-        <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
+
+                    <span>Name:</span>
+                    <input type="text" ng-model="nameQuery" ng-change="queryChanged()"/>
+
+                    <span>Tags(Comma Separated):</span>
+                    <input type="text" ng-model="tagsQuery" ng-change="queryChanged()"/>
+
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th class="h4">Name</th>
+                            <th class="h4">Description</th>
+                            <th class="h4">Tags</th>
+                            <th class="h4">Components</th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="comp in componentSets">
+                            <td>
+                                <button class="btn btn-primary" data-dismiss="modal" ng-click="selectComponent(comp)">
+                                    Select
+                                </button>
+                            </td>
+                            <td>
+                                <span>{$comp.name$}</span>
+                            </td>
+                            <td>
+                                <span>{$comp.description$}</span>
+                            </td>
+                            <td>
+                                <div ng-repeat="tag in comp.tags">
+                                    <span>{$tag.value$}</span>
+                                </div>
+                            </td>
+                            <td ng-repeat="img in comp.components">
+                                <img class="thumbnail-small" ng-src="{$'/scenario/service/texture/' + img.texture.id + '?format=image'$}"/>
+                                <span>{$img.componentType$}</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr/>
+                    <button class="btn btn-default" data-dismiss="modal" ng-click="closeBodyPart()">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 <!-- In production use:
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+<script ng-src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
 -->

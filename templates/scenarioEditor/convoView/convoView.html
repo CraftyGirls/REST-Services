@@ -1,24 +1,71 @@
 {% load staticfiles %}
 <div ng-controller="ConvoCtrl">
     <div class="row fill-height">
-        <div class="col-md-2 list-view">
+        <div class="list-view">
             <h3>Conversations</h3>
+
             <form>
                 <span ng-repeat="conversation in getConvos()">
-                    Name: <input type="text" ng-model="conversation.name" cols="25" rows="3"></input><br/>
-                    <button class="btn btn-default" ng-click="editConvo(conversation)">Edit {{conversation.name}}</button>
-                    <button class="btn btn-danger" ng-confirm-click="deleteConvo(conversation)">Delete {$conversation.name$}</button>
-                    <hr/>
+                    <div style="margin-left:{$conversation.settings.indentation * 10$}px">
+                        <span>Name: </span><input type="text" ng-model="conversation.name" title="Name"/>
+                        <span class="glyphicon glyphicon-edit clickable hover-fade"
+                              ng-click="editConvo(conversation)"></span>
+                        <sweet-delete variable="conversation" container="getConvos()" confirm="true"></sweet-delete>
+                        <br/>
+                        <span class="glyphicon glyphicon-triangle-left hover-fade clickable" ng-click="outdent(conversation)"></span>
+                        <span class="glyphicon glyphicon-triangle-right hover-fade clickable" ng-click="indent(conversation)"></span>
+                        <span class="glyphicon glyphicon-triangle-top hover-fade clickable" ng-click="orderUp(conversation)"></span>
+                        <span class="glyphicon glyphicon-triangle-bottom hover-fade clickable" ng-click="orderDown(conversation)"></span>
+                        <hr/>
+                    </div>
                 </span>
-                <button class="btn btn-default" ng-click="addConvo()">Add new conversation</button>
+                <button class="btn btn-primary" ng-click="addConvo()">Add new conversation</button>
             </form>
         </div>
-    
-        <div class="col-md-10 conversation-edit fill-height"  ng-show="editVisible">
-            <span ng-repeat="dialogue in getCurrentCovnversation().dialogues ">
-        	   <div dialogue class="dialogue-container"></div>
-        	</span>
-            <button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
+
+        <div class="col-md-10 conversation-edit fill-height" ng-show="editVisible">
+            <div class="content-block padded-top-bottom-10">
+                <select ng-model="swap1" ng-options="d as d.name for d in getCurrentCovnversation().dialogue">
+                </select>
+                <select ng-model="swap2" ng-options="d as d.name for d in getCurrentCovnversation().dialogue">
+                </select>
+                <button class="btn btn-primary" ng-click="swapDialogue()">Swap</button>
+            </div>
+            <h2>{$getCurrentCovnversation().name$}</h2>
+            <h2>Dialogues</h2>
+            <div class="dialogue-container">
+                <div ng-repeat="dialogue in getCurrentCovnversation().dialogue">
+                    <div class="row">
+                        <div class="col-sm-4" >
+                             <h3 class="">{$dialogue.name$}</h3>
+                            <sweet-delete variable="dialogue"
+                                          container="getCurrentCovnversation().dialogue"></sweet-delete>
+                        </div>
+                    </div>
+                    <dialogue></dialogue>
+                    <hr/>
+                </div>
+                <button class="btn btn-primary" ng-click="addDialogue()">Add Dialogue</button>
+            </div>
+            <hr/>
+            <div class="dialogue-container">
+                <h2>Options/Link</h2>
+                <div ng-repeat="option in getCurrentCovnversation().options">
+                    <div class="content-block padded-top-bottom-10">
+                        <span>Conversation:</span>
+                        <select name="convo-link" ng-model="option.convoId"
+                                ng-options="convo.id as convo.name for convo in getConvos()"
+                                ng-init="option.convoId == -1 ? option.convoId = getConvos()[0].id : option.convoId = option.convoId">
+                        </select>
+                        <sweet-delete variable="option" container="getCurrentCovnversation().options"></sweet-delete>
+                        <div ng-if="getCurrentCovnversation().options.length > 1" class="padded-top-bottom-10">
+                            <span>Label : </span>
+                            <input type="text" name="optionLabel" ng-model="option.label"/>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" ng-click="addOption()">Add Option</button>
+            </div>
         </div>
     </div>
 </div>

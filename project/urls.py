@@ -8,7 +8,7 @@ import partydarling
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^api/', include('api.urls')),
-                       url(r'^$', include('sweetheartsquad.urls')),
+                       url(r'^', include('sweetheartsquad.urls')),
                        url(r'^partydarling', include('partydarling.urls')),
                        url(r'^scenario/', include('scenarioEditor.urls'))
                        )

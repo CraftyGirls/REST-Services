@@ -1,11 +1,64 @@
-{% extends "partydarling/base.html" %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    {% load staticfiles %}
 
-{% load staticfiles %}
-
-{% block resources %}
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/index.css' %}"/>
-{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/partydarling/font.css' %}"/>
+    <link rel="icon" href="{% static 'images/partydarling/favicon.ico' %}" type="image/x-icon" />
 
-{% block content %}
-    <img class="center splash_image" src="{% static "images/pd.png" %}"/>
-{% endblock %}
+    <title>Party, Darling?</title>
+
+    <script>
+
+    </script>
+</head>
+<body>
+<div id="main">
+    {% include 'navbar.html'%}
+    <div class="banner-container">
+        <div class="container">
+            <img class="banner" src="{% static 'images/partydarling/banner2.png'%}"/>
+        </div>
+    </div>
+    <div class="container">
+        <div class="video-container">
+           <iframe class="video" src="https://www.youtube.com/embed/WB4h2ymDB80?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="about-container">
+        <div id="about">
+            <div class="container description">
+                 <h2 class="center-text ">
+                "Party, Darling?" is a narrative adventure game developed alongside S-Tengine2, SweetHeart&nbsp;Squad's custom C++ and OpenGL based open-source engine.
+                </h2>
+                <h3 class="center-text">
+                The game revolves around a murder mystery in which the player must explore the alternate realities of a bizarre mansion in search of its enigmatic owner.
+                </h3>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row vertical-center">
+                <div class="col-md-6">
+                    <a href="https://github.com/SweetheartSquad/S-Tengine2">
+                        <img class="center-block logo" src="{% static 'images/partydarling/S-Tengine2_logo.png'%}"/>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                <a href="https://github.com/SweetheartSquad">
+                    <img class="center-block logo" src="{% static 'images/partydarling/shs.png'%}"/>
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

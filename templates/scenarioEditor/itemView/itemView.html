@@ -1,3 +1,163 @@
-<div ngController="itemCtrl">
-    <h1>Items</h1>
+{% load staticfiles %}
+<div ng-controller="itemCtrl">
+    <div class="row fill-height">
+        <div class="col-md-2 list-view">
+            <h3>Items</h3>
+
+            <form>
+                <div ng-repeat="item in getItems()" class="padded-top-bottom-10">
+                    <span>Name: </span><input type="text" ng-model="item.name" title="Name"/>
+                    <span class="glyphicon glyphicon-edit clickable hover-fade" ng-click="editItem(item)"></span>
+                    <sweet-delete variable="item" container="getItems()" confirm="true"></sweet-delete>
+                    <hr/>
+                </div>
+                <button class="btn btn-primary" ng-click="addItem()">Add New Item</button>
+            </form>
+        </div>
+        <div class="col-md-10 content-block" ng-show="editVisible">
+            <h2>{$currentItem().name$}</h2>
+            <div class="padded-top-bottom-10">
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Name</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="text" ng-model="currentItem().name"/>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Description</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <textarea ng-model="currentItem().description"></textarea>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Collectable</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="checkbox" ng-model="currentItem().collectable"/>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Consumable</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="checkbox" ng-model="currentItem().consumable"/>
+                    </div>
+                </div>
+                <div class="row padded-top-bottom-10">
+                    <div class="col-sm-1">
+                        <span>Pixel Perfect Collision</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="checkbox" ng-model="currentItem().pixelPerfect"/>
+                    </div>
+                </div>
+                <hr/>
+                <div class="padded-top-bottom-10">
+                    <h4>On Use Effects</h4>
+                    <div class="content-block">
+                        <div class="row" ng-repeat="trigger in currentItem().effects">
+                            <div class="content-block">
+                                <strong>{$trigger.type$}</strong>
+                                <sweet-delete variable="trigger" container="currentItem().effects"></sweet-delete>
+                                <div class="content-block padded-top-bottom-10">
+                                    <span>Arguments = </span>
+                                    <div ng-repeat="(key, val) in trigger.args track by $index"
+                                         class="content-block padded-top-bottom-10">
+                                        <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="trigger"
+                                                           sweet-type="{$val.type$}"></sweet-trigger-arg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <sweet-trigger-selector sweet-target="currentItem().effects"></sweet-trigger-selector>
+                <div class="padded-top-bottom-10">
+                    <h4>On Pickup Effects</h4>
+                    <div class="content-block">
+                        <div class="row" ng-repeat="trigger in currentItem().pickupEffects">
+                            <div class="content-block">
+                                <strong>{$trigger.type$}</strong>
+                                <sweet-delete variable="trigger" container="currentItem().pickupEffects"></sweet-delete>
+                                <div class="content-block padded-top-bottom-10">
+                                    <span>Arguments = </span>
+                                    <div ng-repeat="(key, val) in trigger.args track by $index"
+                                         class="content-block padded-top-bottom-10">
+                                        <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="trigger"
+                                                           sweet-type="{$val.type$}"></sweet-trigger-arg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <sweet-trigger-selector sweet-target="currentItem().pickupEffects"></sweet-trigger-selector>
+            </div>
+            <hr/>
+            <div>
+                <h4>Texture</h4>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#component-modal"
+                                ng-click="editTexture()">Edit Texture
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <img ng-src="{$textureUrl$}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="component-modal">
+        <div class="modal-content">
+            <span>Name:</span>
+            <input type="text" ng-model="itemQuery.name" ng-change="queryChanged()"/>
+
+            <span>Tags(Comma Separated):</span>
+            <input type="text" ng-model="itemQuery.tags" ng-change="queryChanged()"/>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="h4">Name</th>
+                    <th class="h4">Description</th>
+                    <th class="h4">Tags</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="item in itemTextures">
+                    <td>
+                        {$item.id$}
+                        <button class="btn btn-primary" data-dismiss="modal"
+                                ng-click="selectTexture(item.texture.id, currentItem())">Select
+                        </button>
+                    </td>
+                    <td>
+                        <span>{$item.name$}</span>
+                    </td>
+                    <td>
+                        <span>{$item.description$}</span>
+                    </td>
+                    <td>
+                        <div ng-repeat="tag in item.tags">
+                            <span>{$tag.value$}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <img class="thumbnail" src="{$item.texture.imageUrl$}"/>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <button class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
 </div>

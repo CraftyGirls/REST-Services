@@ -1,53 +1,73 @@
-<h3>{$dialogue.name$}</h3>
-<div class="speaker-container">
-    <h4>Speaker</h4>
-    <select name="dialogue-speaker" ng-model="dialogue.speaker"
-        ng-options="char.id as char.name for char in getChars()">
-        <option value="">
-            Select Character
-        </option>
-    </select>
-</div>
-<div class="lines-container">
-     <h4>Lines</h4>
-     <span ng-repeat="line in dialogue.lines">
- 	    <div class="line">
-            Text : <input type="text" name="line-input" value={$line.text$} ng-model="line.text"/>
-        </div>
-	</span>
-	<button class="btn btn-primary" ng-click="addLine(dialogue)">Add Line</button>
-</div>
-<div class="triggers-container">
-    <h4>Triggers</h4>
-    <span ng-repeat="trigger in dialogue.triggers">
-        <div class="trigger">
-            Function = 
-            <input type="text" ng-model="trigger.func"/>
-            <div class="arg-container">
-                Arguments = 
-                <span class="arg-container" ng-repeat="arg in trigger.args">
-                    <input type="text" ng-model="arg.value"/>
-                </span>
-                <button class="btn btn-primary" ng-click="addTriggerArg(trigger)">Add Arg</button>
+<div class="dialogue-container">
+    <div class="speaker-container">
+        <h4>Speaker</h4>
+        <select name="dialogue-speaker" ng-model="dialogue.speaker"
+                ng-options="char.id as char.name for char in getChars()">
+            <option value="">
+                Select Character
+            </option>
+        </select>
+    </div>
+    <hr/>
+    <div class="lines-container">
+        <h4>Text</h4>
+
+        <div class="content-block">
+            <div ng-repeat="line in dialogue.text track by $index">
+                <div class=" padded-top-bottom-10">
+                    <span>Text: </span> <input class="width-50" type="text" name="line-input"
+                                               ng-model="dialogue.text[$index]"/>
+                    <sweet-delete variable="dialogue.text[$index]" container="dialogue.text"></sweet-delete>
+                </div>
             </div>
         </div>
-    </span>
-    <button class="btn btn-primary" ng-click="addTrigger(dialogue)">Add Trigger</button>
-</div>
-<div class="conditions-container">
-    <h4>Conditions</h4>
-    <span ng-repeat="condition in dialogue.conditions">
-        <div class="condition">
-            Function = 
-            <input type="text" ng-model="condition.func"/>
-            <div class="arg-container">
-                Arguments = 
-                <span ng-repeat="arg in condition.args">
-                    <input type="text" ng-model="arg.value"/>
-                </span>
-                <button class="btn btn-primary" ng-click="addConditionArg(condition)">Add Arg</button>
+        <button class="btn btn-primary" ng-click="addLine(dialogue)">Add Line</button>
+    </div>
+    <hr/>
+    <div class="triggers-container">
+        <h4>Triggers</h4>
+
+        <div class="content-block">
+            <div ng-repeat="trigger in dialogue.triggers">
+                <div class="trigger padded-top-bottom-10">
+                    <strong>{$trigger.type$}</strong>
+                    <sweet-delete variable="trigger" container="dialogue.triggers"></sweet-delete>
+                    <div class="content-block padded-top-bottom-10">
+                        <span>Arguments = </span>
+
+                        <div ng-repeat="(key, val) in trigger.args track by $index"
+                             class="content-block padded-top-bottom-10">
+                            <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="trigger"
+                                               sweet-type="{$val.type$}"></sweet-trigger-arg>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
             </div>
+            <sweet-trigger-selector sweet-target="dialogue.triggers"></sweet-trigger-selector>
         </div>
-    </span>
-    <button class="btn btn-primary" ng-click="addCondition(dialogue)">Add Condition</button>
+    </div>
+    <hr/>
+    <div class="conditions-container">
+        <h4>Conditions</h4>
+        <div class="content-block">
+            <div ng-repeat="condition in dialogue.conditions">
+                <div class="condition padded-top-bottom-10">
+                    <strong>{$condition.type$}</strong>
+                    <sweet-delete variable="condition" container="dialogue.conditions"></sweet-delete>
+                    <div class="content-block padded-top-bottom-10">
+                        <span>Arguments = </span>
+
+                        <div ng-repeat="(key, val) in condition.args track by $index"
+                             class="content-block padded-top-bottom-10">
+                            <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="condition"
+                                               sweet-type="{$val.type$}"></sweet-trigger-arg>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+            <sweet-trigger-selector condition="true" sweet-target="dialogue.conditions"></sweet-trigger-selector>
+        </div>
+    </div>
 </div>

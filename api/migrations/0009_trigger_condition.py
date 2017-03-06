@@ -7,13 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0002_auto_20150815_1655'),
+        ('api', '0008_auto_20160219_1652'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='scenario',
-            name='rating_count',
-            field=models.IntegerField(default=0),
+            model_name='trigger',
+            name='condition',
+            field=models.BooleanField(default=False),
+            preserve_default=True,
         ),
     ]

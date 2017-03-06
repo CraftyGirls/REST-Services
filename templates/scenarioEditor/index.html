@@ -6,6 +6,9 @@
 {% block content %}
     <div hidden id="scenario-script">{{ scenario.script }}</div>
     <div ng-controller="EditorCtrl">
+        <div id="ui-blocker" class="block-ui">
+            <span class="block-ui-text">Hold On</span>
+        </div>
         <div class="navbar navbar-default pd-navbar pd-secondary-navbar" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-collapse navbar-menubuilder">
@@ -15,24 +18,43 @@
                         <li><a ng-href="#/{% url 'roomView' %}">Rooms</a></li>
                         <li><a ng-href="#/{% url 'itemView' %}">Items</a></li>
                         <li><a ng-href="#/{% url 'assetView' %}">Assets</a></li>
+                        <li><a ng-href="#/{% url 'manageView' %}">Manage</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-            <div class="pd-info-bar">
-                <h2 class="pd-info-title">Editing: {{ scenario.name }}</h2>   
-            </div>
-
-            <div ng-view></div>
-
-            <button ng-click="save('{{ scenario.id }}')">Save</button>
-
-            {$ msg $}
-            <div ng-show="dlVisible"><a target="_self" href="/savedFile.json" download="scenario.json">Download JSON file</a></div>
-            <hr/>
-
-            <div>Scenario Editor v<span app-version></span></div>
+        <div class="navbar navbar-default pd-info-bar">
+            <ul class="nav navbar-nav navbar-left">
+                <li>
+                    <h2 class="pd-info-title">Editing: </h2>
+                    <input class="input input-md" type="text" value="{{ scenario.name }}"  ng-init="scenarioName='{{ scenario.name }}'" ng-model="scenarioName"/>
+                    <button class="btn btn-primary navbar-btn" ng-click="rename('{{ scenario.id }}')">Re-name</button>
+                    <a href="{{ scenario.jsonUrl }}">Gitlab</a>
+                </li>
+            </ul>
+            <ul>
+                <li class="nav navbar-nav navbar-right">
+                    <button class="btn btn-primary navbar-btn" ng-click="save('{{ scenario.id }}')">Save</button>
+                    <button class="btn btn-danger navbar-btn" ng-click="delete('{{ scenario.id }}')">Delete</button>
+                </li>
+            </ul>
         </div>
+
+        <div class="navbar navbar-default " ng-show="messages.length > 0">
+            <ul>
+                <li ng-repeat="message in messages" class="alert alert-{$message.severity$} width-90 center marg-top-10">
+                    <span>{$message.text$}</span>
+                    <sweet-delete class="nav navbar-right marg-right-10" variable="message" container="messages"></sweet-delete>
+                </li>
+                <li class="width-90 center">
+                    <div class="nav navbar-right marg-right-10 padded-top-bottom-5">
+                        <span ng-click="clearMessages()" class="glyphicon glyphicon-remove-circle clickable hover-fade"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div ng-view></div>
+    </div>
 
 
 
@@ -44,10 +66,10 @@
     -->
     <script src="{% static 'vendor/dropzone.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/charView/charView.js' %}"></script>
-    <script src="{% static 'js/scenarioEditor/lineView/lineView.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/convoView/convoView.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/assetView/assetView.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/roomView/roomView.js' %}"></script>
     <script src="{% static 'js/scenarioEditor/itemView/itemView.js' %}"></script>
+    <script src="{% static 'js/scenarioEditor/manageView/manageView.js' %}"></script>
 {% endblock %}
 

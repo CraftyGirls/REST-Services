@@ -1,3 +1,182 @@
-<div ngController="roomCtrl">
-   <h1>Rooms</h1> 
+{% load staticfiles %}
+<div ng-controller="roomCtrl">
+    <div class="row fill-height">
+        <div class="col-md-2 list-view">
+            <h3>Rooms</h3>
+
+            <form>
+                <span ng-repeat="room in getRooms()">
+                    <div class="padded-top-bottom-10">
+                        <span>Name:</span> <input type="text" ng-model="room.name"/>
+                        <span class="glyphicon glyphicon-edit hover-fade clickable" ng-click="editRoom(room)"></span>
+                        <sweet-delete confirm="true" variable="room" container="getRooms()"></sweet-delete>
+                    </div>
+                    <hr/>
+                </span>
+                <button class="btn btn-primary" ng-click="addRoom()">Add New Room</button>
+            </form>
+        </div>
+        <div class="col-md-10 content-block fill-height" ng-show="editVisible && getRooms().length > 0">
+            <h2>{$currentRoom().name$}</h2>
+
+            <div>
+                <div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Name</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="text" class="input input-sm" ng-model="currentRoom().name" title="name"/>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Description</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <textarea class="input-sm" ng-model="currentRoom().description"
+                                      title="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Locked</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" class="input-sm" ng-model="currentRoom().locked"
+                                   title="locked"/>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Empty</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" class="input-sm" ng-model="currentRoom().empty"
+                                   title="empty"/>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Room Type</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="input-sm" ng-model="currentRoom().furnitureTypes"
+                                    ng-change="onTypeChange()"
+                                    ng-options="type as type for (type, value) in roomTypes()" title="Type"></select>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Size</span>
+                        </div
+                        <div class="col-lg-2">
+                            <select class="input-sm" ng-model="currentRoom().size"
+                                    ng-options="size as size for size in roomSizes()" title="Size"></select>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Characters</span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row" ng-repeat="char in charactersForCurrentRoom()">
+                                <div>
+                                    <span class="col-sm-2">{$char.name$}</span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <sweet-delete variable="char.id"
+                                                  container="currentRoom().characters"></sweet-delete>
+                                </div>
+                            </div>
+                            <div class="row padded-top-bottom-5">
+                                <div class="col-sm-2">
+                                    <select class="input-sm" ng-model="selectedChar"
+                                            ng-options="char.id as char.name for char in getUnusedCharacters()"
+                                            title="Characters">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary" ng-click="addSelectedChar()">Add Character</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row padded-top-bottom-10">
+                        <div class="col-sm-1">
+                            <span>Items</span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row" ng-repeat="item in itemsForCurrentRoom()">
+                                <div>
+                                    <span class="col-sm-2">{$item.name$}</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <sweet-delete variable="item.id"
+                                                  container="currentRoom().items"></sweet-delete>
+                                </div>
+                            </div>
+                            <div class="row padded-top-bottom-5">
+                                <div class="col-sm-2">
+                                    <select class="input-sm" ng-model="selectedItem"
+                                            ng-options="item.id as item.name for item in getUnusedItems()"
+                                            title="Items">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary" ng-click="addSelectedItem()">Add Item</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="padded-top-bottom-10">
+                        <h4>Enter Room Effects - First Time Only</h4>
+                        <div class="content-block">
+                            <div class="row" ng-repeat="trigger in currentRoom().triggersOnce">
+                                <div class="content-block">
+                                    <strong>{$trigger.type$}</strong>
+                                    <sweet-delete variable="trigger" container="currentRoom().triggersOnce"></sweet-delete>
+                                    <div class="content-block padded-top-bottom-10">
+                                        <span>Arguments = </span>
+                                        <div ng-repeat="(key, val) in trigger.args track by $index"
+                                             class="content-block padded-top-bottom-10">
+                                            <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="trigger"
+                                                               sweet-type="{$val.type$}"></sweet-trigger-arg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <sweet-trigger-selector sweet-target="currentRoom().triggersOnce"></sweet-trigger-selector>
+                    <div class="padded-top-bottom-10">
+                        <h4>Enter Room Effects - Every Time</h4>
+                        <div class="content-block">
+                            <div class="row" ng-repeat="trigger in currentRoom().triggersMulti">
+                                <div class="content-block">
+                                    <strong>{$trigger.type$}</strong>
+                                    <sweet-delete variable="trigger" container="currentRoom().triggersMulti"></sweet-delete>
+                                    <div class="content-block padded-top-bottom-10">
+                                        <span>Arguments = </span>
+                                        <div ng-repeat="(key, val) in trigger.args track by $index"
+                                             class="content-block padded-top-bottom-10">
+                                            <sweet-trigger-arg sweet-field="{$key$}" sweet-trigger="trigger"
+                                                               sweet-type="{$val.type$}"></sweet-trigger-arg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <sweet-trigger-selector sweet-target="currentRoom().triggersMulti"></sweet-trigger-selector>
+                    <div class="padded-top-bottom-10 row">
+                        <div class="col-sm-2">
+                            <span>Tags</span>
+                            <sweet-tags sweet-target="currentRoom().tags"></sweet-tags>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

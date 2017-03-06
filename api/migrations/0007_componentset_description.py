@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0003_scenario_rating_count'),
+        ('api', '0006_auto_20160122_1938'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='component',
-            name='rating',
-            field=models.FloatField(default=0.0),
+        migrations.AddField(
+            model_name='componentset',
+            name='description',
+            field=models.TextField(default=b''),
         ),
     ]
